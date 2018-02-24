@@ -1,8 +1,8 @@
 #!/bin/bash
-cd ~/work/PaperNotes/post/rnn
+cd rnn
 ./gen_html_transfer.sh
-cd ~/work/PaperNotes/post/cnn
+cd ../cnn
 ./gen_html_transfer.sh
-cd ~/work/PaperNotes/post/rl
+cd ../rl
 ./gen_html_transfer.sh
-cd ~/work/PaperNotes/post
+cd ..

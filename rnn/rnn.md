@@ -9,7 +9,7 @@ tags: [Deep learning]
 
 
 
-<center> Update: 24/02/2018_20:53:18</center>
+<center> Update: 24/02/2018_20:59:44</center>
 
   	
   	
@@ -19,4 +19,4 @@ tags: [Deep learning]
 # Regularization  	
   	
 # Applications  	
-1. ShowTell | [](https://rawgit.com/elbayadm/PaperNotes/master/post/rnn/ShowTell.md.html)
+1. ShowTell | [](https://rawgit.com/elbayadm/PaperNotes/master/rnn/ShowTell.md.html)

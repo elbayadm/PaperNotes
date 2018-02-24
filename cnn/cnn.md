@@ -10,7 +10,7 @@ tags: [Deep learning]
 - [JM_S Reading](http://tsong.me/reading/)
 
 
-<center> Update: 24/02/2018_20:53:18</center>
+<center> Update: 24/02/2018_20:59:44</center>
 
   	
   	
@@ -18,6 +18,6 @@ tags: [Deep learning]
 # Basics  	
   	
 # Regularization  	
-1. batch_no | [rmlization](https://rawgit.com/elbayadm/PaperNotes/master/post/cnn/batch_normlization.md.html)
+1. batch_no | [rmlization](https://rawgit.com/elbayadm/PaperNotes/master/cnn/batch_normlization.md.html)
   	
 # Applications  	
