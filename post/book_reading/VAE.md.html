@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="multimedia-information-management">Multimedia Information Management</h1>
+<h2 id="传统的信号质量traditional-signal-qualityfidelity-definitions-measures">传统的信号质量(Traditional Signal Quality)/fidelity Definitions &amp; Measures</h2>
+<p>图像质量评价的方法可分为<font style="color:red">主观评价和客观评价</font>两大类。<font style="color:red">主观评价即采用人眼主观观察的方法对压缩图像进行打分评价</font>，可依据的标准有《ITU-R BT.500》和《GYT+134-1998数字电视图像质量主观评价方法》。客观评价即采用客观的模型、公式进行计算，得出结果。和主观评价相比，客观 评价的优点是执行简单、标准统一，但由于人眼视觉系统（HVS）十分复杂，目前还没有任何一个客观标准可以完全准确的模拟人眼视觉感受，所以要注意的是， 客观评价可作为参考，但不能完全替代主观评价。</p>
+<h2 id="主观质量测量">主观质量测量</h2>
+<ol style="list-style-type: decimal">
+<li><p><font style="color:red">影响主观质量的因素</font> 对于一个视频场景的感觉是由人类视觉系统对于不同元素复杂交互性决定的----眼睛和大脑.对于视频信号的感知是受空间保真度的影响的(不管有没有明显的失真，问题在于我们<font style="color:red">是否可以清楚地看到一个场景的各个部分</font>)和时间保真度(<font style="color:red">运动是否自然平滑</font>)。然而，一个观察者对于质量的看法经常会被观察环境，观察者的心情和观察者与场景的交互程序相关。一个执行特定任务的用户需要关注于视频场景的一部分。观察一个场景常与看一个电影时的对于“好”的概念是不同的。例如，<font style="color:red">一个观察者的对视频质量的看法在观察环境好的情况下会更好一些（而这一点不取决于视频信号本身的好坏）</font>. 其他的重要的影响因素包括视觉焦点（一个观察者通过一系列的观察点而不是同时观察所有的内容）和所谓的&quot;最新效应&quot;（我们对于一个视频序列的看法总是更多地受更新看到的内容的影响而不是老的内容)。所有的这些因素都让衡量一个视频的质量的好坏的任务变得极为困难。</p></li>
+<li><p><font style="color:red">ITU-R 500</font> 很多的<font style="color:red">关于主观质量</font>认下的测试过程都在ITU-R BT.500-11中被定义。一个常用的过程就是<font style="color:red">Double Stimulus Continuous Quality Scale(DSCQS)方法</font>，评价者被展示了一系列的图片或两个视频序列A和B（一个接一个地），然后被要求给出A和B的质量评价值，方法是在五个分隔着的评价值（从&quot;Excellent&quot;到&quot;Bad&quot;)画连续线来定。在一个典型的测试会话中，评价者被展示了一系列的序列，并被要求对它们进行评价。对于每对序列来说，一个是未受损的&quot;参考“序列，另一个是同样的序列，它被在测试的系统或过程中修改了。</br> 这两个序列的顺序，原始的和有损的，在测试地过程中被随机的给出，这样评价者就不知道哪个是原始的，哪个是改变过的序列。这样就防止了评价者带偏见地比交这两个测试序列。在结束的时候，评分被转化到一个规范化的范围内，最终的结果是用平均评价值来说的，用它来指明相应的帧的质量。</br> 像DSCQS这样的测试被广泛地接受，并被用来评价主观的视频效果。然而，这样的测试受实际问题的影响。这样结果对于评价者来说差别会非常大。这个不同会被在重复测试的过程中被弥补过来。一个有经验的评价者(对视频压缩失真了解的比较多的）会比那些非有经验性的用户会给出一个更带偏见的评分。这就意味着一个很大的评价用户群是需要的，因为没有经验的用户很快会发现被改变的视频的一些特征。这些因素使得使用DSCQS方式的代价更大。</p></li>
+</ol>
+<h2 id="客观的质量测量">客观的质量测量</h2>
+<p>主观测量质量的方法的复杂性和消耗性让用算法自动测量质量要更加的吸引人。视频压缩的开发者和视频处理系统很大程序上依赖于所谓的客观质量测量方法。最广泛应用的方法是PSNR方法，但是这种方法的局限性使人们不得不找更加复杂的方法来逼近人类视觉性。</p>
+<ol style="list-style-type: decimal">
+<li><font style="color:red">MSE (Mean Square Error)</font> <span class="math display">\[
+MSE={\frac  {1}{n}}\sum _{{i=1}}^{n}({\hat  {Y_{i}}}-Y_{i})^{2}
+\]</span></li>
+<li><font style="color:red">SAD (Sum of Absolute Differences)</font> <span class="math display">\[
+\sum_{(i,j)\in W}|I_1(i,j)-I_2(x+i,y+j)|
+\]</span></li>
+<li><font style="color:red">MAD (Mean Absolute Difference)</font> <span class="math display">\[
+\mathrm {MD} ={\frac {1}{n^{2}}}\sum _{i=1}^{n}\sum _{j=1}^{n}|y_{i}-y_{j}|.
+\]</span></li>
+<li><font style="color:red">SNR (Signal Noise Ratio)</font> <span class="math display">\[   
+\mathrm{SNR} = \frac{P_\mathrm{signal}}{P_\mathrm{noise}},
+\]</span></li>
+<li><font style="color:red">PSNR (Peak SNR)</font> PSNR是用来在对数级上描述质量，并且依赖于原始信号和改变后信号的均方差（MSE）. PSNR即峰值信噪比（Peak signal noise ratio），计算简单，物理意义清晰，在图像质量的客观评价中应用十分的广泛。 <span class="math display">\[
+{\begin{aligned}{\mathit  {PSNR}}&amp;=10\cdot \log_{{10}}\left({\frac  {{\mathit  {MAX}}_{I}^{2}}{{\mathit  {MSE}}}}\right)\\&amp;=20\cdot \log_{{10}}\left({\frac  {{\mathit  {MAX}}_{I}}{{\sqrt  {{\mathit  {MSE}}}}}}\right)\\&amp;=20\cdot \log_{{10}}\left({{\mathit  {MAX}}_{I}}\right)-10\cdot \log_{{10}}\left({{{\mathit  {MSE}}}}\right)\end{aligned}}
+\]</span></br> PSNR可以很方便而快速地被计算出来，这样它就成为了一种很流行使用的方法，并用来测量压缩和解码视频图像的质量。<u>但是</u>, <u>从PSNR的公式里我们可以看出，PSNR计算时对图像中的各个像素点同样对待，没有充分考虑人眼的视觉特性</u>。</br> PSNR方法有几个局限性，PSNR需要一个原始的图像做为对比，但是这也许是无法在所有情况下都可以实现的,也难保所谓的原始图象没受过影响。PSNR不能准确地给出主观的视频质量值。对于给定的一个图象或一个图象序列来说，高的PSNR通常说明质量高，低PSNR说明质量低。然而，一个特定的PSNR值并不等于绝对的主观的质量。主观上感觉好的图象不一定PSNR值高。这种情况下，人类的观察敏感区中心让人感觉清晰度很好，但信嗓比不一定高。</br> 因为PSNR方法的局限性，最近有很多工作用来开发更加复杂的客观的测试过程，而且表示更准确的主观信息。很多不同的方法都被提出了。但是没有一个可以完全代替主观测试。所以还没有一个比较标准的，准确的，可用的方法。意识到这一点之后，ITU-T视频质量专家组（VQEG）就致力于提出一种客观的视频质量评价机制。每一步就是测试并比较隐藏的模型与测试模型。在2000年三月，VQEG宣布有10个这样的测试系统备选。不幸的是，没有一种被认为是适合的。VQED在2003年进行了第二次的评估。除非非常在自动质量评价中有一个非常大的突破，否则这个问题是很难被解决了。</li>
+<li><font style="color:red">QoS (Quality of Service)</font></li>
+<li><font style="color:red">SSIM</font> <span class="math display">\[
+SSIM(x,y)={\frac  {(2\mu_{x}\mu_{y}+c_{1})(2\sigma_{{xy}}+c_{2})}{(\mu_{x}^{2}+\mu_{y}^{2}+c_{1})(\sigma_{x}^{2}+\sigma_{y}^{2}+c_{2})}}
+\]</span></br> SSIM即基于结构相似度（structure similarity）的图像质量评价方法，SSIM的理论认为图像具有很强的结构特性，结构信息是图像最主要的信息，人眼主要是提取视觉区域中图像的结构信息。</br> SSIM方法将原始图像和失真图像划分成重叠或不重叠的子块，通过原始图像与失真图像的对应图像块的亮度相似函数（Luminance Comparison）、对比度相似函数（Contrast Comparison）、结构相似函数（Structure Comparison）来计算失真图像块和原始图像对应块的结构相似度，评价图像的质量好坏。</li>
+<li>or their relatives</li>
+</ol>
+<h2 id="multi-scale-ssim">Multi-scale SSIM</h2>
+<p>Multi-Scale是在SSIM基础上改进的算法，是对子群采用<font style="color:red">多阶段, 多尺度</font>推导计算的结构，SSIM和Multi-Scale SSIM对人主观判断的相关性上具有较高的表现，且具有很广泛的应用，其中包含：LIVE 图像质量数据库，和TID数据库。</p>
+<p><strong>Difference between PSNR and SSIM</strong> PSNR（Peak Signal to Noise Ratio）峰值信噪比，一种全参考的图像质量评价指标。</p>
+<p><span class="math display">\[
+MSE={\frac  {1}{m\,n}}\sum_{{i=0}}^{{m-1}}\sum_{{j=0}}^{{n-1}}[I(i,j)-K(i,j)]^{2}
+\]</span></p>
+<p>The PSNR (in dB) is defined as: <span class="math display">\[{\begin{aligned}{\mathit  {PSNR}}&amp;=10\cdot \log_{{10}}\left({\frac  {{\mathit  {MAX}}_{I}^{2}}{{\mathit  {MSE}}}}\right)\\&amp;=20\cdot \log_{{10}}\left({\frac  {{\mathit  {MAX}}_{I}}{{\sqrt  {{\mathit  {MSE}}}}}}\right)\\&amp;=20\cdot \log _{{10}}\left({{\mathit  {MAX}}_{I}}\right)-10\cdot \log_{{10}}\left({{{\mathit  {MSE}}}}\right)\end{aligned}}
+\]</span></p>
+<p>其中，MSE表示当前图像X和参考图像Y的均方误差（Mean Square Error），H、W分别为图像的高度和宽度；n为每像素的比特数，一般取8，即像素灰阶数为256. PSNR的单位是dB，数值越大表示失真越小。图像压缩中典型的信噪比在20～40dB之间，越高越好。</p>
+<p>PSNR是最普遍和使用最为广泛的一种图像客观评价指标，然而它是基于对应像素点间的误差，即基于误差敏感的图像质量评价。<font style="color:red">由于并未考虑到人眼的视觉特性（人眼对空间频率较低的对比差异敏感度较高，人眼对亮度对比差异的敏感度较色度高，人眼对一个区域的感知结果会受到其周围邻近区域的影响等），因而经常出现评价结果与人的主观感觉不一致的情况</font>。</p>
+<p>SSIM（structural similarity）结构相似性，也是一种全参考的图像质量评价指标，它分别从亮度、对比度、结构三方面度量图像相似性。 <span class="math display">\[\begin{cases}
+{\displaystyle l(x,y)={\frac {2\mu_{x}\mu_{y}+c_{1}}{\mu_{x}^{2}+\mu_{y}^{2}+c_{1}}}}\\
+{\displaystyle c(x,y)={\frac {2\sigma_{x}\sigma_{y}+c_{2}}{\sigma_{x}^{2}+\sigma_{y}^{2}+c_{2}}}}\\
+{\displaystyle s(x,y)={\frac {\sigma_{xy}+c_{3}}{\sigma_{x}\sigma_{y}+c_{3}}}}
+\end{cases}\rightarrow
+\begin{cases}
+\mu_x=\frac{1}{H\times W}\sum_{i=1}^H\sum_{j=1}^W X(i,j)\\
+\sigma_x^2=\frac{1}{H\times W -1}\sum_{i=1}^H\sum_{j=1}^W(X(i,j)-\mu_x)^2\\
+\sigma_{xy}=\frac{1}{H\times W-1}\sum_{i=1}^H\sum_{j=1}^W((X(i,j)-\mu_x)(Y(i,j)-\mu_y))
+\end{cases}
+\]</span> 其中<span class="math inline">\(\mu_x,\mu_y\)</span>分别表示图像<span class="math inline">\(X\)</span>和<span class="math inline">\(Y\)</span>的均值，<span class="math inline">\(\sigma_x\)</span>、<span class="math inline">\(\sigma_y\)</span>分别表示图像X和Y的方差，<span class="math inline">\(\sigma_{xy}\)</span>表示图像X和Y的协方差. <span class="math inline">\(C_1\)</span>、<span class="math inline">\(C_2\)</span>、<span class="math inline">\(C_3\)</span>为常数，为了避免分母为0的情况，通常取<span class="math inline">\(C_1=(K_1\times L)^2\)</span>, <span class="math inline">\(C_2=(K_2\times L)^2\)</span>, <span class="math inline">\(C_3=C_2/2\)</span>, 一般地K1=0.01, K2=0.03, L=255. 则</p>
+<p><span class="math display">\[
+SSIM(X,Y)=l(X,Y).c(X,Y).s(X,Y)
+\]</span> SSIM取值范围[0,1]，值越大，表示图像失真越小.</p>
+<p>在实际应用中，可以利用滑动窗将图像分块，令分块总数为N，考虑到窗口形状对分块的影响，采用高斯加权计算每一窗口的均值、方差以及协方差，然后计算对应块的结构相似度SSIM，最后将平均值作为两图像的结构相似性度量，即平均结构相似性MSSIM： <span class="math inline">\(MSSIM(X,Y)=\frac{1}{N}\sum_{k=1}^N SSIM(x_k,y_k)\)</span></p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="http://blog.csdn.net/u010657219/article/details/41008311">视频编解码学习之二：编解码框架</a></li>
+</ul>
+</body>
+</html>

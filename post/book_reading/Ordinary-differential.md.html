@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="常微分方程的一般解法">常微分方程的一般解法</h2>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>欧拉方法</em></strong></span></li>
+</ol>
+<p><span style="color:red"><strong><em>（1） 原始前向欧拉方法</em></strong></span> 对于常微分方程初值问题: <span class="math inline">\(\begin{cases}y&#39;(x)=f(x,y) \\ y(a)=y_0\end{cases}, \ (a\le x \le b)\)</span></p>
+<p>在求解区间[a,b]上作等距分割的剖分，步长 <span class="math inline">\(h\frac{b-a}{m}\)</span>, 记<span class="math inline">\(x_n=x_{n-1}+h\)</span>。用数值微商的方法，即用<strong><em>差商近似</em></strong>微商数值求解常微分方程。</p>
+<p>用向前差商近似$y'(x)<span class="math inline">\(得到\)</span>y(x)<span class="math inline">\(的在\)</span>x=x_0$处的一阶向前差商式： <span class="math inline">\(y&#39;(x_0)\simeq\frac{y(x_1)-y(x_0)}{h}\)</span>, 又<span class="math inline">\(y&#39;(x_0)=f(x_0,y(x_0))\)</span>, 所以得到<span class="math inline">\(\frac{y(x_1)-y(x_0)}{h}\simeq f(x_0,y(x_0))\)</span></p>
+<p>而<span class="math inline">\(y(x_1)\)</span>的近似值 <span class="math inline">\(y_1\)</span> 可按:<span class="math inline">\(y_1=y_0+hf(x_0,y_0)\)</span>. 类似的，得到计算<span class="math inline">\(y_{n+1}\)</span><span style="color:red"><strong><em>近似值的前向欧拉公式</em></strong></span>：</p>
+<p><span class="math display">\[y_{n+1}=y_{n}+hf(x_n,y_n)\]</span></p>
+<p align="center">
+<img src="http://img.blog.csdn.net/20140807155007530?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvemozNjAyMDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" width="400" >
+</p>
+<p><span style="color:red"><strong><em>由差商（差分）得到的上述方程称为差分方程</em></strong></span>。由<span class="math inline">\(y_n\)</span>直接算出<span class="math inline">\(y_{n+1}\)</span>值的计算格式称为<span style="color:red"><strong><em>显式格式，向前欧拉公式是显式格式</em></strong></span>。</p>
+<p><span style="color:red"><strong><em>前向欧拉公式缺点：</em></strong></span>欧拉方法（单步法）求解近似值<span class="math inline">\(y_{n+1}\)</span>的误差来源： 将区间左端点处导数，当作整个区间的导数。</p>
+<p align="center">
+<img src="http://img.blog.csdn.net/20140807155042209?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvemozNjAyMDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" width="500" >
+</p>
+<p>欧拉方法的2个简单改进<span class="math inline">\(\begin{cases}\text{1. Heun&#39;s method} \\ \text{2. Midpoint method}\end{cases}\)</span></p>
+<p><span style="color:red"><strong><em>（2） 修恩方法</em></strong></span></p>
+<p>用一句话总结修恩方法就是：<span style="color:red"><em>当前点斜率和中间估计值点斜率的平均替代左端点斜率。</em></span></p>
+<p>当前点斜率就是： <span class="math inline">\(y_i&#39;=f(x_i,y_i)\)</span> 由当前线性外推得到的点: <span class="math inline">\(y_{i+1}^0=y_i+f(x_i,y_i)h\)</span>, 这就是前向欧拉公式得到的。 然后，利用这个估值计算区间终点处的斜率: <span class="math inline">\(y_{i+1}&#39;=f(x_{i+1},y_{i+1}^0)\)</span> 将得到的2个斜率估计值平均: <span class="math inline">\(\bar{y}&#39;=\frac{y_i&#39;+y_{i+1}&#39;}{2}=\frac{f(x_{i},y_i)+f(x_{i+1},y_{i+1}^0)}{2}\)</span>. 然后，按照欧拉方法，利用这个平均斜率由<span class="math inline">\(y_i\)</span>线性外推出:<span class="math inline">\(y_{i+1}=y_i+\frac{f(x_{i},y_i)+f(x_{i+1},y_{i+1}^0)}{2}h\)</span></p>
+<p>Heun's method 是一种<span style="color:red"><strong><em>预估-矫正方法</em></strong></span>，简洁的表示为: <span class="math inline">\(\begin{cases}\text{Predictor: } y_{i+1}^0=y_i+f(x_i,y_i)h\\ \text{Correction}: y_{i+1}=y_i+\frac{f(x_{i},y_i)+f(x_{i+1},y_{i+1}^0)}{2}h \end{cases}\)</span></p>
+<p><span style="color:red"><strong><em>（3） 中点方法/改进欧拉方法(Modified Euler)</em></strong></span></p>
+<p>句话总结改进欧拉方法: <span style="color:red"><em>利用欧拉方法预测的中点处斜率近似整个区间斜率。</em></span></p>
+<p>首先，利用欧拉方法计算预测区间中点的值: <span class="math inline">\(y_{i+1/2}=y_i+f(x_i,y_i)h/2\)</span>; 然后利用利用中点的斜率外推<span class="math inline">\(x_{i+1}\)</span>的值: <span class="math inline">\(y_{i+1}=y_i+f(x_i+1/2,y_i+1/2)h\)</span></p>
+<ol start="2" style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>龙格－库塔法</em></strong></span></li>
+</ol>
+<p>龙格-库塔(Runge-Kutta)方法是一种在工程上应用广泛的高精度单步算法。由于此算法精度高，采取措施对误差进行抑制，所以其实现原理也较复杂.</p>
+<p>由上面可知，对于一阶精度的欧拉公式有： <span class="math inline">\(y_{i+1}=y_i+hk_i\)</span> <em>其中h为步长，则<span class="math inline">\(y_{i+1}\)</span>的表达式与<span class="math inline">\(y(x_{i+1})\)</span>的Taylor展开式的前两项完全相同，即局部截断误差为<span class="math inline">\(O(h^2)\)</span>。</em></p>
+<p>当用点<span class="math inline">\(x_i\)</span>处的斜率近似值<span class="math inline">\(k_1\)</span>与右端点<span class="math inline">\(x_{i+1}\)</span>处的斜率<span class="math inline">\(k_2\)</span>的算术平均值作为平均斜率<span class="math inline">\(k\)</span>的近似值，那么就会得到<strong><em>二阶精度的改进欧拉公式</em></strong>： <span class="math inline">\(y_{i+1}=y_i+\frac{h}{2}(k_1+k_2)\)</span>, 其中<span class="math inline">\(k_1=f(x_i,y_i)\)</span> ， <span class="math inline">\(k_2=f(x_{i}+h,y_i+hk_1)\)</span>. <span style="color:red"><strong><em>修恩方法</em></strong></span></p>
+<p><strong><em>依次类推</em></strong>，如果在区间<span class="math inline">\([x_i,x_{i+1}]\)</span>内多预估几个点上的斜率值<span class="math inline">\(k_1,k_2,...,k_m\)</span>，并用他们的加权平均数作为平均斜率<span class="math inline">\(\bar{k}\)</span>的近似值，显然能够构造出具有<strong><em>很高精度的高阶计数公式</em></strong>。</p>
+<p>于是可考虑用函数<span class="math inline">\(f(x,y)\)</span>在<span style="color:red"><strong><em>若干点上的函数值的线性组合构造近似公式</em></strong></span>，<span style="color:red"><em>构造时要求近似公式在<span class="math inline">\(f(x_i,y_i)\)</span>处的Taylor展开式与解<span class="math inline">\(y(x)\)</span>在<span class="math inline">\(x_i\)</span>处的Taylor展开式的前面几项重合</em></span>，从而使近似公式达到所需要的阶数。既避免求高阶导数，又提高了计算方法精度的阶数。或者说，在<span class="math inline">\([x_i,x_{i+1}]\)</span>这一步内计算多个点的斜率值，若够将其进行<span style="color:red"><strong><em>加权平均作为平均斜率</em></strong></span>，则可构造出更高精度的计算格式，这就是<span style="color:red"><strong><em>龙格-库塔(Runge-Kutta)方法</em></strong></span>.</p>
+<blockquote>
+<p><span style="color:red"><strong><em>一般的龙格-库塔法的形式为:</em></strong></span></p>
+</blockquote>
+<p><span class="math display">\[\begin{cases}y_{i+1}=y_i+a_1k_1+a_2k_2+...+a_nk_n \\
+k_1=hf(x_i,y_i) \\
+k_2=hf(x_i+p_1h,y_i+q_{11}k_1h) \\
+k_3=hf(x_i+p_2h,y_i+q_{21}k_1h+q_{22}k_2h) \\
+... \\
+k_n=hf(x_i+p_{n-1}h,y_i+q_{n-1,1}k_1h+q_{n-2,2}k_2h+q_{n-2,3}k_3h+...+q_{n-2,n-1}k_{n-1}h)
+\end{cases}\]</span></p>
+<p>上式称为P阶龙格-库塔方法。其中<span class="math inline">\(a_i,q_{ij},p_j\)</span>为待定参数，<span style="color:red"><strong><em>要求上式<span class="math inline">\(y_{i+1}\)</span>在点<span class="math inline">\((x_i,y_i)\)</span>处作Taylor展开，通过相同项的系数确定参数</em></strong></span>。</p>
+<p>当然，经典的龙格-库塔方法是<span style="color:red"><strong><em>四阶的</em></strong></span>。也就是在<span class="math inline">\([x_i,x_{i+1}]\)</span>上用四个点处的斜率加权平均作为平均斜率<span class="math inline">\(\bar{k}\)</span>的近似值，构成一系列四阶龙格-库塔公式。具有四阶精度，即局部截断误差是<span class="math inline">\(O(h^5)\)</span>。</p>
+<p><span style="color:red"><strong><em>（1） 2阶龙格库塔法</em></strong></span></p>
+<p><span style="color:red"><strong><em>形式:</em></strong></span> 二阶版本形式为: <span class="math inline">\(y_{i+1}=y_i+(a_1k_1+a_2k_2)h\)</span>, 其中： <span class="math inline">\(\begin{cases}k_1=f(x_i,y_i) \\ k_2=f(x_i+p_1h,y_i+q_{11}k_1h)\end{cases}\)</span></p>
+<p><span style="color:red"><strong><em>目标：</em></strong></span> 确定系数<span class="math inline">\(a_1,a_2,p_1,q_{11}\)</span></p>
+<p><span style="color:red"><strong><em>推导：</em></strong></span></p>
+<p><span class="math inline">\(y_{i+1}\)</span>的2阶泰勒公式为: <span class="math inline">\(y_{i+1}=y_i+f(x_i,y_i)h+\frac{f&#39;&#39;(x_i)}{2!}h^2\)</span> 通过链式微分法则求得：<span class="math inline">\(f&#39;&#39;(x_i)=\frac{\partial f(x,y)}{\partial x}+\frac{\partial f(x,y)}{\partial y}\frac{dy}{dx}\)</span>; 带入得到：<span class="math inline">\(y_{i+1}=y_i+f(x_i,y_i)h+(\frac{\partial f}{\partial x}+\frac{\partial f}{\partial y}\frac{dy}{dx})\frac{h^2}{2}\)</span></p>
+<p>利用双变量的泰勒级数: <span class="math inline">\(g(x_r,y+s)=g(x,y)+r\frac{\partial g}{\partial x}+s\frac{\partial g}{\partial y}+O(h^2)\)</span>, 展开<span class="math inline">\(f(x_i+p_1h,y_i+q_{11}h)=f(x_i,y_i)+p_1h\frac{\partial f}{\partial x}+q_{11}k_1h\frac{\partial f}{\partial y}+O(h^2)\)</span></p>
+<p><span class="math inline">\(\begin{cases}k_1=f(x_i,y_i) \\ k_2=f(x_i+p_1h,y_i+q_{11}h)=f(x_i,y_i)+p_1h\frac{\partial f}{\partial x}+q_{11}k_1h\frac{\partial f}{\partial y}\end{cases}\)</span> <span class="math inline">\(\Downarrow\)</span> 将上面2式子同时带入得到 <span class="math inline">\(y_{i+1}=y_i+a_1hf(x_i,y_i)+a_2f(x_i,y_i)h+a_2p_1\frac{\partial f}{\partial x}h^2+a_2q_{11}k_1\frac{\partial f}{\partial y}h^2\)</span>, 合并同类项后得到： <span class="math inline">\(y_{i+1}=y_i+[a_1f(x_i,y_i)+a_2f(x_i,y_i)]h+[a_2p_1\frac{\partial f}{\partial x}+a_2q_{11}k_1\frac{\partial f}{\partial y}]h^2\)</span> <span class="math inline">\(\Updownarrow\)</span> <span class="math inline">\(y_{i+1}=y_i+f(x_i,y_i)h+(\frac{\partial f}{\partial x}+\frac{\partial f}{\partial y}\frac{dy}{dx})\frac{h^2}{2}\)</span></p>
+<p><span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(\begin{cases}a_1+a_2=1\\a_2p_1=1/2\\a_1q_{11}=1/2\end{cases}\ Rightarrow \begin{cases}a_1=1-a_2\\p_1=q_{11}=1/2a_2\end{cases}\)</span></p>
+<p>由于<span class="math inline">\(a_2\)</span>的取值有无限多个，所以<span style="color:red"><em>2阶龙格库塔也有无限多个</em></span>。一般解法有：<span style="color:red"><em>单步校正的修恩法; 罗森法; 中点法</em></span>。</p>
+<p><span style="color:red"><em>单步校正的修恩法</em></span>:</p>
+<p><span class="math inline">\(y_{i+1}=y_i+\frac{h}{2}(k_1+k_2)\)</span>, 其中<span class="math inline">\(\begin{cases}k_1=f(x_i,y_i)\\ k_2=f(x_{i}+h,y_i+hk_1)\end{cases}\)</span> <span style="color:red"><em>所以二阶龙格库塔实际上是不带迭代步骤的修恩法</em></span>。</p>
+<p><span style="color:red"><em>中点法</em></span>:</p>
+<p>假设<span class="math inline">\(a_2=1,a_1=0,p_1=q_{11}=1/2\)</span>, <span class="math inline">\(y_{i+1}=y_i+hk_2\)</span>， 其中<span class="math inline">\(\begin{cases}k_1=f(x_i,y_i)\\ k_2=f(x_{i}+h,y_i+hk_1)\end{cases}\)</span></p>
+<p><span style="color:red"><em>罗森法</em></span>:</p>
+<p>罗森1962年指出，对于二阶龙格库塔法，<span class="math inline">\(a_2\)</span>取2/3时截断误差最小，这时候<span class="math inline">\(a_1=1/3,p_1=q_{11}=3/4\)</span>.</p>
+<p><span style="color:red"><strong><em>（2） 3阶龙格库塔法</em></strong></span></p>
+<p><span style="color:red"><strong><em>形式:</em></strong></span> 3阶版本形式为: <span class="math inline">\(y_{i+1}=y_i+\frac{1}{6}(k_1+4k_2+k_3)h\)</span>, 其中： <span class="math inline">\(\begin{cases}k_1=f(x_i,y_i) \\ k_2=f(x_i+\frac{1}{2}h,y_i+\frac{1}{2}k_1h)\\ k_3=f(x_i+h,y_j-k_1h+2k_2h)\end{cases}\)</span></p>
+<p>解法和2阶的类似</p>
+<p><span style="color:red"><strong><em>（3） 4阶龙格库塔法</em></strong></span></p>
+<p>下面介绍最常用的一种四阶龙格-库塔方法。 设 : <span class="math inline">\(y_{i+1}=y_i+\frac{1}{6}(k_1+2k_2+2k_3+k_4)h\)</span>, 其中: <span class="math inline">\(\begin{cases}k_1=f(x_i,y_i)\\k_2=f(x_i+\frac{1}{2}h,y_i+\frac{1}{2}k_1h) \\k_3=f(x_i+\frac{1}{2}h,y_i+\frac{1}{2}k_2h) \\ k_4=f(x_i+h,y_i+k_3h)\end{cases}\)</span></p>
+<p>龙格-库塔方法的推导基于Taylor展开方法，因而它要求所求的解具有<span style="color:red"><strong><em>较好的光滑性</em></strong></span>。如果解的光滑性差，那么，使用四阶龙格-库塔方法求得的数值解，其精度可能反而不如改进的欧拉方法。<span style="color:red"><strong><em>在实际计算时，应正对问题的具体特点选择适合的算法。对于光滑性不太好的解，最好采用低阶算法而将步长h取小</em></strong></span>。</p>
+<p><span style="color:red"><strong><em>（4）方程组：龙格库塔法</em></strong></span></p>
+<p>在工程和科学的许多实际问题往往需要求解多个联立的常微分方程组成的方程组。这个方程组一般表示为： <span class="math inline">\(\begin{cases}\frac{dy_1}{dx}=f_1(x,y_1,y_2,...,y_n)\\ \frac{dy_2}{dx}=f_2(x,y_1,y_2,...,y_n)\\ ...\\ \frac{dy_n}{dx}=f_n(x,y_1,y_2,...,y_n)\end{cases}\)</span>，求解这样的一个方程组，需要知道x的起点处n个初始条件。</p>
+<blockquote>
+<p>例子：用４阶荣格库塔法求解Second order ODE/2 first order ODE's.</p>
+</blockquote>
+<p>给定ODE问题：<span class="math inline">\(\frac{d^y}{dx^2}+\frac{dy}{dx}-6y=0\)</span>, 初始值: <span class="math inline">\(y(0)=2,y&#39;(0)=1\)</span>。求解关于该方程的IVP问题。</p>
+<p>首先，该2阶微分方程可以写成:<span class="math inline">\(\begin{cases}\frac{dy}{dx} = f(x,y,z) = z \\ \frac{dz}{dx}=g(x,y,z) = 6y - z \end{cases}\)</span></p>
+<p>计算2 ODE的4阶荣格库塔为：<span class="math inline">\(\begin{cases}y_{i+1}=y_i + \frac{1}{6}(k_0+2k_1+2k_2+k_3) \\ z_{i+1}=z_i + \frac{1}{6}(l_0+2l_1+2l_2+l_3)\end{cases}\)</span></p>
+<p>其中:</p>
+<p>对方程<span class="math inline">\(f(x,yz)\)</span>,有<span class="math inline">\(\begin{cases}k_0 = hf(x_i,y_i,z_i) \\ k_1 = hf(x_i+\frac{1}{2}h,y_i+\frac{1}{2}k_0,z_i+\frac{1}{2}l_0) \\ k_2 = hf(x_i+\frac{1}{2}h,y_i+\frac{1}{2}k_1,z_i+\frac{1}{2}l_1) \\ k_3 = hf(x_i+h,y_i+k_2,z_i+l_2)\end{cases}\)</span>, 对方程<span class="math inline">\(g(x,yz)\)</span>,有 <span class="math inline">\(\begin{cases}l_0 = hg(x_i,y_i,z_i) \\ l_1 = hg(x_i+\frac{1}{2}h,y_i+\frac{1}{2}k_0,z_i+\frac{1}{2}l_0) \\ l_2 = hg(x_i+\frac{1}{2}h,y_i+\frac{1}{2}k_1,z_i+\frac{1}{2}l_1) \\ l_3 = hg(x_i+h,y_i+k_2,z_i+l_2)\end{cases}\)</span></p>
+<p>当<span class="math inline">\(i=0,t_0=0=x_0\)</span> <span class="math inline">\(\begin{cases} k_0 = hf(x_0,y_0,z_0) = \dfrac{1}{10}(z_0) = \dfrac{1}{10}(1) = \dfrac{1}{10} \\ k_1 = hf(x_0+\frac{1}{2}h,y_0+\frac{1}{2}k_0,z_0+\frac{1}{2}l_0) = \dfrac{1}{10}(1 + \dfrac{1}{2}\dfrac{1}{10}(17)) \\ k_2 = hf(x_0+\frac{1}{2}h,y_0+\frac{1}{2}k_1,z_0+\frac{1}{2}l_1) \\ k_3 = hf(x_0+h,y_0+k_2,z_0+l_2) \end{cases}\)</span> <span class="math inline">\(\begin{cases} l_0 = hg(x_0,y_0,z_0) = \dfrac{1}{10}(6y_0 - z_0) = \dfrac{1}{10}(6 \times 3 - 1) = \dfrac{1}{10}(17) \\ l_1 = hg(x_0+\frac{1}{2}h,y_i+\frac{1}{2}k_0,z_0+\frac{1}{2}l_0) \\ l_2 = hg(x_1+\frac{1}{2}h,y_1+\frac{1}{2}k_1,z_1+\frac{1}{2}l_1) \\ l_3 = hg(x_1+h,y_1+k_2,z_1+l_2) \end{cases}\)</span> <span class="math inline">\(\begin{cases}y_{1}=y_0 + \frac{1}{6}(k_0+2k_1+2k_2+k_3) \\ z_{1}=z_0 + \frac{1}{6}(l_0+2l_1+2l_2+l_3) \end{cases}\)</span></p>
+<p>当<span class="math inline">\(i=1,t_0=t_0+h=\frac{1}{10}=x_1\)</span></p>
+<p><span class="math inline">\(\begin{cases} k_0 = hf(x_1,y_1,z_1) = \dfrac{1}{10}(z_1) \\ k_1 = hf(x_1+\frac{1}{2}h,y_1+\frac{1}{2}k_0,z_1+\frac{1}{2}l_0) \\ k_2 = hf(x_1+\frac{1}{2}h,y_1+\frac{1}{2}k_1,z_1+\frac{1}{2}l_1) \\ k_3 = hf(x_1+h,y_1+k_2,z_1+l_2) \end{cases}\)</span> <span class="math inline">\(\begin{cases} l_0 = hg(x_1,y_1,z_1) = \dfrac{1}{10}(6y_1 - z_1) \\ l_1 = hg(x_1+\frac{1}{2}h,y_1+\frac{1}{2}k_0,z_1+\frac{1}{2}l_0) \\ l_2 = hg(x_1+\frac{1}{2}h,y_1+\frac{1}{2}k_1,z_1+\frac{1}{2}l_1) \\ l_3 = hg(x_1+h,y_1+k_2,z_1+l_2) \end{cases}\)</span> <span class="math inline">\(\begin{cases} y_{2}=y_1 + \frac{1}{6}(k_0+2k_1+2k_2+k_3) \\ z_{2}=z_1 + \frac{1}{6}(l_0+2l_1+2l_2+l_3) \end{cases}\)</span></p>
+<p>连续进行10次运算后会越来越接近：<span class="math inline">\(y(1) = \dfrac{1}{e^3} + 2 e^2 = 14.8278992662291643974401973...\)</span></p>
+<p><strong>Reference</strong>: <a href="http://math.stackexchange.com/questions/721076/help-with-using-the-runge-kutta-4th-order-method-on-a-system-of-2-first-order-od">Help with using the Runge-Kutta 4th order method on a system of 2 first order ODE's.</a></p>
+<ol start="3" style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>BVP问题</em></strong></span></li>
+</ol>
+<p>常微分方程的求解我们看出，在求解常微分方差时，一般给定辅助条件，这些条件用于确定求解过程中产生的积分常数。n阶方程就需要n个条件。如果所有的条件都在自变量的同一取值处指定，那么处理的问题是初值问题。</p>
+<p>例子：热传导问题</p>
+<p><span class="math inline">\(\frac{d^T}{dx^2}+h&#39;(T_a-T)=0\)</span>, <span class="math inline">\(T(0)=T_1\)</span>, <span class="math inline">\(T(L)=T_2\)</span>. <span style="color:red"><strong><em>边界条件是固定的，也可以称为Dirichlet条件</em></strong></span> 以上方程有3种解法：</p>
+<ol style="list-style-type: decimal">
+<li><p><span style="color:red"><strong><em>解析解</em></strong></span>，若给定条件：长度为10m, <span class="math inline">\(T_a=20,T_1=40,T_2=200, h&#39;=0.01\)</span>, 则解为：<span class="math inline">\(T=73.4523e^{0.1x}-53.4523e^{-0.1x}+20\)</span>.</p></li>
+<li><p><span style="color:red"><strong><em>数值解</em></strong></span> (a)<span style="color:red"><strong><em>打靶法</em></strong></span> 基本思想是讲边值问题转为初值问题，然后用试错发求解。 接着求解上题，将二阶方程表示为2个一阶方程：<span class="math inline">\(\begin{cases}\frac{dT}{dx}=z \\ \frac{dz}{dx}=h&#39;(T-T_a)\end{cases}\)</span> 求解上式，需要知道z的初值，那么可以猜，假设z(0)=10，求解上式，得到T(10)=168.3797. 这与边界真实值不一样(T(10)=200),所以重新假设，重复计算。</p></li>
+</ol>
+<p>问题来了：<span style="color:red"><strong><em>每次假设<span class="math inline">\(\Delta z(0)\)</span>多少合适？</em></strong></span></p>
+<p>我们可以借助原始常微分方程的 <strong><em>线性特性</em></strong>，<span class="math inline">\(z(0)_{i+2}=z(0)_{i}+\frac{z_(0){i+1}-z(0)_{i}}{T(10)_{i+1}-T(10)_{i}}(T(10)-T(10)_{i})\)</span> 然后，用这个值去确定正确的解。 但是，如果原始常微分方程式非线性的呢？如何求解。</p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>有限差分法 有限差分法用<span style="color:red"><strong><em>有限差商代替原方程的导数</em></strong></span>，这样线性微分方程就转为一组联立的代数方程。 还接着上面的例子，二阶导数的有限差商逼近为: <span class="math display">\[\frac{d^2 T}{d x^2}=\frac{T_{i+1}-2T_i+T_{i-1}}{\Delta x^2}\]</span> 带入后得到： <span class="math display">\[\frac{T_{i+1}-2T_{i}+T_{i-1}}{\Delta x^2}-h&#39;(T_i-T_a)=0 \Rightarrow -T_{i-1}+(2+h&#39;\Delta x^2)T_i-T_{i+1}=h&#39;\Delta x^2T_a\]</span>. 这个方程对每个内点都使用。</li>
+</ol>
+<p>第一个和最后一个内点，<span class="math inline">\(T_{i-1}\)</span>和<span class="math inline">\(t_{i+1}\)</span>由边界条件指定，因此线性方程组为三对角形式。</p>
+<p>上面的例子可以写为：<span class="math inline">\(\begin{bmatrix} 2.04 &amp; -1 &amp; 0 &amp; 0 \\ -1 &amp; 2.04 &amp; -1 &amp; 0 \\ 0 &amp; -1 &amp; 2.04 &amp; -1 \\ 0 &amp; 0 &amp; -1 &amp; 2.04 \end{bmatrix} \begin{bmatrix} T_1 \\ T_2 \\ T_3 \\ T_4 \end{bmatrix}=\begin{bmatrix}40.8 \\ 0.8 \\ 0.8 \\ 200.8\end{bmatrix}\)</span></p>
+<p>上面的边界条件是固定的，也可以称为Dirichlet条件。</p>
+<p>另一种条件是：<span style="color:red"><strong><em>Neuman boundary condition(洛伊曼边界条件)</em></strong></span></p>
+<p><span class="math inline">\(\frac{d^T}{dx^2}+h&#39;(T_{\infty}-T)=0\)</span>, <span class="math inline">\(\frac{T}{dx}(0)=T_a&#39;\)</span>, <span class="math inline">\(T(L)=T_b\)</span>. 因此，在解域的一端有一个导数边界条件，另一端是固定的边界条件。</p>
+<p>对左端点建立： <span class="math inline">\(-T_{i-1}+(2+h&#39;\Delta x^2)T_i-T_{i+1}=h&#39;\Delta x^2T_{\infty}\)</span>. 对右端点建立： <span class="math inline">\(\frac{dT}{dx}=\frac{T_1-T_{-1}}{2\Delta x}\Rightarrow T_{-1}=T_1-2\Delta x\frac{dT}{dx}\)</span> 带入右端点的条件得到：<span class="math inline">\((2+h&#39;\Delta x^2)T_0-T_{1}=h&#39;\Delta x^2T_{\infty}-2\Delta x\frac{dT}{dx}\)</span></p>
+<p><span style="color:red"><strong><em>1) 理解欧拉方法，修嗯法和中点法</em></strong></span></p>
+<p>欧拉方法利用斜率，通过斜率，通过线性外推的方法预测出<span class="math inline">\(y\)</span>在前进步长<span class="math inline">\(h\)</span>之后的新值。<span class="math inline">\(y_{i+1}=y_i+f(x_i,y_i)h\)</span></p>
+<p>欧拉问题误差有2种：截断误差(truncation error)和舍入误差(round-off)</p>
+<p>修恩法在区间上基萨u年2个导数值，将这2个导数的平均值作为斜率在整个区间上的估计值。</p>
+<p>中点法也称为改进欧拉方法： <span class="math inline">\(y_{i+1}=y_i+f(x_{i+1}/2,y_{i+1}/2)h\)</span></p>
+<p><span style="color:red"><strong><em>2) 知道欧拉方法与泰勒技术展开的关系，了解由泰勒级数展开所给出的方法误差分析</em></strong></span></p>
+<p>Pass</p>
+<p><span style="color:red"><strong><em>3) 理解局部和全局截断误差的区别</em></strong></span></p>
+<p>Pass</p>
+<p><span style="color:red"><strong><em>4) 了解预估矫正法的基础</em></strong></span></p>
+<p>Pass</p>
+<p><span style="color:red"><strong><em>5) 龙格库塔的一般形式，2阶龙格库塔的推导，以及它与泰勒级数展开的关系，认识到二阶龙格库塔存在无限中可能形式</em></strong></span></p>
+<p>荣格库塔一般形式:<span class="math inline">\(y_{i+1}=y_i+\phi(x_i,y_i,h)\)</span></p>
+<p><span style="color:red"><strong><em>6) 知道如何应用任何一种龙格库塔求解方程组，能够将n阶常微分方程化简成有n个一阶常微分方程组组成的方程组</em></strong></span></p>
+<p>n个联立的常微分方程组，需要知道x的起始点处的n个初始条件。</p>
+<p><span style="color:red"><strong><em>7) 认识到在哪些类型的问题中步长的调整是重要的</em></strong></span></p>
+<p>局部截断误差，可以利用它来调整步长，若误差很小，则增大步长，否则减小。</p>
+<p><span style="color:red"><strong><em>8) 了解常微分方程的显式格式与隐式格式的区别</em></strong></span></p>
+<p><span style="color:red"><strong><em>9) 了解初值问题和边值问题的差别</em></strong></span></p>
+<p>初值问题就是所有条件都是在自变量的同一点处指定; 边值问题是条件在自变量的不同点制定。</p>
+<p><span style="color:red"><strong><em>10) 知道多步法和但步法的差别，认识到，所有的多步法都是预估-矫正法。但预估-矫正法并不都是多步法</em></strong></span></p>
+<p><span style="color:red"><strong><em>11) 了解求积公式与预估矫正法的联系</em></strong></span></p>
+</body>
+</html>

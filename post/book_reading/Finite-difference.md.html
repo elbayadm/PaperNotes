@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="有限差分法相关问题">有限差分法相关问题</h2>
+<ol style="list-style-type: decimal">
+<li>图像处理中应用</li>
+</ol>
+<p>数字图像处理中，经常遇到求导的情况，但是我们的数字图像都是离散变量，因此无法直接对其求导，我们只能对其近似求导，所以此时我们可以采用有限差分求导对其近似求解.</p>
+<p><strong><em>有限差分法以变量离散取值后对应的函数值来近似微分方程中独立变量的连续取值。</em></strong></p>
+<p>在有限差分方法中，我们放弃了微分方程中独立变量可以取连续值的特征，而关注独立变量离散取值后对应的函数值。但是从原则上说，这种方法仍然可以达到任意满意的计算精度。因为方程的连续数值解可以通过减小独立变量离散取值的间格，或者通过离散点上的函数值插值计算来近似得到。这种方法是随着计算机的诞生和应用而发展起来的。其计算格式和程序的设计都比较直观和简单，因而，它在计算数学中使用广泛。</p>
+<p>有限差分法的具体操作分为两个部分： (1) 用差分代替微分方程中的微分，将连续变化的变量离散化，从而得到差分方程组的数学形式； (2) 求解差分方程组。</p>
+<p><strong>应用公式为：</strong></p>
+$
+\begin{cases}
+f&#39;(x_i)=(\frac{\partial f}{\partial x})_{x_i}\simeq \frac{f(x_i+h)-f(x_i-h)}{2h} \\
+f&#39;&#39;(x_i)=(\frac{\partial^2f}{\partial x^2})\simeq \frac{f(x_i+h)+f(x_i-h)-2f(x_i)}{h^2} \\
+\frac{\partial^2f(x_i,y_i)}{\partial x \partial y} \simeq \frac{1}{4h^2}[f(x_i+h,y_i+h)+f(x_i-h,y_i-h)-f(x_i+h,y_i-h)-f(x_i-h,y_i+h)]
+\end{cases}
+<p>$</p>
+<p><strong>推导如下：</strong></p>
+<p>我们知道任一f(x)均可将其展开成泰勒公式： 一阶泰勒公式展开式为：<span class="math inline">\(f(x)=f(x_i)+f&#39;(x_i)(x-x_i)+\frac{f&#39;&#39;(x_i)}{2!}(x-x_i)^2+...+\frac{f^{(n)}(x_i)}{n!}(x-x_i)^n\)</span></p>
+<p>我们将<span class="math inline">\(f(x_i+h)\)</span>和<span class="math inline">\(f(x_i-h)\)</span>均用泰勒公式展开： <span class="math inline">\(\begin{cases} f(x_i-h) = f(x_i)+f&#39;(x_i)((x_i-h)-x_i)+\frac{f&#39;&#39;(x_i)}{2!}((x_i-h)-x_i)^2+...+\frac{f^{(n)}(x_i)}{n!}((x_i-h)-x_i)^n \\ f(x_i+h) = f(x_i)+f&#39;(x_i)((x_i+h)-x_i)+\frac{f&#39;&#39;(x_i)}{2!}((x_i+h)-x_i)^2+...+\frac{f^{(n)}(x_i)}{n!}((x_i+h)-x_i)^n \end{cases}\)</span></p>
+<p>将（1）和（2）相减，整理可得：<span class="math inline">\(\begin{cases} f&#39;(x_i)=(\frac{\partial f}{\partial x})_{x_i}\simeq \frac{f(x_i+h)-f(x_i-h)}{2h} \\ f&#39;&#39;(x_i)=(\frac{\partial^2f}{\partial x^2})\simeq \frac{f(x_i+h)+f(x_i-h)-2f(x_i)}{h^2} \end{cases}\)</span></p>
+</body>
+</html>

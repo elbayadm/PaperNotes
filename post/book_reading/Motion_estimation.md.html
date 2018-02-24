@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="运动预测和补偿motion-estimation-and-compensation">运动预测和补偿（Motion Estimation and Compensation)</h1>
+<p>运动估计：找到运动向量</br> 运动补偿：通过获得的运动向量找到预测的frame.</p>
+<p>我们看标准的视频编解码是什么样？H.264编码标准中，标准的参考代码有10个模式可以选择：SKIP，16<em>16，16</em>8，8<em>16，8</em>8，8<em>4，4</em>8，4*4。 <img src="http://img.blog.csdn.net/20140226091651453?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSEdQUlQ=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" /> <img src="http://img.blog.csdn.net/20140225171739828?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSEdQUlQ=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" /></p>
+<p>运动估计及补偿的基本原理就是<u>利用帧间运动估计得到待编码的一个参考块，然后用这个参考块进行运动补偿</u>，将补偿后的残差进行DCT变换和可变长编码。运动矢量(Motion vector)是一个包括<u>水平和垂直分量的二维矢量</u>(<span class="math inline">\(G_x,G_y\)</span>)，编码过程只对这个运动矢量和当前宏块与在参考帧中搜索到的宏块的插值进行编码。</p>
+<h2 id="运动估计motion-estimation-for-video">运动估计/Motion Estimation for Video</h2>
+<p>运动补偿是通过<u>先前的局部图像来预测、补偿当前的局部图像</u>，它是<u>减少帧序列冗余信息的有效方法</u>。运动估计算法分为两类： - <font style="color:red">像素递归算法（PRA，pixel recursive algorithm）</font>; - <font style="color:red">块匹配算法（BMA，block matching algorithm）</font>. 块匹配准则<u>判断块相似程度</u>，直接影响运动估计的精度，块匹配运算复杂度，数据读取复杂度在很大程度上取决与<u>搜索采用的块匹配准则</u>。常用匹配准则：绝对品均误差函数（MAD）、绝对差值和（SAD）、归一化相关函数（NCFF）、均方误差函数（MSE）、最大误差最小函数（MME）、最大匹配像素（MPC）等。 - 用来评价重构图像的质量，广泛应用是峰值信噪比（Peak Signal to Noise Ratio）和平均MSE。</p>
+<h2 id="改进方法">改进方法</h2>
+<ol style="list-style-type: decimal">
+<li>提高运动估计速度：快速搜索模版（三步法、二维对数法、交叉搜索法、新三步法、四步法、菱形法、十字菱形搜索法、六边形搜索法）；起点预测（基于SAD值的起点预测、利用相邻运动矢量的起点预测、“平均预测”）；提前终止（阀值的选择、阀值自适应计算）。</li>
+<li>提高运动估计准确度：分层搜索（根据分辨率分层）、可变块大小搜索（可使运动估计的模拟更接近物体的实际运动）等。</li>
+</ol>
+<p><b>起始点预测的基本思想</b>：利用运动的相关性，以空间位置上的<u>相邻块（左边或上边以编码的块）或时间上的相邻块（前一帧图像的相同位置）的运动预测当前的运动矢量，然后以此为起点做进一步的搜索</u>。</p>
+<h3 id="practical-approach-经典块匹配运动估计算法">Practical approach: 经典块匹配运动估计算法</h3>
+<p>运动估计用来估计物体的位移，得到运动矢量；运动补偿根据得到的运动矢量，对前一帧中由于运动而产生的位移进行调整，从而尽可能得到本帧的预测帧。 块匹配运动估计可以从以下四个方面进行研究:块的模式选择、块匹配准则、算法评定指标以及搜索起点预测。 1. <font style="color:red">全搜索法(full search method)：</font> 思想：全搜索算法(Full search Method, FS),也称为穷尽搜索法,是一种搜索策略最简单的搜索算法。<font style="color:red">它对M<em>N搜索范围内所有可能的候选位置计算SAD值,从中找出最小SAD,其对应偏移量即为所求运动矢量</font>。此算法虽计算量大,但最简单、可靠,找到的必为全局最优点。 2. <font style="color:red">三步搜索法 (3-Step Search))：</font> 思想：三步搜索算法(TSS, Three-Step Search) 算法采用一种<u>由粗到细的搜索模式</u>,从搜索窗口中心开始,按一定步长取<u>周围8个点</u>作匹配运算,文中采用的初始搜索步长为4,得到MBD点后,每次<u>利用上一步搜索得到的最佳匹配位置作为当前搜索的中心位置</u>,每做一步,<u>搜索步长减半,直至搜索结束</u>。 - 由粗到精搜索最优点，初始步长为R/2. - 第一步：检查起始点和其周围步长为R/2的8个点，将最优点作为第二步的起始点； - 第二步：以新的起始点为中心检查其周围步长为R/4的8个点，找到最优点作为第三步的起始点； - 第三步：以新的起始点为中心检查其周围步长为R/8的8个点，找到最优点，如果R/8=1则搜索终止，最优点位置的预测块作为最优的预测块，否则重复该过程直到R/n2=1； - <font style="color:red">三步搜索方法检查点的个数为<span class="math inline">\(1+8\log_2(d+1)\)</span>，当d=8时，检查点个数为9+8+8=25</font> <img src="http://images.cnblogs.com/cnblogs_com/xkfz007/201207/201207291750352090.png" /> 3. <font style="color:red">新三步搜索：</font> 思想：在现实的视频序列中,运动矢量的分布是具有中心偏置特性的,为验证此特性,NTSS算法在第一步中通过搜索增加的中心8个点来修改搜索模板。同时NTSS使用半路中止技术来加速静止块的匹配,以此来减少搜索次数。三步算法在第一步对九个点作匹配运算,这九个点在搜索窗口中是等间距分配的,没有考虑块的中心偏置,新三步在第一步对搜索中心周围的八个点也同时作匹配运算,在很多情况下运算可以提前中止。 - 与三步搜索方法不同的是，考虑到运动矢量高的中心分布特点，新三步搜索方法，除了围绕起始点为中心搜索步长为R/2的8个点之外，在起始点周围增加了步长为1的8个搜索点，如果最优点为步长为1的8个搜索点之一，则在最优点邻近的三个点中搜索最优点，然后结束搜索，否则，和三步搜索方法过程一样 - 其中一个搜索路径需要检查点个数为17+3=20，另一个需要17+8+8=33。 <img src="http://images.cnblogs.com/cnblogs_com/xkfz007/201207/201207291750361284.png" /> 4. <font style="color:red">四步搜索算法：</font> 思想：类似于三步法，但基于现实中序列图像特征，即运动矢量都是中心分布的，从而在5</em>5大小的搜索窗口上构造了有9个检测点的搜索模板。FSS算法首先采用5<em>5的搜索窗口,没有像TSS算法使用9</em>9的搜索窗,避免造成搜索方向的偏离,每一步的搜索范围由上一步的最佳匹配位置决定,并且将搜索窗的中心移向MBD点处,前三步的搜索是定步长搜索,最后一步改变步长,得到最后的最佳匹配位置,且后两步搜索窗的大小依赖于MBD点的位置。 5. <font style="color:red">菱形搜索法（钻石搜索法）：</font> 菱形搜索算法（Diamond search，DS）目前快速算法中性能最优的算法之一。是基于中心偏置的多级搜索方法。特点包括，（1）在第一步搜索中搜索模式设计为检测点基于中心偏置的LDSP型模式。（2）根据极值中心点附近误差曲面具有单调性的假设,采用了中途停止的搜索策略。即一旦最小块失真出现在LDSP中心点位置,搜索转入SDSP模式,中途就结束搜索。在DS搜索过程中,LDSP被重复使用,直到最小块失真出现在中心点。然后搜索模式由LDSP转换为SDSP,进入最后的搜索阶段。在SDSP的五个检测点中,出现最小块失真的位置就确定了最佳匹配块的运动矢量。 6. <font style="color:red">六边形搜索法：</font> 六边形搜索（Hexagon-based Search，HEXBS）与菱形搜索法类似，修改了搜索模版，提出大六边形模版。 7. <font style="color:red">二维Log搜索</font> - 每一步采用十字搜索模式 - 如果每一步的最优点为中心点或者搜索窗的边界点，搜索步长减半，否则搜索步长不变 - 当搜索步长为1时，中心点周围的8个点都要检查 - 两个搜索路径一个需要5+3+3+8=19，另外一个需要5+3+2+3+2+8=23 <img src="http://images.cnblogs.com/cnblogs_com/xkfz007/201207/20120729175036694.png" /> 8. <font style="color:red">交搜索</font> - 起始搜索步长R/2，从起始点开始水平搜索三个点，得到最优点并沿着最优点垂直方向搜索相邻的两个点，得到最优点，以搜索步长为R/4再以同样的方式先水平再垂直搜索，当步长为1时停止搜索 - 搜索方法检查点的个数为1+4log2(d+1)，当d=8时，检查点个数为3+2+2+2+2+2=13。 <img src="http://images.cnblogs.com/cnblogs_com/xkfz007/201207/201207291750367663.png" /> 9. <font style="color:red">十字搜索</font> - 起始搜索步长R/2，从起始点开始以&quot;X&quot;形十字搜索，当搜索步长降为1时，如果上一步的最优点为中心点，左上点或右下点，则这一步搜索以&quot;+&quot;形状十字搜索，然后结束搜索，否则还是以&quot;X&quot;形十字搜索，然后结束搜索。 - 十字搜索方法检查点的个数为1+4log22d，当d=8时，检查点个数为5+4+4+4=17 <img src="http://images.cnblogs.com/cnblogs_com/xkfz007/201207/201207291750366267.png" /> 10. <font style="color:red">块梯度下降搜索</font> 该方法以起始点为中心搜索8个步长为1的相邻点，确定最优点，再以最优点为中心搜索8个步长为1的相邻点，如此循环下去，不限制搜索步骤，但当搜索得到的最优点为中心点或者到搜索窗的边界，搜索终止。 <img src="http://images.cnblogs.com/cnblogs_com/xkfz007/201207/201207291750366300.png" /> 11. <font style="color:red">层次块搜索</font> - 对编码图像和参考图像下采样，分别得到编码图像和参考图像的下采样图像，未经采样处理的编码图像和参考图像属于第0层，一次下采样的编码图像和参考图像属于第1层，对第1层图像再进行下采样得到的编码图像和参考图像属于第2层，依次重复上述过程，得到第n层下采样的编码图像和参考图像。 - 然后在n层下采样参考图像的搜索范围中找到与下采样编码图像块最佳匹配块的MV，该MV作为n-1层的运动估计搜索范围的中心点，依次重复上述过程，直到n=0为止，此时得到的最佳匹配块就是编码图像的预测块，其对应的MV为最终的最优MV。 <img src="http://images.cnblogs.com/cnblogs_com/xkfz007/201207/201207291750363825.png" /> 12. Spiral search 通过当前块预测运动向量，不停的改变中心去预测向量。通过螺旋搜索直到MAD或SAD比阈值小。 13. Half-pixel运动搜索 第一步是基于块得到运动向量，第二步是找到最好的半像素运动向量。在reference帧的选择区域进行空间插值(双线性插值),然后比较当前块和插值的参考块，选择最好的半精度偏移。</p>
+<h3 id="基于块搜索的缺陷">基于块搜索的缺陷</h3>
+<p>但处理3D模型时，也许会得到０运动向量，基于块的搜索会破坏一些复杂的运动。而且块搜索和块大小以及搜索范围有关系。</p>
+<h3 id="搜索算法复杂度比较">搜索算法复杂度比较</h3>
+<div class="figure">
+<img src="http://images.cnblogs.com/cnblogs_com/xkfz007/201207/201207291750376890.png" />
+
+</div>
+<h3 id="速运动估计">速运动估计</h3>
+<p>在保持预测精度的同时减少运动估计的搜索次数。 - 三步搜索（Three Step Search，TSS） - 二维Log搜索（2D Logarithmic Search，2DLOG） - 正交搜索（Orthogonal Search Algorithm，OSA） - 十字搜索（Cross Search Algorithm，CSA） - 新三步搜索（New Three Step Search，NTSS） - 四步搜索（Four Step Search，FSS） - 共轭方向搜索（Conjugate Direction Search，CDS） - 梯度下降搜索（Gradient Descent Search，GDS） - 层次块搜索（Hierarchical Block Matching Algorithm，HBMA）</p>
+<ul>
+<li>时域运动位置更可能在整象素之间，即分像素上。</li>
+<li>利用相邻的整象素可以估计出分象素的值, 常用线性或双线性插值得到分象素的值。</li>
+<li>分象素运动估计有更高的预测精度，但复杂度也更高，1/2分象素运动估计，图像存储空间增加4倍，运动矢量需要放大2倍，1/4分象素运动估计，图像存储空间增加16倍，运动矢量需要放大4倍，计算复杂度也成倍增加。</li>
+</ul>
+<p>残留的块数据经过DCT，量子化，entropy coding 压缩成字符串用来存储或传送，其中很多部分能提高压缩度，比如在DCT中转换为波形平面对以后量子化过程提供一些必要的手段，人眼能敏感于低波产生的画面，可对高波产生的画面比较不敏感，这方面的知识请参考有关HVS的文献。可是这些国能都基础是原来数据的大小。那怎么样能把原来数据的大小变小呢？据我到现在学习过程中只有帧内预测和帧外预测，帧内预测诗利用已解码好的单位来预测下一个单位（这里指的单位是一个块），帧外预测是利用影像各个图片的相关性而决定的，比方说前一张和现在的frame有很大的相视性，我们可以利用这个关系来预测当前画面。下面图表示帧内预测和 帧外预测。</p>
+<center>
+<img src="http://my.csdn.net/uploads/201207/29/1343575857_1329.jpg" />
+</center>
+<center>
+<img src="http://my.csdn.net/uploads/201207/29/1343575901_3161.gif" />
+</center>
+<p>本章介绍帧外预测和方法。帧外预测可以很大程度的提高压缩率在图片压缩的第一个阶段。可是帧外预测的计算复杂度很高，我看了一些文章那里说复杂度站到整个encoding中的4-50%.所以可以说是压缩的能力取决于帧外预测的计算复杂度。那么决定视频编码能力的要素是以下几个方面。</p>
+<ol style="list-style-type: decimal">
+<li>编写代码的能力：怎么查找残留数据？</li>
+<li>复杂度：算法充分利用已编写好的数据？</li>
+<li>strorage或延迟：在硬件上有clock的延迟或者是在软件在数据延迟？</li>
+<li>信息传送问题：帧外预测后产生的矢量要传送给encode吗？传送就用什么方式传送？</li>
+</ol>
+<p>在我列出的问题以外还有很多问题，这个要在视频编码中一个个要处理的问题。在讨论问题当中一个就直接就简单的问题是，在压缩理论里你的计算量大就能压缩出很小的大小来，反面你的计算量不够复杂，这会引起很小的压缩比如lossless压缩方法。（压缩力有2中压缩方法一种是loss，另一种是lossless）。</p>
+<blockquote>
+<p>那帧外预测的要求是什么呢？</p>
+</blockquote>
+帧内预测产生一个残留的数据经过参考已编码好的frame（reference frame）。这个frame可以是时间上的已经过的图片，或者是以后要播放的图片。设计的目的是让帧外预测有很高的准确度。经过帧外预测的数据要很小，最好是完全相似。这个取决于计算的复杂度。当一个图片进行帧外预测时他是把当前的frame减去reference frame 把得到的数据经过后面的几个步伐来得到最后的数据来传送。与此同时在encode里还进行decode的工作用来以后的帧外预测使用，因为在decode那一端没有原始数据只能依靠decode来的数据来重现画面。最好的压缩率取决于残留块的大小。
+<center>
+<img src="http://my.csdn.net/uploads/201207/29/1343576333_9383.png" />
+</center>
+<p><font style="color:red">图中标示了一般的帧外预测的步伐</font></p>
+<h2 id="block-maching块匹配">Block Maching(块匹配）</h2>
+<p>现在流行的视频编码格式MPEG系列和H26X系列都沿用了运动预测和补偿的过程，这一过程块大小用8x8，16x16(现在的版本会有更多的细节块像4x4）来预测当前帧。在运动预测力一个块叫做块匹配。</p>
+<p>比方说在当前帧的16x16的光度块里运动预测会搜索在以编译好的帧里临近的块来匹配当前帧里的16x16部分。最好是从当前块里减去以前的块的能量最少的，这种块叫最佳匹配块（best maching block）。最佳匹配快会在当前块周边会搜索到。因为当前帧和以前帧大部分非常相似，会集中计算以前帧的匹配度（下面会提到怎么匹配）。 <img src="http://my.csdn.net/uploads/201207/30/1343580563_5572.png" /></p>
+<p>在残留块（residual block）中的数据更小会得到更好的压缩效果，因为会用更小的字节来保存一个像素（pixel）。</p>
+<p>用上面的图来来介绍块匹配过程，在图中当前块的数据会被以前帧的临近块来减去，也可以搜索附近的块来找出最匹配的块。找出最佳疲累块的方法有很多种下面来一一介绍给大家。</p>
+<p>最小平方残留值（Mean squared error)MSE:在快中每个像素差值平方和。公式如下： <span class="math display">\[
+MSE=\frac{1}{N^2}\sum_{i=0}^{N-1}\sum_{j=0}^{N-1}(C_{ij}-R_{ij})^2
+\]</span> 最小绝对残留值（Mean absolute error)MAE:在快中每个像素减去的绝对值之和，他简化了上面的公式，绝对值比平方计算复杂度要低。 <span class="math display">\[
+MAE=\frac{1}{N^2}\sum_{i=0}^{N-1}\sum_{j=0}^{N-1}|C_{ij}-R_{ij}|
+\]</span></p>
+<p>上面的2中计算都要乘上<span class="math inline">\(1/N*N\)</span>来计算最后的所对比的值，可是1/N<em>N的计算复杂度要比想象中的还复杂（请参考硬件结构与设计）。那我们可不可以不用1/N</em>N来获取结果来对比呢？ 方法有的，我们计算不同差异的和来对比（这要浪费更多的内存空间，可这很值得的）(Sum of absolute error,Sum of absolute differences)SAE:</p>
+</body>
+</html>

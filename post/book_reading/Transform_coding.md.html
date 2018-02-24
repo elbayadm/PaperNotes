@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h1 id="transform-coding">Transform coding</h1>
+<p>Transform Coding（TC）是一种很流行的压缩编码的方式。这是大多数视频编码系统的核心。一般来说，空间图像数据是很难被压缩的，因为相邻数据是紧密耦合，能量是均匀分布于整个图片，很难去在不影响精度的情况下丢弃一些数据。</p>
+<p>但是，通过适合的转换，数据很容易被压缩到一个转换域。对于视频压缩来说，转换有很多优势：<font style="color:red">能量压缩，数据去耦合，适合实际实现。最常用的２种转换是DCT和DWT</font>。</p>
+<p>变换编码的主要特点有： （1）在变换域里视频图像要比空间域里简单。 （2）视频图像的相关性明显下降，信号的能量主要集中在少数几个变换系数上，采用量化和熵编码可有效地压缩其数据。 （3）具有较强的抗干扰能力，传输过程中的误码对图像质量的影响远小于预测编码。通常,对高质量的图像，DMCP要求信道误码率 ，而变换编码仅要求信道误码率 。</p>
+<h3 id="dct">DCT</h3>
+<p>DCT之所以流行是因为２个原因：（１）将图像数据有效的转换到一个更容易处理的域，二维DCT变换就是将二维图像<font style="color:red">从空间域转换到频率域</font>。形象的说，就是<font style="color:red">计算出图像由哪些二维余弦波构成</font>，计算出的结果为c(u ,v), 其中u为二维波的水平方向频率，v为二维波的垂直方向频率； 最终会计算出很多的c(u,v) ; <font style="color:red">每一个c称为一个DCT系数，代表的是频率为(u,v)的二维波的振幅（或者能量）</font>，所有这些二维波的叠加就是那个原始的图片；（２）很容易实现。</p>
+<p>DCT对于图像和视频帧内压缩具有２个有用的属性： - 能量压缩: 左上角的相关系数对应着低频信号，而这部分低频信号聚集了大部分能量。 - 去相关: 一些较小相关系数可以丢弃，而不影响图像质量。</p>
+<h3 id="dwt">DWT</h3>
+<p>离散小波变换（Discrete Wavelet Transform）在数值分析和时频分析中很有用。第一个离散小波变换由匈牙利数学家发明，离散小波变换顾名思义就是离散的输入以及离散的输出，但是这里并没有一个简单而明确的公式来表示输入及输出的关系，只能以阶层式架构来表示。</p>
+<p>DWT已经被证明比DWT更有效，DWT和DCT最大的区别是，离散小波是应用到整个图像的，而小波变换则是应用到小的块区域。在DWT中，小波系数和图像像素数量一样，所以ＤＷＴ没有减少或增加任何信息。许多高频的相关系数都是０．所以如果我们丢弃掉那些系数，而保留重要的系数，就会获得一定压缩。在DWT中，解压缩不被块边界限制，所以比DCT更灵活。</p>
+</body>
+</html>

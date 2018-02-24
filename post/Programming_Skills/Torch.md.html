@@ -1,0 +1,431 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+</head>
+<body>
+<h1 id="torch">Torch</h1>
+<h2 id="basic">Basic</h2>
+<ul>
+<li><a href="https://lua-toolbox.com/">Lua Toolbox</a></li>
+<li><a href="http://www.tutorialspoint.com/lua/index.htm">Lua Basics Tutorial</a></li>
+<li><a href="http://www.lua.org/pil/2.6.html">Programming in Lua</a></li>
+<li><a href="http://blog.csdn.net/xiarendeniao/article/details/7827098">python vs lua</a></li>
+<li><a href="http://torch.ch/docs/getting-started.html">Getting started with Torch</a></li>
+<li><a href="https://github.com/hpenedones/luacnn.git">github: convolutional neural networks for hand digit recognition - uses torch7 and lua</a></li>
+<li><a href="https://github.com/torch/torch7/wiki/Cheatsheet">torch 7 Cheatsheet</a></li>
+<li><a href="http://torch5.sourceforge.net/manual/nn/index-1.html">Detailed Overview of the Neural Network Package</a></li>
+<li><a href="http://torch5.sourceforge.net/manual/index.html">Torch Manual</a></li>
+<li><a href="http://blog.csdn.net/enjoyyl/article/details/48053291">Ubuntu 14.04 64 bit+ Torch 7 + CUDA7安装配置</a></li>
+<li><a href="http://christopher5106.github.io/deep/learning/2016/07/14/element-research-torch-rnn-tutorial.html">Element-Research Torch RNN Tutorial for RNN</a></li>
+<li><a href="https://github.com/eladhoffer/ImageNet-Training">Deep Learning on ImageNet using Torch</a></li>
+<li><a href="https://github.com/Kadoba/love-struct">General-purpose data structures written in lua</a></li>
+<li><a href="https://github.com/vic-w/torch-practice">Torch7深度学习实例</a></li>
+<li><a href="https://github.com/torch/torch7">Torch Package Reference Manual</a></li>
+<li><a href="https://github.com/torch/demos">Demos and tutorials around Torch7</a></li>
+</ul>
+<h2 id="comment">Comment</h2>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="co">-- 两个减号是行注释</span>
+<span class="co">--[[</span>
+<span class="co"> 这是块注释</span>
+<span class="co"> 这是块注释</span>
+<span class="co"> --]]</span></code></pre></div>
+<h2 id="load-data">Load data</h2>
+<h2 id="variable">Variable</h2>
+<ol style="list-style-type: decimal">
+<li><p>Number</p>
+<p>Lua的数字只有double型，64bits，你不必担心Lua处理浮点数会慢（除非大于100,000,000,000,000），或是会有精度问题。你可以以如下的方式表示数字，0x开头的16进制和C是很像的。<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">num <span class="ot">=</span> <span class="dv">1024</span>
+num <span class="ot">=</span> <span class="dv">3.0</span>
+num <span class="ot">=</span> <span class="dv">3.1416</span>
+num <span class="ot">=</span> <span class="dv">314.16e-2</span>
+num <span class="ot">=</span> <span class="dv">0</span><span class="ot">.</span>31416E1
+num <span class="ot">=</span> <span class="dv">0xff</span>
+num <span class="ot">=</span> <span class="dv">0x56</span></code></pre></div></li>
+<li><p>Char or string</p>
+<p>字符串你可以用单引号，也可以用双引号，还支持C类型的转义，比如： ‘’ （响铃）， ‘’ （退格）， ‘’ （表单）， ‘’ （换行）， ‘’ （回车）， ‘’ （横向制表）， ‘’ （纵向制表）， ‘\’ （反斜杠）， ‘”‘ （双引号）， 以及 ‘” （单引号)<br/> 下面的四种方式定义了完全相同的字符串（其中的两个中括号可以用于定义有换行的字符串）:<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">a <span class="ot">=</span> <span class="st">&#39;alo</span><span class="ot">\n</span><span class="st">123&quot;&#39;</span>
+a <span class="ot">=</span> <span class="st">&quot;alo</span><span class="ot">\n</span><span class="st">123</span><span class="ot">\&quot;</span><span class="st">&quot;</span>
+a <span class="ot">=</span> <span class="st">&#39;\97lo\10\04923&quot;&#39;</span>
+a <span class="ot">=</span> <span class="st">[[alo</span>
+<span class="st">123&quot;]]</span></code></pre></div></li>
+<li><p>NUll or nil</p>
+<p>布尔类型只有nil和false是 false，数字0啊，‘’空字符串（’′）都是true！<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">v <span class="ot">=</span> UndefinedVariable</code></pre></div></li>
+<li><p>Global and local varibale</p>
+<p>需要注意的是：lua中的变量如果没有特殊说明，全是全局变量，那怕是语句块或是函数里。变量前加local关键字的是局部变量。<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">theGlobalVar <span class="ot">=</span> <span class="dv">50</span>
+<span class="kw">local</span> theLocalVar <span class="ot">=</span> <span class="st">&quot;local variable&quot;</span></code></pre></div></li>
+<li><p>Format convert</p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">trainData<span class="ot">.</span>data <span class="ot">=</span> trainData<span class="ot">.</span>data:float<span class="ot">()</span>
+testData<span class="ot">.</span>data <span class="ot">=</span> testData<span class="ot">.</span>data:float<span class="ot">()</span>
+<span class="co">-- dst = src:type(&#39;torch.TypeTensor&#39;)</span>
+<span class="co">-- where Type==&#39;Float&#39;,&#39;Double&#39;,&#39;Byte&#39;,&#39;Int&#39;,... Shortcuts are provided for simplicity (float(),double(),cuda(),...):</span></code></pre></div></li>
+</ol>
+<h3 id="control">Control</h3>
+<ol style="list-style-type: decimal">
+<li><p>while</p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">sum <span class="ot">=</span> <span class="dv">0</span>
+num <span class="ot">=</span> <span class="dv">1</span>
+<span class="kw">while</span> num <span class="ot">&lt;=</span> <span class="dv">100</span> <span class="kw">do</span>
+sum <span class="ot">=</span> sum <span class="ot">+</span> num
+num <span class="ot">=</span> num <span class="ot">+</span> <span class="dv">1</span>
+<span class="kw">end</span>
+<span class="fu">print</span><span class="ot">(</span><span class="st">&quot;sum =&quot;</span><span class="ot">,</span>sum<span class="ot">)</span></code></pre></div></li>
+<li><p>if-else</p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="kw">if</span> age <span class="ot">==</span> <span class="dv">40</span> <span class="kw">and</span> sex <span class="ot">==</span><span class="st">&quot;Male&quot;</span> <span class="kw">then</span>
+    <span class="fu">print</span><span class="ot">(</span><span class="st">&quot;男人四十一枝花&quot;</span><span class="ot">)</span>
+<span class="kw">elseif</span> age <span class="ot">&gt;</span> <span class="dv">60</span> <span class="kw">and</span> sex <span class="ot">~=</span><span class="st">&quot;Female&quot;</span> <span class="kw">then</span>
+    <span class="fu">print</span><span class="ot">(</span><span class="st">&quot;old man without country!&quot;</span><span class="ot">)</span>
+<span class="kw">elseif</span> age <span class="ot">&lt;</span> <span class="dv">20</span> <span class="kw">then</span>
+    <span class="fu">io.write</span><span class="ot">(</span><span class="st">&quot;too young, too naive!</span><span class="ot">\n</span><span class="st">&quot;</span><span class="ot">)</span>
+<span class="kw">else</span>
+    <span class="kw">local</span> age <span class="ot">=</span> <span class="fu">io.read</span><span class="ot">()</span>
+    <span class="fu">print</span><span class="ot">(</span><span class="st">&quot;Your age is &quot;</span><span class="ot">..</span>age<span class="ot">)</span>
+<span class="kw">end</span></code></pre></div>
+<p>上面的语句不但展示了if-else语句，也展示了: 1）“～=”是不等于，而不是!=. 2）io库的分别从stdin和stdout读写的read和write函数. 3）字符串的拼接操作符“..”. 另外，条件表达式中的与或非为分是：and, or, not关键字。</p></li>
+<li><p>for</p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="co">-- 从1加到100</span>
+sum <span class="ot">=</span> <span class="dv">0</span>
+<span class="kw">for</span> i <span class="ot">=</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">100</span> <span class="kw">do</span>
+    sum <span class="ot">=</span> sum <span class="ot">+</span> i
+<span class="kw">end</span>
+
+<span class="co">-- 从1到100的奇数和</span>
+sum <span class="ot">=</span> <span class="dv">0</span>
+<span class="kw">for</span> i <span class="ot">=</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">100</span><span class="ot">,</span> <span class="dv">2</span> <span class="kw">do</span>
+    sum <span class="ot">=</span> sum <span class="ot">+</span> i
+<span class="kw">end</span>
+
+<span class="co">--  从100到1的偶数和</span>
+sum <span class="ot">=</span> <span class="dv">0</span>
+<span class="kw">for</span> i <span class="ot">=</span> <span class="dv">100</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="ot">-</span><span class="dv">2</span> <span class="kw">do</span>
+    sum <span class="ot">=</span> sum <span class="ot">+</span> i
+<span class="kw">end</span></code></pre></div></li>
+<li><p>until</p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">sum <span class="ot">=</span> <span class="dv">2</span>
+<span class="kw">repeat</span>
+   sum <span class="ot">=</span> sum <span class="ot">^</span> <span class="dv">2</span> <span class="co">--幂操作</span>
+   <span class="fu">print</span><span class="ot">(</span>sum<span class="ot">)</span>
+<span class="kw">until</span> sum <span class="ot">&gt;</span><span class="dv">1000</span></code></pre></div></li>
+<li><p>Print</p></li>
+</ol>
+<h3 id="function">Function</h3>
+<ol style="list-style-type: decimal">
+<li><p>递归,Recursion</p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="kw">function</span> fib<span class="ot">(</span>n<span class="ot">)</span>
+<span class="kw">if</span> n <span class="ot">&lt;</span> <span class="dv">2</span> <span class="kw">then</span> <span class="kw">return</span> <span class="dv">1</span> <span class="kw">end</span>
+    <span class="kw">return</span> fib<span class="ot">(</span>n <span class="ot">-</span> <span class="dv">2</span><span class="ot">)</span> <span class="ot">+</span> fib<span class="ot">(</span>n <span class="ot">-</span> <span class="dv">1</span><span class="ot">)</span>
+<span class="kw">end</span></code></pre></div></li>
+<li><p>闭包,closure</p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="kw">function</span> newCounter<span class="ot">()</span>
+    <span class="kw">local</span> i <span class="ot">=</span> <span class="dv">0</span>
+    <span class="kw">return</span> <span class="kw">function</span><span class="ot">()</span>     <span class="co">-- anonymous function</span>
+       i <span class="ot">=</span> i <span class="ot">+</span> <span class="dv">1</span>
+        <span class="kw">return</span> i
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+c1 <span class="ot">=</span> newCounter<span class="ot">()</span>
+<span class="fu">print</span><span class="ot">(</span>c1<span class="ot">())</span>  <span class="co">--&gt; 1</span>
+<span class="fu">print</span><span class="ot">(</span>c1<span class="ot">())</span>  <span class="co">--&gt; 2</span></code></pre></div></li>
+<li><p>Return value</p>
+<p>和Go语言一样，可以一条语句上赋多个值，如：</p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">name<span class="ot">,</span> age<span class="ot">,</span> bGay <span class="ot">=</span> <span class="st">&quot;haoel&quot;</span><span class="ot">,</span> <span class="dv">37</span><span class="ot">,</span> <span class="kw">false</span><span class="ot">,</span> <span class="st">&quot;haoel@hotmail.com&quot;</span>
+<span class="co">-- 上面的代码中，因为只有3个变量，所以第四个值被丢弃。</span></code></pre></div>
+<p>函数也可以返回多个值：</p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="kw">function</span> getUserInfo<span class="ot">(</span>id<span class="ot">)</span>
+    <span class="fu">print</span><span class="ot">(</span>id<span class="ot">)</span>
+    <span class="kw">return</span> <span class="st">&quot;haoel&quot;</span><span class="ot">,</span> <span class="dv">37</span><span class="ot">,</span> <span class="st">&quot;haoel@hotmail.com&quot;</span><span class="ot">,</span> <span class="st">&quot;http://coolshell.cn&quot;</span>
+<span class="kw">end</span>
+name<span class="ot">,</span> age<span class="ot">,</span> email<span class="ot">,</span> website<span class="ot">,</span> bGay <span class="ot">=</span> getUserInfo<span class="ot">()</span>
+<span class="co">--  注意：上面的示例中，因为没有传id，所以函数中的id输出为nil，因为没有返回bGay，所以bGay也是nil。</span></code></pre></div></li>
+<li><p>Local function</p>
+<p>函数前面加上local就是局部函数，比如：下面的两个函数是一样的：</p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="kw">function</span> foo<span class="ot">(</span>x<span class="ot">)</span> <span class="kw">return</span> x<span class="ot">^</span><span class="dv">2</span> <span class="kw">end</span>
+foo <span class="ot">=</span> <span class="kw">function</span><span class="ot">(</span>x<span class="ot">)</span> <span class="kw">return</span> x<span class="ot">^</span><span class="dv">2</span> <span class="kw">end</span></code></pre></div></li>
+<li><p>Overridable funciton</p>
+我们使用torch实现我们自己的Function模块。在实现一个新的layer之前，我们必须了解，我们并非重写forward和backward方法，而是重写里面调用的其他方法。 1）重新updataOutput方法，从而实现forward方法;
+<ol start="2" style="list-style-type: decimal">
+<li>重写updataGradInput方法实现部分backward，计算loss函数相对于layer输入的导数，dloss/dx, 根据loss函数相对于layer输出的导数dloss： 3）重写accGradParameters方法实现backward其余部分，计算loss函数相对于权重的导数。</li>
+</ol>
+<p><span style="color:red"><strong>Reference:</strong></span> <a href="http://blog.csdn.net/lanran2/article/details/50494570">Torch实现ReQU，和梯度验证</a></p></li>
+</ol>
+<h3 id="table">Table</h3>
+<p>所谓Table其实就是一个Key Value的数据结构，它很像Javascript中的Object，或是PHP中的数组，在别的语言里叫Dict或Map，Table长成这个样子：<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">haoel <span class="ot">=</span> <span class="ot">{</span>name<span class="ot">=</span><span class="st">&quot;ChenHao&quot;</span><span class="ot">,</span> age<span class="ot">=</span><span class="dv">37</span><span class="ot">,</span> handsome<span class="ot">=</span>True<span class="ot">}</span></code></pre></div>
+<p>下面是table的CRUD(Create, Read, Update and Delete)操作<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">haoel<span class="ot">.</span>website<span class="ot">=</span><span class="st">&quot;http://coolshell.cn/&quot;</span>
+<span class="kw">local</span> age <span class="ot">=</span> haoel<span class="ot">.</span>age
+haoel<span class="ot">.</span>handsome <span class="ot">=</span> <span class="kw">false</span>
+haoel<span class="ot">.</span>name<span class="ot">=</span><span class="kw">nil</span></code></pre></div>
+<p>上面看上去像C/C++中的结构体，但是name,age, handsome, website都是key。你还可以像下面这样写义Table：<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">t <span class="ot">=</span> <span class="ot">{[</span><span class="dv">20</span><span class="ot">]=</span><span class="dv">100</span><span class="ot">,</span> <span class="ot">[</span><span class="st">&#39;name&#39;</span><span class="ot">]=</span><span class="st">&quot;ChenHao&quot;</span><span class="ot">,</span> <span class="ot">[</span><span class="dv">3.14</span><span class="ot">]=</span><span class="st">&quot;PI&quot;</span><span class="ot">}</span></code></pre></div>
+<p>这样就更像Key Value了。于是你可以这样访问：t[20]，t[&quot;name&quot;], t[3.14]。<br/> 我们再来看看数组：<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">arr <span class="ot">=</span> <span class="ot">{</span><span class="dv">10</span><span class="ot">,</span><span class="dv">20</span><span class="ot">,</span><span class="dv">30</span><span class="ot">,</span><span class="dv">40</span><span class="ot">,</span><span class="dv">50</span><span class="ot">}</span></code></pre></div>
+<p>这样看上去就像数组了。但其实其等价于：<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">arr <span class="ot">=</span> <span class="ot">{[</span><span class="dv">1</span><span class="ot">]=</span><span class="dv">10</span><span class="ot">,</span> <span class="ot">[</span><span class="dv">2</span><span class="ot">]=</span><span class="dv">20</span><span class="ot">,</span> <span class="ot">[</span><span class="dv">3</span><span class="ot">]=</span><span class="dv">30</span><span class="ot">,</span> <span class="ot">[</span><span class="dv">4</span><span class="ot">]=</span><span class="dv">40</span><span class="ot">,</span> <span class="ot">[</span><span class="dv">5</span><span class="ot">]=</span><span class="dv">50</span><span class="ot">}</span></code></pre></div>
+<p>所以，你也可以定义成不同的类型的数组，比如：<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">arr <span class="ot">=</span> <span class="ot">{</span><span class="st">&quot;string&quot;</span><span class="ot">,</span> <span class="dv">100</span><span class="ot">,</span> <span class="st">&quot;haoel&quot;</span><span class="ot">,</span> <span class="kw">function</span><span class="ot">()</span> <span class="fu">print</span><span class="ot">(</span><span class="st">&quot;coolshell.cn&quot;</span><span class="ot">)</span> <span class="kw">end</span><span class="ot">}</span>
+<span class="co">-- 注：其中的函数可以这样调用：arr[4]()。</span></code></pre></div>
+<p>Lua的下标不是从0开始的，是从1开始的。<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="kw">for</span> i<span class="ot">=</span><span class="dv">1</span><span class="ot">,</span> <span class="ot">#</span>arr <span class="kw">do</span>
+    <span class="fu">print</span><span class="ot">(</span>arr<span class="ot">[</span>i<span class="ot">])</span>
+<span class="kw">end</span></code></pre></div>
+<p>注：上面的程序中：#arr的意思就是arr的长度。注：前面说过，Lua中的变量，如果没有local关键字，全都是全局变量，Lua也是用Table来管理全局变量的，Lua把这些全局变量放在了一个叫“_G”的Table里。</p>
+<p>我们可以用如下的方式来访问一个全局变量（假设我们这个全局变量名叫globalVar）：</p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">_G<span class="ot">.</span>globalVar
+_G<span class="ot">[</span><span class="st">&quot;globalVar&quot;</span><span class="ot">]</span></code></pre></div>
+<p>我们可以通过下面的方式来遍历一个Table。<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="kw">for</span> k<span class="ot">,</span> v <span class="kw">in</span> <span class="fu">pairs</span><span class="ot">(</span>t<span class="ot">)</span> <span class="kw">do</span>
+    <span class="fu">print</span><span class="ot">(</span>k<span class="ot">,</span> v<span class="ot">)</span>
+<span class="kw">end</span></code></pre></div>
+<p><a href="http://blog.csdn.net/jiejinquanil/article/details/49620237">lua的table库中的常用函数总结</a></p>
+<h3 id="metatable-和-metamethod">MetaTable 和 MetaMethod</h3>
+<p>MetaTable和MetaMethod是Lua中的重要的语法，MetaTable主要是用来做一些类似于C++重载操作符式的功能。<br/> 比如，我们有两个分数：<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">fraction_a <span class="ot">=</span> <span class="ot">{</span>numerator<span class="ot">=</span><span class="dv">2</span><span class="ot">,</span> denominator<span class="ot">=</span><span class="dv">3</span><span class="ot">}</span>
+fraction_b <span class="ot">=</span> <span class="ot">{</span>numerator<span class="ot">=</span><span class="dv">4</span><span class="ot">,</span> denominator<span class="ot">=</span><span class="dv">7</span><span class="ot">}</span></code></pre></div>
+<p>我们想实现分数间的相加：2/3 + 4/7，我们如果要执行： fraction_a + fraction_b，会报错的。所以，我们可以动用MetaTable，如下所示：<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">fraction_op<span class="ot">={}</span>
+<span class="kw">function</span> fraction_op<span class="ot">.</span>__add<span class="ot">(</span>f1<span class="ot">,</span> f2<span class="ot">)</span>
+    ret <span class="ot">=</span> <span class="ot">{}</span>
+    ret<span class="ot">.</span>numerator <span class="ot">=</span> f1<span class="ot">.</span>numerator <span class="ot">*</span> f2<span class="ot">.</span>denominator <span class="ot">+</span> f2<span class="ot">.</span>numerator <span class="ot">*</span> f1<span class="ot">.</span>denominator
+    ret<span class="ot">.</span>denominator <span class="ot">=</span> f1<span class="ot">.</span>denominator <span class="ot">*</span> f2<span class="ot">.</span>denominator
+    <span class="kw">return</span> ret
+<span class="kw">end</span></code></pre></div>
+<p>为之前定义的两个table设置MetaTable：（其中的setmetatble是库函数）<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="fu">setmetatable</span><span class="ot">(</span>fraction_a<span class="ot">,</span> fraction_op<span class="ot">)</span>
+<span class="fu">setmetatable</span><span class="ot">(</span>fraction_b<span class="ot">,</span> fraction_op<span class="ot">)</span></code></pre></div>
+<p>于是你就可以这样干了：（调用的是fraction_op.__add()函数）<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">fraction_s <span class="ot">=</span> fraction_a <span class="ot">+</span> fraction_b</code></pre></div>
+<p>至于__add这是MetaMethod，这是Lua内建约定的，其它的还有如下的MetaMethod：<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">__add<span class="ot">(</span>a<span class="ot">,</span> b<span class="ot">)</span>                     对应表达式 a <span class="ot">+</span> b
+__sub<span class="ot">(</span>a<span class="ot">,</span> b<span class="ot">)</span>                     对应表达式 a <span class="ot">-</span> b
+__mul<span class="ot">(</span>a<span class="ot">,</span> b<span class="ot">)</span>                     对应表达式 a <span class="ot">*</span> b
+__div<span class="ot">(</span>a<span class="ot">,</span> b<span class="ot">)</span>                     对应表达式 a <span class="ot">/</span> b
+__mod<span class="ot">(</span>a<span class="ot">,</span> b<span class="ot">)</span>                     对应表达式 a % b
+__pow<span class="ot">(</span>a<span class="ot">,</span> b<span class="ot">)</span>                     对应表达式 a <span class="ot">^</span> b
+__unm<span class="ot">(</span>a<span class="ot">)</span>                        对应表达式 <span class="ot">-</span>a
+__concat<span class="ot">(</span>a<span class="ot">,</span> b<span class="ot">)</span>                  对应表达式 a <span class="ot">..</span> b
+__len<span class="ot">(</span>a<span class="ot">)</span>                        对应表达式 <span class="ot">#</span>a
+__eq<span class="ot">(</span>a<span class="ot">,</span> b<span class="ot">)</span>                      对应表达式 a <span class="ot">==</span> b
+__lt<span class="ot">(</span>a<span class="ot">,</span> b<span class="ot">)</span>                      对应表达式 a <span class="ot">&lt;</span> b
+__le<span class="ot">(</span>a<span class="ot">,</span> b<span class="ot">)</span>                      对应表达式 a <span class="ot">&lt;=</span> b
+__index<span class="ot">(</span>a<span class="ot">,</span> b<span class="ot">)</span>                   对应表达式 a<span class="ot">.</span>b
+__newindex<span class="ot">(</span>a<span class="ot">,</span> b<span class="ot">,</span> c<span class="ot">)</span>             对应表达式 a<span class="ot">.</span>b <span class="ot">=</span> c
+__call<span class="ot">(</span>a<span class="ot">,</span> <span class="ot">...)</span>                  对应表达式 a<span class="ot">(...)</span></code></pre></div>
+<h3 id="object-oriented-programming">Object Oriented Programming</h3>
+<p>上面我们看到有__index这个重载，这个东西主要是重载了find key的操作。这操作可以让Lua变得有点面向对象的感觉，让其有点像Javascript的prototype。（关于Javascrip的面向对象，你可以参看我之前写的Javascript的面向对象） 所谓__index，说得明确一点，如果我们有两个对象a和b，我们想让b作为a的prototype只需要：<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="fu">setmetatable</span><span class="ot">(</span>a<span class="ot">,</span> <span class="ot">{</span>__index <span class="ot">=</span> b<span class="ot">})</span></code></pre></div>
+<p>例如下面的示例：你可以用一个Window_Prototype的模板加上__index的MetaMethod来创建另一个实例：<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">Window_Prototype <span class="ot">=</span> <span class="ot">{</span>x<span class="ot">=</span><span class="dv">0</span><span class="ot">,</span> y<span class="ot">=</span><span class="dv">0</span><span class="ot">,</span> width<span class="ot">=</span><span class="dv">100</span><span class="ot">,</span> height<span class="ot">=</span><span class="dv">100</span><span class="ot">}</span>
+MyWin <span class="ot">=</span> <span class="ot">{</span>title<span class="ot">=</span><span class="st">&quot;Hello&quot;</span><span class="ot">}</span>
+<span class="fu">setmetatable</span><span class="ot">(</span>MyWin<span class="ot">,</span> <span class="ot">{</span>__index <span class="ot">=</span> Window_Prototype<span class="ot">})</span></code></pre></div>
+<p>于是：MyWin中就可以访问x, y, width, height的东东了。（注：当表要索引一个值时如table[key], Lua会首先在table本身中查找key的值, 如果没有并且这个table存在一个带有__index属性的Metatable,则Lua会按照__index所定义的函数逻辑查找）.有了以上的基础，我们可以来说说所谓的Lua的面向对象。<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">Person<span class="ot">={}</span>
+
+<span class="kw">function</span> Person:new<span class="ot">(</span>p<span class="ot">)</span>
+    <span class="kw">local</span> obj <span class="ot">=</span> p
+    <span class="kw">if</span> <span class="ot">(</span>obj <span class="ot">==</span> <span class="kw">nil</span><span class="ot">)</span> <span class="kw">then</span>
+        obj <span class="ot">=</span> <span class="ot">{</span>name<span class="ot">=</span><span class="st">&quot;ChenHao&quot;</span><span class="ot">,</span> age<span class="ot">=</span><span class="dv">37</span><span class="ot">,</span> handsome<span class="ot">=</span><span class="kw">true</span><span class="ot">}</span>
+    <span class="kw">end</span>
+    self<span class="ot">.</span>__index <span class="ot">=</span> self
+    <span class="kw">return</span> <span class="fu">setmetatable</span><span class="ot">(</span>obj<span class="ot">,</span> self<span class="ot">)</span>
+<span class="kw">end</span>
+
+<span class="kw">function</span> Person:toString<span class="ot">()</span>
+    <span class="kw">return</span> self<span class="ot">.</span>name <span class="ot">..</span><span class="st">&quot; : &quot;</span><span class="ot">..</span> self<span class="ot">.</span>age <span class="ot">..</span><span class="st">&quot; : &quot;</span><span class="ot">..</span> <span class="ot">(</span>self<span class="ot">.</span>handsome <span class="kw">and</span> <span class="st">&quot;handsome&quot;</span> <span class="kw">or</span> <span class="st">&quot;ugly&quot;</span><span class="ot">)</span>
+<span class="kw">end</span></code></pre></div>
+<p>上面我们可以看到有一个new方法和一个toString的方法。其中：<br/> 1）self 就是 Person，Person:new(p)，相当于Person.new(self, p)<br/> 2）new方法的self.__index = self 的意图是怕self被扩展后改写，所以，让其保持原样<br/> 3）setmetatable这个函数返回的是第一个参数的值。<br/> 于是：我们可以这样调用：</p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">me <span class="ot">=</span> Person:new<span class="ot">()</span>
+<span class="fu">print</span><span class="ot">(</span>me:toString<span class="ot">())</span>
+kf <span class="ot">=</span> Person:new<span class="ot">{</span>name<span class="ot">=</span><span class="st">&quot;King&#39;s fucking&quot;</span><span class="ot">,</span> age<span class="ot">=</span><span class="dv">70</span><span class="ot">,</span> handsome<span class="ot">=</span><span class="kw">false</span><span class="ot">}</span>
+<span class="fu">print</span><span class="ot">(</span>kf:toString<span class="ot">())</span></code></pre></div>
+<p>继承如下，我就不多说了，Lua和Javascript很相似，都是在Prototype的实例上改过来改过去的。<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">Student <span class="ot">=</span> Person:new<span class="ot">()</span>
+
+<span class="kw">function</span> Student:new<span class="ot">()</span>
+    newObj <span class="ot">=</span> <span class="ot">{</span>year <span class="ot">=</span> <span class="dv">2013</span><span class="ot">}</span>
+    self<span class="ot">.</span>__index <span class="ot">=</span> self
+    <span class="kw">return</span> <span class="fu">setmetatable</span><span class="ot">(</span>newObj<span class="ot">,</span> self<span class="ot">)</span>
+<span class="kw">end</span>
+
+<span class="kw">function</span> Student:toString<span class="ot">()</span>
+    <span class="kw">return</span> <span class="st">&quot;Student : &quot;</span><span class="ot">..</span> self<span class="ot">.</span>year<span class="ot">..</span><span class="st">&quot; : &quot;</span> <span class="ot">..</span> self<span class="ot">.</span>name
+<span class="kw">end</span></code></pre></div>
+<h3 id="module">Module</h3>
+<p>我们可以直接使用require(“model_name”)来载入别的lua文件，文件的后缀是.lua。载入的时候就直接执行那个文件了。比如：我们有一个hello.lua的文件：<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="fu">print</span><span class="ot">(</span><span class="st">&quot;Hello, World!&quot;</span><span class="ot">)</span></code></pre></div>
+<p>如果我们：require(“hello”)，那么就直接输出Hello, World！了。<br/> 注意：<br/> 1）require函数，载入同样的lua文件时，只有第一次的时候会去执行，后面的相同的都不执行了。<br/> 2）如果你要让每一次文件都会执行的话，你可以使用dofile(“hello”)函数<br/> 3）如果你要玩载入后不执行，等你需要的时候执行时，你可以使用 loadfile()函数，如下所示：<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="kw">local</span> hello <span class="ot">=</span> <span class="fu">loadfile</span><span class="ot">(</span><span class="st">&quot;hello&quot;</span><span class="ot">)</span>
+<span class="ot">...</span> <span class="ot">...</span>
+<span class="ot">...</span> <span class="ot">...</span>
+hello<span class="ot">()</span></code></pre></div>
+<p>loadfile(“hello”)后，文件并不执行，我们把文件赋给一个变量hello，当hello()时，才真的执行。（我们多希望JavaScript也有这样的功能（参看《Javascript 装载和执行》））<br/> 当然，更为标准的玩法如下所示。 假设我们有一个文件叫mymod.lua，内容如下：<br/> 文件名：mymod.lua<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="kw">local</span> HaosModel <span class="ot">=</span> <span class="ot">{}</span>
+
+<span class="kw">local</span> <span class="kw">function</span> getname<span class="ot">()</span>
+    <span class="kw">return</span> <span class="st">&quot;Hao Chen&quot;</span>
+<span class="kw">end</span>
+
+<span class="kw">function</span> HaosModel<span class="ot">.</span>Greeting<span class="ot">()</span>
+    <span class="fu">print</span><span class="ot">(</span><span class="st">&quot;Hello, My name is &quot;</span><span class="ot">..</span>getname<span class="ot">())</span>
+<span class="kw">end</span>
+
+<span class="kw">return</span> HaosModel</code></pre></div>
+<p>于是我们可以这样使用：<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="kw">local</span> hao_model <span class="ot">=</span> <span class="fu">require</span><span class="ot">(</span><span class="st">&quot;mymod&quot;</span><span class="ot">)</span>
+hao_model<span class="ot">.</span>Greeting<span class="ot">()</span></code></pre></div>
+<p>其实，require干的事就如下：（所以你知道为什么我们的模块文件要写成那样了）<br/></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="kw">local</span> hao_model <span class="ot">=</span> <span class="ot">(</span><span class="kw">function</span> <span class="ot">()</span>
+  <span class="co">--mymod.lua文件的内容--</span>
+<span class="kw">end</span><span class="ot">)()</span></code></pre></div>
+<p><span style="color:red"><strong>Reference:</strong></span> <a href="http://manual.luaer.cn/">lua在线手册</a> / <a href="http://book.luaer.cn/">lua在线lua学习教程</a> / <a href="http://www.codingnow.com/2000/download/lua_manual.html">Lua参考手册的中文翻译（云风翻译版本）</a> / 关于Lua的标库，你可以看看官方文档<a href="http://lua-users.org/wiki/StringLibraryTutorial">string</a>, <a href="http://lua-users.org/wiki/TableLibraryTutorial">table</a>, <a href="http://lua-users.org/wiki/MathLibraryTutorial">math</a>, <a href="http://lua-users.org/wiki/IoLibraryTutorial">io</a>, <a href="http://lua-users.org/wiki/OsLibraryTutorial">os</a>.</p>
+<h3 id="qlua">Qlua</h3>
+<p><span style="color:red"><strong>Reference:</strong></span> <a href="https://groups.google.com/forum/#!topic/torch7/kMP9vYyRwGg">Problems with image.display</a></p>
+<h3 id="pairs-and-ipairs">Pairs and iPairs</h3>
+<p><span style="color:red"><strong>Reference:</strong></span></p>
+<h2 id="rnn-package">RNN package</h2>
+<ul>
+<li><a href="http://blog.csdn.net/xmdxcsj/article/details/50119791">torch学习（六） rnn package</a></li>
+</ul>
+<h2 id="torch-training">Torch training</h2>
+<h3 id="traning-vggbndropout-on-cifar-10-code">Traning VGG+BN+Dropout on CIFAR-10 <a href="https://github.com/szagoruyko/cifar.torch">code</a></h3>
+<ol style="list-style-type: decimal">
+<li>Model define</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="fu">require</span> <span class="st">&#39;nn&#39;</span>
+
+<span class="kw">local</span> vgg <span class="ot">=</span> nn<span class="ot">.</span>Sequential<span class="ot">()</span>
+<span class="kw">local</span> MaxPooling <span class="ot">=</span> nn<span class="ot">.</span>SpatialMaxPooling
+
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialConvolution<span class="ot">(</span><span class="dv">3</span><span class="ot">,</span><span class="dv">64</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialBatchNormalization<span class="ot">(</span><span class="dv">64</span><span class="ot">,</span><span class="dv">1e-3</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>ReLU<span class="ot">(</span><span class="kw">true</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>Dropout<span class="ot">(</span><span class="dv">0.3</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialConvolution<span class="ot">(</span><span class="dv">64</span><span class="ot">,</span><span class="dv">64</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialBatchNormalization<span class="ot">(</span><span class="dv">64</span><span class="ot">,</span><span class="dv">1e-3</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>ReLU<span class="ot">(</span><span class="kw">true</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>MaxPooling<span class="ot">(</span><span class="dv">2</span><span class="ot">,</span><span class="dv">2</span><span class="ot">,</span><span class="dv">2</span><span class="ot">,</span><span class="dv">2</span><span class="ot">)</span>:<span class="fu">ceil</span><span class="ot">())</span>
+
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialConvolution<span class="ot">(</span><span class="dv">64</span><span class="ot">,</span><span class="dv">128</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialBatchNormalization<span class="ot">(</span><span class="dv">128</span><span class="ot">,</span><span class="dv">1e-3</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>ReLU<span class="ot">(</span><span class="kw">true</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>Dropout<span class="ot">(</span><span class="dv">0.4</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialConvolution<span class="ot">(</span><span class="dv">128</span><span class="ot">,</span><span class="dv">128</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialBatchNormalization<span class="ot">(</span><span class="dv">128</span><span class="ot">,</span><span class="dv">1e-3</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>ReLU<span class="ot">(</span><span class="kw">true</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>MaxPooling<span class="ot">(</span><span class="dv">2</span><span class="ot">,</span><span class="dv">2</span><span class="ot">,</span><span class="dv">2</span><span class="ot">,</span><span class="dv">2</span><span class="ot">)</span>:<span class="fu">ceil</span><span class="ot">())</span>
+
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialConvolution<span class="ot">(</span><span class="dv">128</span><span class="ot">,</span><span class="dv">256</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialBatchNormalization<span class="ot">(</span><span class="dv">256</span><span class="ot">,</span><span class="dv">1e-3</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>ReLU<span class="ot">(</span><span class="kw">true</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>Dropout<span class="ot">(</span><span class="dv">0.4</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialConvolution<span class="ot">(</span><span class="dv">256</span><span class="ot">,</span><span class="dv">256</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialBatchNormalization<span class="ot">(</span><span class="dv">256</span><span class="ot">,</span><span class="dv">1e-3</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>ReLU<span class="ot">(</span><span class="kw">true</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>Dropout<span class="ot">(</span><span class="dv">0.4</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialConvolution<span class="ot">(</span><span class="dv">256</span><span class="ot">,</span><span class="dv">256</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialBatchNormalization<span class="ot">(</span><span class="dv">256</span><span class="ot">,</span><span class="dv">1e-3</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>ReLU<span class="ot">(</span><span class="kw">true</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>MaxPooling<span class="ot">(</span><span class="dv">2</span><span class="ot">,</span><span class="dv">2</span><span class="ot">,</span><span class="dv">2</span><span class="ot">,</span><span class="dv">2</span><span class="ot">)</span>:<span class="fu">ceil</span><span class="ot">())</span>
+
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialConvolution<span class="ot">(</span><span class="dv">256</span><span class="ot">,</span><span class="dv">512</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialBatchNormalization<span class="ot">(</span><span class="dv">512</span><span class="ot">,</span><span class="dv">1e-3</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>ReLU<span class="ot">(</span><span class="kw">true</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>Dropout<span class="ot">(</span><span class="dv">0.4</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialConvolution<span class="ot">(</span><span class="dv">512</span><span class="ot">,</span><span class="dv">512</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialBatchNormalization<span class="ot">(</span><span class="dv">512</span><span class="ot">,</span><span class="dv">1e-3</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>ReLU<span class="ot">(</span><span class="kw">true</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>Dropout<span class="ot">(</span><span class="dv">0.4</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialConvolution<span class="ot">(</span><span class="dv">512</span><span class="ot">,</span><span class="dv">512</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialBatchNormalization<span class="ot">(</span><span class="dv">512</span><span class="ot">,</span><span class="dv">1e-3</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>ReLU<span class="ot">(</span><span class="kw">true</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>MaxPooling<span class="ot">(</span><span class="dv">2</span><span class="ot">,</span><span class="dv">2</span><span class="ot">,</span><span class="dv">2</span><span class="ot">,</span><span class="dv">2</span><span class="ot">)</span>:<span class="fu">ceil</span><span class="ot">())</span>
+
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialConvolution<span class="ot">(</span><span class="dv">512</span><span class="ot">,</span><span class="dv">512</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialBatchNormalization<span class="ot">(</span><span class="dv">512</span><span class="ot">,</span><span class="dv">1e-3</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>ReLU<span class="ot">(</span><span class="kw">true</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>Dropout<span class="ot">(</span><span class="dv">0.4</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialConvolution<span class="ot">(</span><span class="dv">512</span><span class="ot">,</span><span class="dv">512</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialBatchNormalization<span class="ot">(</span><span class="dv">512</span><span class="ot">,</span><span class="dv">1e-3</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>ReLU<span class="ot">(</span><span class="kw">true</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>Dropout<span class="ot">(</span><span class="dv">0.4</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialConvolution<span class="ot">(</span><span class="dv">512</span><span class="ot">,</span><span class="dv">512</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">3</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">,</span><span class="dv">1</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>SpatialBatchNormalization<span class="ot">(</span><span class="dv">512</span><span class="ot">,</span><span class="dv">1e-3</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>ReLU<span class="ot">(</span><span class="kw">true</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>MaxPooling<span class="ot">(</span><span class="dv">2</span><span class="ot">,</span><span class="dv">2</span><span class="ot">,</span><span class="dv">2</span><span class="ot">,</span><span class="dv">2</span><span class="ot">)</span>:<span class="fu">ceil</span><span class="ot">())</span>
+vgg:add<span class="ot">(</span>nn<span class="ot">.</span>View<span class="ot">(</span><span class="dv">512</span><span class="ot">))</span>
+
+classifier <span class="ot">=</span> nn<span class="ot">.</span>Sequential<span class="ot">()</span>
+classifier:add<span class="ot">(</span>nn<span class="ot">.</span>Dropout<span class="ot">(</span><span class="dv">0.5</span><span class="ot">))</span>
+classifier:add<span class="ot">(</span>nn<span class="ot">.</span>Linear<span class="ot">(</span><span class="dv">512</span><span class="ot">,</span><span class="dv">512</span><span class="ot">))</span>
+classifier:add<span class="ot">(</span>nn<span class="ot">.</span>BatchNormalization<span class="ot">(</span><span class="dv">512</span><span class="ot">))</span>
+classifier:add<span class="ot">(</span>nn<span class="ot">.</span>ReLU<span class="ot">(</span><span class="kw">true</span><span class="ot">))</span>
+classifier:add<span class="ot">(</span>nn<span class="ot">.</span>Dropout<span class="ot">(</span><span class="dv">0.5</span><span class="ot">))</span>
+classifier:add<span class="ot">(</span>nn<span class="ot">.</span>Linear<span class="ot">(</span><span class="dv">512</span><span class="ot">,</span><span class="dv">10</span><span class="ot">))</span>
+vgg:add<span class="ot">(</span>classifier<span class="ot">)</span>
+
+<span class="co">-- initialization from MSR</span>
+<span class="kw">local</span> <span class="kw">function</span> MSRinit<span class="ot">(</span>net<span class="ot">)</span>
+  <span class="kw">local</span> <span class="kw">function</span> init<span class="ot">(</span>name<span class="ot">)</span>
+    <span class="kw">for</span> k<span class="ot">,</span>v <span class="kw">in</span> <span class="fu">pairs</span><span class="ot">(</span>net:findModules<span class="ot">(</span>name<span class="ot">))</span> <span class="kw">do</span>
+      <span class="kw">local</span> n <span class="ot">=</span> v<span class="ot">.</span>kW<span class="ot">*</span>v<span class="ot">.</span>kH<span class="ot">*</span>v<span class="ot">.</span>nOutputPlane
+      v<span class="ot">.</span>weight:normal<span class="ot">(</span><span class="dv">0</span><span class="ot">,</span>math<span class="ot">.</span>sqrt<span class="ot">(</span><span class="dv">2</span><span class="ot">/</span>n<span class="ot">))</span>
+      v<span class="ot">.</span>bias:zero<span class="ot">()</span>
+    <span class="kw">end</span>
+  <span class="kw">end</span>
+  <span class="co">-- have to do for both backends</span>
+  init<span class="st">&#39;nn.SpatialConvolution&#39;</span>
+<span class="kw">end</span>
+
+MSRinit<span class="ot">(</span>vgg<span class="ot">)</span>
+
+<span class="co">-- check that we can propagate forward without errors</span>
+<span class="co">-- should get 16x10 tensor</span>
+<span class="co">--print(#vgg:cuda():forward(torch.CudaTensor(16,3,32,32)))</span>
+
+<span class="kw">return</span> vgg</code></pre></div>
+</body>
+</html>

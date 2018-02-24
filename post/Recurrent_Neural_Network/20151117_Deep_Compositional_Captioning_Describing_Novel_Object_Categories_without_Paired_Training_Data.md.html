@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="deep-compositional-captioningdescribing-novel-object-categories-without-paired-training-datacodeoral"><a href="http://www.eecs.berkeley.edu/~lisa_anne/current_projects.html">Deep Compositional Captioning:Describing Novel Object Categories without Paired Training Data</a>/<a href="https://github.com/LisaAnne/lisa-caffe-public">Code</a>/Oral</h1>
+<div class="figure">
+<img src="http://www.eecs.berkeley.edu/~lisa_anne/Teaser_figure_cvpr16_4.png" />
+
+</div>
+<p>They present a <strong>Deep <a href="http://dict.youdao.com/w/eng/corpora/?spc=Composition#keyfrom=dict.typo">Compositional</a> Captioner(DCC)</strong> to describe new objects <strong>which are not present in current caption <a href="http://dict.youdao.com/w/eng/corpora/?spc=corpora#keyfrom=dict.typo">copora</a></strong>.</p>
+<div class="figure">
+<img src="https://ai2-s2-public.s3.amazonaws.com/figures/2016-03-25/f273aa82041a0663fbd30722569da57e3f2fecd9/3-Figure2-1.png" />
+
+</div>
+<h2 id="deep-lexical-classifier">Deep <a href="http://dict.youdao.com/w/Lexical/#keyfrom=dict.top">Lexical</a> Classifier</h2>
+<p><strong>Deep Lexical Classifier</strong>: It is a CNN which maps images to semantic concepts. Here, they get feature of image : <span class="math display">\[\mathbf{f_I}\]</span></p>
+<p><strong>Language Model</strong>: The language model learns <strong>sentence structure</strong> using <strong>only unpaired text data</strong> and includes an <strong>embedding layer</strong> which maps a <strong>one-hot-vector word representation</strong> to a lower dimensional space, an LSTM, and <strong>a word prediction layer</strong>.</p>
+<p><strong>Caption Model</strong>: The caption model integrates the <strong>lexical classifier</strong> and the <strong>language model</strong> to learn a joint model for image description.</p>
+</body>
+</html>

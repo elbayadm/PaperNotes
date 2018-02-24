@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="video-encoding">Video encoding</h1>
+<center>
+<font style="color:red">Filtering 和Transform和区别？</font>
+</center>
+<p>相似点：都是一个块内的&quot;weighted sum&quot;，一个transformation可以是一个filter. </br> 不同点:滤波器是为了得到特定的feature, 通常是overlapping的，且share kernel参数。而转换则是整个信号的表示，不用overlapping,是一系列基本函数的集合。</p>
+<p>总结：滤波器用来检测特定特征，是固定kernel； 转换用作信号表示，通常是non-overlapping模块，结果是一系列基本函数(DCT,DWT)的结合。</p>
+<center>
+<font style="color:red">PSNR 和 SSIM 区别？</font>
+</center>
+<p>PNSR: 是单个像素误差的累计，然而图像的质量是和内容相关的。所以SSIM考虑了内容（通过方差），是更好的度量。那么SSIM是如何更好的符合人眼的特性呢，SSIM考虑了<span class="math inline">\(SSIM(X,Y)=\frac{2\mu_x\mu_y2\sigma_x\sigma_y\sigma_{xy}}{\mu_x^2\mu_y^2\sigma_x^2+\sigma_y^2\sigma_x\sigma_y}\)</span>. 每一项考虑了人眼的感知结构。</p>
+<center>
+<font style="color:red">基于块的动作估计？</font>
+</center>
+<p>动作估计是用在视频里面的，通过比较相邻帧获得动作向量，通过SAD来确定最相似的块，也可以用MSE.</p>
+<p>但是，基于块的动作检测有３个问题：（１）只适合２Ｄ运动,（２）而且在一个块中不同运动也是问题。</p>
+<h2 id="视频编码">视频编码</h2>
+<p>原始的视频通常是由一些列图像组成，一般是25,30,50帧每秒。例如对一个720p的视频来说，如果60帧每秒，则需要: <span class="math display">\[
+(720\times 1280).(60).(3).(8)=1.24Gbps
+\]</span> 如果我们想用20Mbps的带宽来处理，则需要压缩率是63.5的视频处理技术。</p>
+<h3 id="视频编码-1">视频编码</h3>
+<p>运动估计和补偿通过基于之前帧来预测当前帧，探索了时间序列冗余。有３种类型的帧：I-帧，B－帧，P-帧。I-帧也叫Intra-coded frame, 是独立编码的。P-frame 则是Predictively 编码帧，基于前一个编码帧。B-帧是一个双向预测帧，根据前一个和后一个帧来预测当前帧。</p>
+<center>
+<font style="color:red">而基于运动补偿的帧预测</font>
+</center>
+<p>帧间预测编码是利用视频图像帧间的相关性，即时间相关性，来达到图像压缩的目的，广泛用于普通视频、会议电视、视频电话等。在图像传输中，活动图像特别是电视图像是关注的主要对象。活动图像是由时间上以帧周期为间隔的连续图像帧组成的时间图像序列，它在时间上比空间上具有更大的相关性。大多数电视图像相邻帧间细节变化是很小的，即视频图像帧具有很强的相关性，利用帧所具有的相关性的特点进行帧间编码，可获得比帧内编码高很多的压缩比。</p>
+<p>采用预测编码的方式消除序列图像在时间上的相关性，即不直接传送当前帧的像素值，而是传送x和其前一帧或后一帧的对应像素x，这称为帧间预测。当图像种存在这运动物体时，简单的预测不能收到好的效果。</p>
+<div class="figure">
+<img src="http://image29.360doc.com/DownloadImg/2011/05/1720/11801871_1.jpg" />
+
+</div>
+<p>例如上图，当前帧和前一帧的背景完全一样，只是小球平移了一个位置，如果简单地以第k-1帧像素作为k帧的预测值，则在实线和虚线所示的园内的预测误差都不为０．如果已经知道了小球的运动方向和速度，可以从小球在k-1帧的位置推算出它在k帧中的位置来，而背景图像(不考虑被遮挡的部分)仍以前一帧的背景代替，将这种考虑了小球位移的k-1帧图像作为k帧的预测值，就比简单的预测准确很多，从而达到更高的压缩比。这种预测方法称为具有运动补偿的帧间预测。</p>
+<h3 id="ipb帧和ptsdts的关系">I,P,B帧和PTS,DTS的关系</h3>
+<p>I frame: 帧内编码，又称作intra-picture, I 帧通常是每个GOP（MPEG所使用的一种视频压缩技术）的第一个帧，经过适度的压缩，作为随机访问的参考点，可以当做图像。I 帧可以看成是一个图像经过压缩后的产物。</br> P frame: 前向预测编码帧，又称predictive-frame。通过充分将低于图像序列种前面已经编码帧的冗余信息来压缩传输数据量的编码图像，也叫预测帧。</br> B frame: 双向预测内编码帧，又称Bidirectional interpolated prediction frame, 既考虑与源图像序列前面已编码帧，也顾忌源图像序列后面已编码帧之间的时间冗余信息来压缩传输数据量的编码图像，也叫双向预测。</p>
+<p>GOP: group of pictures 画面组 GOP(group os pictures)策略影响编码质量：所谓GOP，意思是画面组，一个GOP就是一组连续的画面。MPEG编码将画面分为I,P,B三种，I是内部编码帧，P是前向编码帧，B是双向编码帧。简单的讲，<font style="color:red">I帧是一个完整的画面，而P帧,B帧记录的是相对于I帧的变化。没有I帧，P帧和B帧就无法编码。</font> 这就是MPEG格式难以精确剪辑的原因，也是我们之所以要微调头和尾的原因。</p>
+<p>PTS: presentation Time Stamp，　PTS主要用于度量解码后的视频帧什么时候被显示出来</br> DTS: Decode Time Stamp, DTS主要是标示读书内存中的bit流在什么时候开始送入解码器种进行解码</br> 在没有B帧存在的情况下，DTS的顺序和PTS的顺序应该是一样的。</br></p>
+<p>下面给出一个ＧＯＰ为１５的例子，其解码的参照frame及其解码的顺序都在里面。 <img src="http://image97.360doc.com/DownloadImg/2016/05/1214/71584627_1.jpg" /></p>
+<h2 id="mpeg4码流分析">MPEG4码流分析</h2>
+<p>前AV信息被看作纯粹的数据，编码时没有结合自身包含的内容，例如视频序列被认为是象素的组合。MPEG-4采用了对象的概念，<font style="color:red">不同的数据源被视作不同的对象，分别编码</font>。数据的接收者不再是被动的，他可以<u>对不同的对象进行自己的操作：删除、添加、移动等。语音、图像、视频等可以作为单独存在的对象，也可以集合成一个更高层的对象，我们称之为场景</u>。举例说明，MPEG-4在编码前首先要对视频序列进行分析和理解以提取目标，其码流信息首先应给出各个目标的场景描述。想象一幅“人在旅途”的场景:“枯藤老树昏鸦,小桥流水人家,古道西风瘦马,夕阳西下,断肠人在天涯。”其场景可分解(或分割)成多个多媒体目标组成。其原始目标包括： - 静止图象:如固定的背景“枯藤”“老树”,“小桥”,“人家”,“古道”,“天涯” - 视频目标(VO :Video Object)。如“昏鸦” ,“瘦马” ,“夕阳” ,“人” - 音频目标:如“昏鸦”呜呜,“流水”潺潺 ,“西风”嗍嗍,“瘦马”长嘶,“人在”短叹;</p>
+<p>一幅复杂的画面就由这些可操作的原始目标组成。如果对这些目标分别进行编码，最终用户便可以自由地操纵这些原始目标 (如目标的坐标，视点，动画等)，还可得到一些原始目标的信息。如对“断肠人”的介绍，可在观看场景的同时用鼠标点击“断肠人”也许能得到此人的各种信息或网页，譬如此人名叫“马致远”、“苏东坡”还是“柳永”；爱好是“名山大川”还是“浪迹江湖”等。</p>
+<p>码流由层次化的数据结构来描述：</br> <img src="http://img.my.csdn.net/uploads/201301/01/1357047011_8987.png" /></p>
+<p>它可以分为5个层次： - 视频序列(VS：Video Sequence，即VOS，Visual Object Sequence)：一个完整的视频包括多个VS。 - 视频目标(VO：Video Object)：VO即是场景中的特定目标。 - 视频目标分辨层(VOL：Video Object Layer)：VOL是VO的时间或空间的伸屈性描述。VO的描述可以在不同时间分辨率和空间分辨率上进行。它可以只包括一个基本层,也可以包括多个分辨率增强层。目标的伸屈性即是通过VOL来实现的。 - 视频对象平面组(GOV:Group of VOP):即为由VOP（I-Frame、P-Frame、B-Frame）等组成的GOP（Group Of Pictures）。</p>
+<p>一个I-Frame后接若干P-Frame和B-Frame构成一个视频对象平面组GOV(GOP)。当画面场景呈静态少有变化时，I帧比较大，P帧比较小且GOP持续较长。当画面场景变化较大时，一般将重新构造新的I帧、形成新的GOP。视频目标平面(VOP:Video Object Plane)：VOP是VO在某个时间的存在，是VO在不同VOL层的时间序列。概括来说，MPEG-4的视频由多个VS组成。而VS是一个或多个VO的集合，VO包含一个或多个VOL分辨层,VOL包括一系列VO在时间上的采样VOP。</p>
+<p>所以VS序列(VS0,VS1…… )是整个场景在某段时间上图像系列,VO序列(VO0，VO1，…… )是从VS中提取的不同空间目标,VOL序列(VOL0，VOL，……)是VO的不同分辨层(基本层和多个增强层 )。VOP序列(VOP0，VOP，…… )是VO在不同分辨层的时间采样。而MPEG-4的视频编码就是基于VOP进行的。</p>
+<p>MPEG-4用形状、运动和色彩三组参数描写VOP。 - 形状参数：采用以子块为基础，基于上下文的算术编码。可得到对形状无失真编码。 - 运动参数：先进性预测，然后再对预测差值进行变长编码（VLC）。 - 色彩编码：采用类似H.263的帧内/帧间混合编码方法。对VO边界上的子块，MPEG-4用形状自适应DCT（SA-DCT）取代拼贴算法。</p>
+<p>各层的起始码如下所示：</p>
+<pre><code>visual object sequence  start code: 0x 00 00 01 B0
+visual object sequence  end code: 0x 00 00 01 B1
+user data start code: 0x 00 00 01 B2
+group of vop start code: 0x 00 00 01 B3
+video session error code: 0x 00 00 01 B4
+visual object start code: 0x 00 00 01 B5
+vop start code: 0x 00 00 01 B6
+video object start code: 0x 00 00 01 00 (through 1F)
+video object layer start code: 0x 00 00 01 20(through 2F)
+reserved: 0x 00 00 01 30 through 0x 00 00 01 AF</code></pre>
+</body>
+</html>

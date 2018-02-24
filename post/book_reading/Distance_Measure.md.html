@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="距离度量和相似性度量">距离度量和相似性度量</h1>
+<p>数据分析和数据挖掘的过程中，我们经常需要知道个体间差异的大小，进而评价个体的相似性和类别。最常见的是数据分析中的相关分析，数据挖掘中的分类和聚类算法，如K最近邻（KNN）和K均值（K-Means）。当然衡量个体差异的方法有很多，最近查阅了相关的资料，这里整理罗列下。</p>
+<p>为了方便下面的解释和举例，先设定我们要比较X个体和Y个体间的差异，它们都包含了N个维的特征，即<span class="math inline">\(X=(x_1, x_2, x_3,\cdots, x_n)\)</span>，<span class="math inline">\(Y=(y_1, y_2, y_3,\cdots, y_n)\)</span>。下面来看看主要可以用哪些方法来衡量两者的差异，主要分为距离度量和相似度度量。</p>
+<p><font style="color:red">距离度量（Distance）用于衡量个体在空间上存在的距离，距离越远说明个体间的差异越大。</font> <font style="color:red">相似度度量（Similarity），即计算个体间的相似程度，与距离度量相反，相似度度量的值越小，说明个体间相似度越小，差异越大。</font></p>
+<h2 id="距离度量">距离度量</h2>
+<ol style="list-style-type: decimal">
+<li><font style="color:red">欧几里得距离(Euclidean Distance)</font> 欧氏距离是最常见的距离度量，衡量的是多维空间中各个点之间的绝对距离。公式如下：</br> <span class="math display">\[
+Dis(X,Y)=\sqrt{\sum_{i=1}^n(x_i-y_i)^2}
+\]</span> 因为计算是基于各维度特征的绝对数值，所以欧氏度量需要保证各维度指标在相同的刻度级别，比如对身高（cm）和体重（kg）两个单位不同的指标使用欧式距离可能使结果失效。</li>
+<li><font style="color:red">明可夫斯基距离(Minkowski Distance)</font> 明氏距离是欧氏距离的推广，是对多个距离度量公式的概括性的表述。公式如下:</br> <span class="math display">\[
+Dis(X,Y)=(\sum_{i=1}^n|x_i-y_i|^p)^{1/p}
+\]</span> 这里的p值是一个变量，当p=2的时候就得到了上面的欧氏距离。</li>
+<li><font style="color:red">曼哈顿距离(Manhattan Distance)</font> 哈顿距离来源于城市区块距离，是将多个维度上的距离进行求和后的结果，即当上面的明氏距离中p=1时得到的距离度量公式，如下：</br> <span class="math display">\[
+Dis(X,Y)=\sum_{i=1}^n|x_i-y_i|
+\]</span></li>
+<li><font style="color:red">切比雪夫距离(Chebyshev Distance)</font> 切比雪夫距离起源于国际象棋中国王的走法，我们知道国际象棋国王每次只能往周围的8格中走一步，那么如果要从棋盘中A格(x1, y1)走到B格(x2, y2)最少需要走几步？扩展到多维空间，其实切比雪夫距离就是当p趋向于无穷大时的明氏距离： <span class="math display">\[
+Dis(X,Y)=\lim_{p\rightarrow \infty }(\sum_{i=1}^n|x_i-y_i|^p)^{1/p}
+\]</span> 其实上面的曼哈顿距离、欧氏距离和切比雪夫距离都是明可夫斯基距离在特殊条件下的应用。</li>
+</ol>
+<h2 id="似度度量">似度度量</h2>
+<ol style="list-style-type: decimal">
+<li><font style="color:red">向量空间余弦相似度(Cosine Similarity)</font> 余弦相似度用向量空间中两个向量夹角的余弦值作为衡量两个个体间差异的大小。相比距离度量，余弦相似度更加注重两个向量在方向上的差异，而非距离或长度上。公式如下：</br> <span class="math display">\[
+sim(X,Y)=\cos\theta=\frac{\tilde{X}\tilde{Y}}{||X||\cdot||Y||}
+\]</span></li>
+<li><font style="color:red">直方图交叉（Histogram intersection）</font> 方图交叉核（Histogram intersection kernel）又称Pyramid match kernel，该核是一种基于隐式对应关系的内核函数，解决了无序、可变长度的矢量集合的判别分类的问题。这个内核可以证明是正定的，并且还有诸多优势。</br> 这个内核的基本思想是将特征集映射到多分辨率超平面中去，然后对这些超面进行比较。比较时采用一种加权的超面交集的比较方法，从而粗略的估计出特征集之间最好的局部匹配的相似度。之所以叫这个内核“金字塔匹配内核”，是因为所有的输入集合都要被转换为多分辨率的超平面。</br> 两个变量<span class="math inline">\(i,j\)</span>的直方图交叉是: <span class="math display">\[
+Dist(X,Y)=\frac{\sum_{n=0}^{N-1}\min(X[n],Y[n])}{\sum_{n=0}^{N-1}X[n]}
+\]</span></li>
+<li>二次型距离(Quadratic Distance (L2))</li>
+</ol>
+<ul>
+<li>首次用在IBM的QBIC系统上，用作基于颜色直方图的图像检索 <span class="math display">\[
+d_Q(i,j)=\sum_{n_0=0}^{N-1}\sum_{n_1=0}^{N-1}(i[n_0]-j[n_0])a_{n_0,n_1}(i[n_1]-j[n_1])
+\]</span> 这个距离度量提供了比较好的结果，这里<span class="math inline">\(a_{n0,n1}\)</span>是交叉相关系数</li>
+</ul>
+<h2 id="例子">例子</h2>
+<ol style="list-style-type: decimal">
+<li>Quadratic distance</br> <span class="math inline">\(F_1=\begin{bmatrix}3\\4\\6\end{bmatrix}\)</span>,<span class="math inline">\(F_2=\begin{bmatrix}2\\4\\7\end{bmatrix}\)</span>,<span class="math inline">\(F_3=\begin{bmatrix}3\\4\\7\end{bmatrix}\)</span>,<span class="math inline">\(Q=\begin{bmatrix}2\\4\\6\end{bmatrix}\)</span></br> <span class="math inline">\(D(F_1,Q)=\begin{bmatrix}1&amp;0&amp;0\end{bmatrix}\begin{bmatrix}1&amp;0&amp;0\\0&amp;1&amp;0\\0&amp;0&amp;1\end{bmatrix}\begin{bmatrix}1\\0\\0\end{bmatrix}=1\)</span>,<span class="math inline">\(D(F_2,Q)=\begin{bmatrix}0&amp;0&amp;1\end{bmatrix}\begin{bmatrix}1&amp;0&amp;0\\0&amp;1&amp;0\\0&amp;0&amp;1\end{bmatrix}\begin{bmatrix}0\\0\\1\end{bmatrix}=1\)</span>,<span class="math inline">\(D(F_3,Q)=\begin{bmatrix}1&amp;0&amp;1\end{bmatrix}\begin{bmatrix}1&amp;0&amp;0\\0&amp;1&amp;0\\0&amp;0&amp;1\end{bmatrix}\begin{bmatrix}1\\0\\1\end{bmatrix}=2\)</span></br></li>
+<li>Weighted quadratic distance</br> <span class="math inline">\(F_1=\begin{bmatrix}4\\5\\7\end{bmatrix}\)</span>,<span class="math inline">\(F_2=\begin{bmatrix}3\\5\\8\end{bmatrix}\)</span>,<span class="math inline">\(F_3=\begin{bmatrix}3\\5\\7\end{bmatrix}\)</span>,<span class="math inline">\(A=\begin{bmatrix}1&amp;0&amp;0\\0&amp;1&amp;0\\0&amp;0&amp;2\end{bmatrix}\)</span></br> <span class="math inline">\(D(F_1,Q)=\begin{bmatrix}1&amp;0&amp;0\end{bmatrix}\begin{bmatrix}1&amp;0&amp;0\\0&amp;1&amp;0\\0&amp;0&amp;1\end{bmatrix}\begin{bmatrix}1\\0\\0\end{bmatrix}=1\)</span>, <span class="math inline">\(D(F_2,Q)=\begin{bmatrix}0&amp;0&amp;1\end{bmatrix}\begin{bmatrix}1&amp;0&amp;0\\0&amp;1&amp;0\\0&amp;0&amp;2\end{bmatrix}\begin{bmatrix}0\\0\\1\end{bmatrix}=2\)</span></br> 如何确定权值呢？通常我们可以用每个特征的方差variance 来作为他们的权值。也就是<span class="math inline">\(\begin{bmatrix}s_1^2&amp;0&amp;0\\0&amp;s_2^2&amp;0\\0&amp;0&amp;s_3^2\end{bmatrix}\)</span>, 其中<span class="math inline">\(s_i^2\)</span>是第i个特征的方差，<font style="color:red">这样具有较大方差的特征则更Discriminative.</font></li>
+</ol>
+<h2 id="欧氏距离-vs-余弦相似度">欧氏距离 vs 余弦相似度</h2>
+<p>欧氏距离是最常见的距离度量，而余弦相似度则是最常见的相似度度量，很多的距离度量和相似度度量都是基于这两者的变形和衍生，所以下面重点比较下两者在衡量个体差异时实现方式和应用环境上的区别。</p>
+借助三维坐标系来看下欧氏距离和余弦相似度的区别：
+<center>
+<img src="http://webdataanalysis.net/wp-content/uploads/2011/10/distance-and-similarity.png" alt="Test Image" width="200"/>
+</center>
+<p></br></p>
+<p>从图上可以看出距离度量衡量的是空间各点间的绝对距离，跟各个点所在的位置坐标（即个体特征维度的数值）直接相关；而余弦相似度衡量的是空间向量的夹角，更加的是体现在方向上的差异，而不是位置。如果保持A点的位置不变，B点朝原方向远离坐标轴原点，那么这个时候余弦相似度cosθ是保持不变的，因为夹角不变，而A、B两点的距离显然在发生改变，这就是欧氏距离和余弦相似度的不同之处。</p>
+<p>根据欧氏距离和余弦相似度各自的计算方式和衡量特征，分别适用于不同的数据分析模型：欧氏距离能够体现个体数值特征的绝对差异，所以更多的用于需要从维度的数值大小中体现差异的分析，如使用用户行为指标分析用户价值的相似度或差异；而余弦相似度更多的是从方向上区分差异，而对绝对的数值不敏感，更多的用于使用用户对内容评分来区分用户兴趣的相似度和差异，同时修正了用户间可能存在的度量标准不统一的问题（因为余弦相似度对绝对数值不敏感）。</p>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="p问题np问题npc问题nph问题和多项式时间复杂度">P问题,NP问题,NPC问题,NPH问题和多项式时间复杂度</h2>
+<ol style="list-style-type: decimal">
+<li>P</li>
+</ol>
+<p>很明显，P是problem.那就是这个问题<strong><em>能在多项式时间内解决</em></strong></p>
+<ol start="2" style="list-style-type: decimal">
+<li>NP</li>
+</ol>
+<p><strong><em>不能在多项式时间内解决</em></strong>或<strong><em>不确定能不能在多项式时间内解决</em></strong>，但能<strong><em>在多项式时间验证</em></strong>的问题　</p>
+<ol start="3" style="list-style-type: decimal">
+<li>NPC</li>
+</ol>
+<p>NP完全问题 (a) 这类问题中任何一个问题至今未找到多项式时间算法； (b) 如果这类问题中的一个问题存在多项式时间算法，那么这类问题都有多项式时间算法；</p>
+<p>这一类问题中的每一个问题称为NP完全问题，这个问题的集合简记为NPC。所有NP问题在多项式时间内都能约化(Reducibility)到它的NP问题，即解决了此NPC问题，所有NP问题也都得到解决。</p>
+<p>还可以细分为两类： (1）虽然没有找到多项式时间算法，但存在一个算法，它的复杂度关于实例规模和实例的所有参数中绝对值最大数是成多项式关系的，这样的算法称为问题的一个伪多项式时间算法。 (2)除去1）的问题更难，被称为强NPC问题</p>
+<ol start="4" style="list-style-type: decimal">
+<li>NP hard</li>
+</ol>
+<p>NP难问题，所有NP问题在多项式时间内都能约化(Reducibility)到它的问题(不一定是NP问题)。</p>
+<ol start="5" style="list-style-type: decimal">
+<li>4者之间关系</li>
+</ol>
+<p align="center">
+<img src="http://pic002.cnblogs.com/images/2012/364723/2012041520522219.jpg" width="250" >
+</p>
+<p><strong>Reference</strong>: http://m.blog.csdn.net/article/details?id=51026006</p>
+</body>
+</html>

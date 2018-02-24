@@ -1,0 +1,306 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="数字图像处理--图像复原与重建"><span style="color:red"><strong><em>数字图像处理--图像复原与重建</em></strong></span></h2>
+<h3 id="图像退化复原过程的模型"><span style="color:red"><strong><em>图像退化/复原过程的模型</em></strong></span></h3>
+<p>退化过程可以建模为一个退化函数和一个加性噪声项，对一幅输入图像<span class="math inline">\(f(x,y)\)</span>进行处理，产生一幅退化后的图像<span class="math inline">\(g(x.y)\)</span>. 给定<span class="math inline">\(g(x,y)\)</span>和关于退化函数<span class="math inline">\(H\)</span>的一些知识以及关于加性噪声项<span class="math inline">\(\eta (x,y)\)</span>的一些知识后，图像复原的目的就是获得原始图像的一个估计<span class="math inline">\(\hat{f}(x,y)\)</span>. 通常，希望这一估计尽可能接近原始图像，并且<span class="math inline">\(H\)</span>和<span class="math inline">\(\eta\)</span>的信息知道的越多，所得到的<span class="math inline">\(\hat{f}(x,y)\)</span>就越接近<span class="math inline">\(f(x,y)\)</span>.</p>
+<p>如果<span class="math inline">\(G\)</span>是一个线性的，位置不变的过程，那么空间域中的退化图像可以表示为:<span class="math inline">\(\begin{cases}g(x,y)=h(x,y)\star f(x,y)+\eta (x,y)\\G(u,v)=H(u,v)F(u,v)+N(u,v)\end{cases}\)</span></p>
+<p align="center">
+<img src="http://img.blog.csdn.net/20150130152520739?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGl5dWVmZWlsb25n/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" width="500" >
+</p>
+<h3 id="噪声模型"><span style="color:red"><strong><em>噪声模型</em></strong></span></h3>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>噪声的空间和频率特性</em></strong></span> 频率特性是指傅里叶中噪声的频率内容，当噪声的傅里叶谱是常量时，噪声通常叫白噪声。</li>
+<li><span style="color:red"><strong><em>一些重要的噪声概率密度函数</em></strong></span>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>高斯噪声</em></strong></span> 高斯随机变量<span class="math inline">\(z\)</span>的PDF： <span class="math inline">\(p(z)=\frac{1}{\sqrt{2\pi}\delta}e^{-(z-\bar{z})^2/2\delta^2}\)</span>
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711153835359" width="500" >
+</p>
+<p align="center">
+<img src="http://image.wuji8.com/upload/e/88/e88d83dc5f05aee61b494e810238c6b7.jpg" width="500" >
+</p></li>
+<li><span style="color:red"><strong><em>瑞利噪声</em></strong></span> 瑞利噪声相比高斯噪声而言，其形状<span style="color:red"><strong><em>向左歪斜</em></strong></span>，这对于拟合某些歪斜直方图噪声很有用。 瑞利噪声的实现可以借由平均噪声来实现。如下所示。<span class="math inline">\(z=a+\sqrt{-bln(1-U(0,1))}\)</span> 这里，<span class="math inline">\(U(0,1)\)</span>表示均值为０，方差为１的均匀分布的噪声． <span class="math inline">\(p(z)=\begin{cases}\frac{2}{b}(z-a)e^{-(z-a)^2/b},z\ge a\\ 0, z&lt;a\end{cases}\)</span>
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711160401773" width="500" >
+</p></li>
+<li><span style="color:red"><strong><em>爱尔兰(伽马)噪声</em></strong></span> 伽马噪声的分布，服从了伽马曲线的分布。伽马噪声的实现，需要使用b个服从指数分布的噪声叠加而来。指数分布的噪声，可以使用均匀分布来实现。 <span class="math inline">\(E_i=-\frac{1}{a}ln[1-U(0,1)]\)</span> 使用若干个(这里用b表示)均匀分布叠加，就可以得到<span style="color:red"><strong><em>伽马噪声</em></strong></span>。 <span class="math inline">\(z=E_1+E_2+...+E_b\)</span> 当然，当b=1的时候，就可以得到<span style="color:red"><strong><em>指数噪声</em></strong></span>了。 <span class="math inline">\(p(z)=\begin{cases}\frac{a^bz^{b-1}}{(b-1)!}, \ z\ge a \\0, \ z&lt;a\end{cases}\)</span>
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711162007680" width="500" >
+</p></li>
+<li><span style="color:red"><strong><em>指数噪声</em></strong></span> <span class="math inline">\(p(z)=\begin{cases}ae^{-az}, \ z\ge 0\\0,\ z&lt;0 \end{cases}\)</span></li>
+<li><span style="color:red"><strong><em>均匀噪声</em></strong></span> 如同前面所示，均匀噪声可以由函数rand(M,N)直接产生。 <span class="math inline">\(p(z)=\begin{cases}\frac{1}{b-a}, a\le z \le b \\ 0, \ others\end{cases}\)</span> <span class="math inline">\(z=a+(b-a)U(0,1)\)</span>
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711162832279" width="500" >
+</p></li>
+<li><span style="color:red"><strong><em>脉冲(椒盐)噪声</em></strong></span> 椒盐噪声也成为<span style="color:red"><strong><em>双脉冲噪声</em></strong></span>。在早期的印刷电影胶片上，由于胶片化学性质的不稳定和播放时候的损伤，会使得胶片表面的感光材料和胶片的基底欠落，在播放时候，产生一些或白或黑的损伤。事实上，这也可以归结为特殊的椒盐噪声。 椒盐噪声的实现，需要一些逻辑判断。这里我们的思路是，产生均匀噪声，然后将超过阈值的点设置为黑点，或白点。当然，如果需要拟合电影胶片的损伤的话，可以选用别的类型噪声去拟合。 (双极)脉冲噪声的PDF为<span class="math inline">\(p(z)=\begin{cases}P_a, \ z=a\\P_b, \ z=b \\1-P_a-P_b, \ others\end{cases}\)</span>
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711163754753" width="500" >
+</p></li>
+</ol></li>
+<li><span style="color:red"><strong><em>周期噪声</em></strong></span> 一幅图像中的周期噪声是在图像获取期间由电力或电机干扰产生的，周期噪声可以通过频率域滤波来显著的减少。</li>
+<li><span style="color:red"><strong><em>噪声参数的估计</em></strong></span> 周期噪声的参数是通过检测图像的傅里叶谱来估计的，周期噪声趋向于产生频率尖峰，甚至通过视觉分析也经常可以检测到这些尖峰。另一种方法是直接由图像推断出噪声分量的周期性。在噪声尖峰格外显著或可以使用关于干扰的频率分量一般位置的某些知识时，自动分析才是可能的。</li>
+</ol>
+<h3 id="只存在噪声的复原空间滤波"><span style="color:red"><strong><em>只存在噪声的复原－－空间滤波</em></strong></span></h3>
+当一幅图像中唯一存在的退化是噪声时，我们有：<span class="math inline">\(\begin{cases}g(x,y)=f(x,y)+\beta{x,y}\\G(u,v)=F(u,v)+N(u,v)\end{cases}\)</span>. 噪声项是未知的，所以从<span class="math inline">\(g(x,y)\)</span>或<span class="math inline">\(G(u,v)\)</span>中减去它们不是一个现实的选择。
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711171922421" width="800" >
+</p>
+<p><span style="color:red"><strong><em>实验结果的评价</em></strong></span> 实验的步骤为，将实验用图像加上加性噪声，然后使用滤波器进行去噪，比较所得到的图像的画质。这里，就涉及到画质的评价方法。一般的，去噪图像的评价一般使用PSNR（峰值信噪比）。</p>
+<p><span class="math display">\[PSNR=10log_{10}(\frac{\sum_{i=0}^{M-1}\sum_{j=0}^{N-1}[2^2-1]^2}{\sum_{i=0}^{M-1}\sum_{j=0}^{N-1}[g(x,y)-\tilde{f}(x,y)]})=10log_{10}\frac{[2^n-1]^2}{MSE}=10log_{10}\frac{MAX^2}{MSE}\]</span></p>
+<p>对于8-bit的图片而言，这里的MAX为255。PSNR越大，其画质就越好。但是，有些时候，使用PSNR来进行评价，也有不太合理的时候。</p>
+请对比如下三张图片，a)是使用<span style="color:red"><strong><em>平均滤波器</em></strong></span>进行了处理，使其有些模糊；b)是使用<span style="color:red"><strong><em>高斯噪声污染</em></strong></span>原图；c)是使用<span style="color:red"><strong><em>椒盐噪声污染</em></strong></span>的图像。
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711173316249" width="800" >
+</p>
+<p>问题来了，<strong><em>这三张图像哪张画质最好，哪张最差。普遍的，画质从好到差排列，大家的答案应该是</em></strong>:a) &gt; c) &gt; b)</p>
+<p>这样的（更多实际例子，请参考https://ece.uwaterloo.ca/~z70wang/research/ssim/）。那么，我们求其的PSNR是这样的。</p>
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711181916377" width="800" >
+</p>
+<p>这明显不科学，三幅图像的PSNR是一样的。反观PSNR的计算式，PSNR计算的时候，使用了MSE这个量。而<span style="color:red"><strong><em>MSE仅仅表现了两幅图像的灰度值的差，而对于图像的结构，却没有进行任何分析</em></strong></span>。</p>
+<p>这里使用一种比较好的图像画质评价的方法：<span style="color:red"><strong><em>SSIM(structural similarity)</em></strong></span>。这是一种由两张图像的灰度差异，构造差异和对比度去判断两张图的接近程度的方法。详情请参考<a href="http://www.cns.nyu.edu/pub/lcv/wang03-preprint.pdf">ref</a>，这里只做简单的介绍一下啦。</p>
+<span class="math display">\[
+SSIM(x,y)=[l(x,y)]^{\alpha}[c(x,y)]^{\beta}[s(x,y)]^{\gamma}
+\]</span> <span class="math display">\[
+\begin{cases}l(x,y)=\frac{2\mu_x\mu_y+C_1}{\mu_x^2\mu_y^2+C_1}\\
+c(x,y)=\frac{2\delta_x\delta_y+C_2}{\delta_x^2\delta_y^2+C_2}\\
+s(x,y)=\frac{\delta_{xy}+C_3}{\delta_x\delta_y+C_3}\end{cases}
+\]</span> SSIM从<span style="color:red"><strong><em>图像亮度(Luminance)，图像对比度(Contrast)和图像构造(Structure)</em></strong></span>去判断处理过的图像与原图的差异。这里，使用了某个区域的内的平均值作为亮度度量，使用方差作为对比度度量，使用协方差作为构造度量，来进行判断。这样，SSIM就比仅使用灰度去判断的PSNR更加准确。一样的，使用SSIM求取上面三幅图象的类似度。
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711183701968" width="800" >
+</p>
+<p>从上表可以看出来，通过使用SSIM进行判断的结果，更加符合人眼的主观感受。本文余下的实验，全部使用SSIM去判断画质</p>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>均值滤波器</em></strong></span>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>算术均值滤波器</em></strong></span> 算术均值滤波器很简单，就是求某个区域内的所有像素的算术均值，可用下式子表示。 令<span class="math inline">\(S_{xy}\)</span>表示中心在点<span class="math inline">\((x,y)\)</span>处，大小为<span class="math inline">\(m\times n\)</span>的矩形子图像窗口的一组坐标。算术均值滤波器在<span class="math inline">\(S_{xy}\)</span>定义的区域中计算被污染图像<span class="math inline">\(g(x,y)\)</span>的平均值。在点<span class="math inline">\((x,y)\)</span>处复原图像<span class="math inline">\(\hat{f}\)</span>的值，就是简单的使用<span class="math inline">\(S_{xy}\)</span>定义的区域中的像素计算出的算术平均值，即:<span class="math inline">\(\hat{f}(x,y)=\frac{1}{mn}\sum_{(s,t)\in S_{xy}}g(s,t)\)</span>. 这个操作可以使用大小为<span class="math inline">\(m\times n\)</span>的一个空间滤波器来实现，其所有的系数均为其值的<span class="math inline">\(1/mn\)</span>.均值滤波器实现的平滑可与算术均值滤波器相比，但是这种处理丢失的图像细节更少。 从式子上可以看出来，这就是一个低通滤波器，会使得画面模糊，有些许去噪能力。稍微做个实验看看。 <em>将实验用图像加噪，噪声均值为0、方差为0.0298的噪声。</em>
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711185602049" width="800" >
+</p>
+下面，使用算术均值滤波器，看看去噪效果。
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711185606605" width="800" >
+</p>
+被去掉了些许，只是些许。再看频率域内的图像，果然是一个低通滤波器，我们都可以脑补出这个滤波器的振幅特性了，对吧？</li>
+<li><span style="color:red"><strong><em>几何均值滤波器</em></strong></span> 接下来是几何均值滤波器，求某个区域内的几何平均值。 <span class="math inline">\(\hat{f}(x,y)=[\prod_{(s,t)\in S_{xy}}g(s,t)]^{1/mn}\)</span> 对于这个滤波器，书(《Digital Image Processing》 Rafael C. Gonzalez / Richard E. Woods)上说了，这个滤波器产生的去噪效果可以与算术平均值滤波器基本一样，但是可以更少的丢失细节。 同样的，将实验用图像加噪，噪声均值为0、方差为0.17的噪声。
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711191454721" width="800" >
+</p>
+有结果可见，其去噪效果也不是太理想，但是原本芯片的pin脚什么的，比算术均值滤波器稍微好要一些的。当然，几何滤波器有一个<span style="color:red"><strong><em>致命的缺点</em></strong></span>，一旦有0值出现，那么这个像素的值立即被决定为0，这也就意味着，几何滤波器不可以去除胡椒噪声。</li>
+<li><span style="color:red"><strong><em>算术均值滤波器与几何均值滤波器的比较</em></strong></span> 为了对比几何均值滤波器与算术均值滤波器，我们进行了如下几组实验。由于篇幅问题，我就不贴出图来了。看数据就可以了。
+<ol style="list-style-type: decimal">
+<li>噪声：高斯噪声，均值0，方差为0.17
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711193415331" width="800" >
+</p></li>
+<li>噪声：高斯噪声，均值0.2，方差为0.17
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711193426454" width="800" >
+</p></li>
+<li>噪声：椒盐噪声，胡椒密度0，盐粒密度0.1
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711193155265" width="800" >
+</p>
+这个还是想把结果贴上，几何平均滤波器的实验结果还是具有一定的观赏性的。
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711193745625" width="800" >
+</p></li>
+<li>噪声：椒盐噪声，胡椒密度0.1，盐粒密度0
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711193837265" width="800" >
+</p>
+就如同实验结果一样，由于包含了大量了胡椒噪声，几何滤波器坏掉了。得到的结果很糟糕。 <span style="color:red"><strong><em>实验结论</em></strong></span>：实验4的数据说明，<strong>由于包含了0值，几何滤波器去噪效果并不太好</strong>。但是实验3，几何滤波器的去噪效果真的是很不错。<strong>简单而言，算术均值滤波器泛用性比较好，而几何滤波器则擅长于去除盐粒噪声</strong>。 <span style="color:red"><strong><em>拓展运用</em></strong></span>：既然几何滤波器对于去除盐粒噪声，那么，对于仅仅函数胡椒噪声的图像取反，将胡椒噪声转换为盐粒噪声去处理，所得结果再返回来，那么，几何均值滤波器还是可以去除胡椒噪声的。</li>
+</ol></li>
+<li><span style="color:red"><strong><em>谐波均值滤波器</em></strong></span> 其表达式如下：<span class="math display">\[\hat{f}(x,y)=\frac{mn}{\sum_{(s,t)\in S_{xy}}\frac{1}{g(s,t)}}\]</span> <span style="color:red"><strong><em>注意式子的分母，这个滤波器不但不能去除椒盐噪声，对于灰度过黑的图像而言，也是要坏事的</em></strong></span>。书(《Digital Image Processing》 Rafael C. Gonzalez / Richard E. Woods)上又说了，这个滤波器，擅长于高斯噪声的去噪。实验一下看看。 把实验用图加噪，类型为高斯噪声，均值为0，方差为0.15.
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711201345990" width="800" >
+</p>
+从实验结果看，其实这个滤波器的去噪效果<strong>还不如算术平均滤波器和几何平均滤波器</strong>。</li>
+<li><span style="color:red"><strong><em>逆谐波均值滤波器</em></strong></span> 逆谐波滤波器可以对应多种噪声，式子如下：<span class="math display">\[\hat{f}(x,y)=\frac{\sum_{(s,t)\in S_{xy}}g(s,t)^{Q+1}}{\sum_{(s,t)\in S_{xy}}g(s,t)^Q}\]</span> 其中Q称为滤波器的阶数，这种滤波器适合减少或在实际中消除椒盐噪声的影响。 这个滤波器，可以通过Q值的变化，来获得一定的效果。当Q为正，这个滤波器可以去除胡椒噪声，当Q为负，这个滤波器可以去除盐粒噪声。
+<p align="center">
+<img src="http://img.blog.csdn.net/20140711202005023" width="800" >
+</p></li>
+</ol></li>
+<li><p><span style="color:red"><strong><em>统计排序滤波器</em></strong></span> 有一些特殊滤波器，他们被称为<span style="color:red"><strong><em>非线性滤波器</em></strong></span>。其代表为<span style="color:red"><strong><em>中央值滤波器</em></strong></span>。所谓中央值滤波器，就是将一定范围内的数据(对于图像而言，是像素的灰度值)进行排序，选择中央值作为滤波器的输出。 中央值滤波器的目的并不是频率成分的选择，而是求root信号。 Root信号定义：<strong><em>对于任意信号，使用中央值滤波器进行有限次处理，直到所得到的限号不变为止。中央值滤波器处理前后，如果这个信号列没有任何变化，那么将这个信号列称为这个滤波器的root信号。</em></strong> 对于中央值滤波器来讲，可以完美去除被椒盐噪声污染的root信号。对于root信号，有如下的性质。对于以下定理的证明与详细说明，请参考<a href="http://quabook.com/view?filename=Two-Dimensional-Digital-Signal-Processing.zip&amp;q=Two+Dimensional+Digital+Signal+Processing&amp;group=b72n4&amp;source=yeslinks-no-add-url-29&amp;t=434338">ref1</a>, <a href="http://ieeexplore.ieee.org/xpl/login.jsp?tp=&amp;arnumber=1163708&amp;url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D1163708">ref2</a> <span style="color:red"><strong><em>定理1</em></strong></span>：如果信号列{x(i)}是单调递增或单调递减的，那么对于任何尺寸的中央值滤波器，这个信号列都是root信号。 <span style="color:red"><strong><em>定理2</em></strong></span>：如果信号列{x(i)}是在从i开始的m个信号之间的局部单调信号的话，那么对于尺寸为N=2M+1(M&lt;=m-2)的中央值滤波器，这样的信号为这个滤波器的root信号。 统计排序滤波器是一种非线性空间滤波器，这种滤波器的响应以滤波器包围的图像的像素的排序为基础，然后使用统计排序结果决定的值代替中心像素的值。</p>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>中值滤波器</em></strong></span> 中值滤波也是消除图像噪声最常见的手段之一，特别是消除椒盐噪声，中值滤波的效果要比均值滤波更好。中值滤波是跟均值滤波唯一不同是，不是用均值来替换中心每个像素，而是将周围像素和中心像素排序以后，取中值，一个3X3大小的中值滤波如下：
+<p align="center">
+<img src="http://hi.csdn.net/attachment/201202/25/0_13301799280L9y.gif" width="400" >
+</p>
+使用一个像素邻域中的灰度级的中值来替代该像素的值，即：<span class="math inline">\(\hat{f}(x,y)=\text{median}_{(s,t)\in S_{xy}}\{g(s,t)\}\)</span> 首先，将图像染上盐粒密度为0.15，胡椒密度为0.15的椒盐噪声，使用3x3,5x5,7x7和9x9四种不同尺寸的中值滤波器去处理图像。所得到的结果，如下表所示。
+<p align="center">
+<img src="http://img.blog.csdn.net/20140717165941913" width="500" >
+</p>
+由上图所示，可以看出，所用滤波器尺寸不同，得到的结果是不同的，尺寸较大的滤波器得到了不太好的结果。随着循环次数的增加，图像的SSIM逐渐变化，最后趋近于稳定。下面是循环次数为30时候，4种尺寸滤波器得到的结果。
+<p align="center">
+<img src="http://img.blog.csdn.net/20140717170827712" width="500" >
+</p>
+为了验证噪声与实验结果的影响，将图像染上盐粒密度为0.35，胡椒密度为0.35的椒盐噪声，在进行滤波实验，可以得到如下曲线
+<p align="center">
+<img src="http://img.blog.csdn.net/20140717180127543" width="500" >
+</p>
+实验结果给出，尺寸较小的的中值滤波器，其收敛到root信号较为缓慢，其次，对于高噪声的图像，其修复结果是不太好的。 总结上述实验，可以得到三个有用的结论。
+<ol style="list-style-type: decimal">
+<li><strong><em>中央值滤波器在处理过程中，不断在寻找root信号。反复数回之后，其结果收敛，基本不改变。</em></strong></li>
+<li><strong><em>对于不同的图像，不同的噪声，最适合本幅图像的中央值滤波器的尺寸是不同的。并不是尺寸越小越好。</em></strong></li>
+<li><strong><em>尺寸小的滤波器，收敛速度慢。反之，尺寸大的滤波器，收敛较快</em></strong></li>
+</ol></li>
+<li><span style="color:red"><strong><em>最大值和最小值滤波器</em></strong></span> 最大最小值滤波是一种比较保守的图像处理手段，与中值滤波类似，首先要排序周围像素和中心像素值，然后将中心像素值与最小和最大像素值比较，如果比最小值小，则替换中心像素为最小值，如果中心像素比最大值大，则替换中心像素为最大值。一个Kernel矩阵为3X3的最大最小值滤波如下：
+<p align="center">
+<img src="http://hi.csdn.net/attachment/201202/25/0_1330179955mtNy.gif" width="400" >
+</p>
+<span class="math inline">\(\hat{f}(x,y)=\text{max}_{(s,t)\in S_{xy}}\{g(s,t)\}\)</span> <span class="math inline">\(\hat{f}(x,y)=\text{min}_{(s,t)\in S_{xy}}\{g(s,t)\}\)</span> 原图如下：
+<p align="center">
+<img src="http://hi.csdn.net/attachment/201202/25/0_13301800687gGZ.gif" width="300" >
+</p>
+分别实现<span style="color:red"><strong><em>中值和均值滤波</em></strong></span>以后效果如下：
+<p align="center">
+<img src="http://hi.csdn.net/attachment/201202/25/0_13301806325t5T.gif" width="800" >
+</p>
+特别说明一点的是，均值滤波对于高斯噪声的效果比较好，中值滤波对于椒盐噪声的效果比较好.</li>
+<li><span style="color:red"><strong><em>中点滤波器</em></strong></span> 中点滤波器，糅合了均值滤波器和非线性的排序处理。这样的滤波器对于去除高斯噪声与均匀噪声有很好的效果。 <span class="math inline">\(\hat{f}(x,y)=\frac{1}{2}[\text{max}_{(s,t)\in S_{xy}}\{g(s,t)\}+\text{min}_{(s,t)\in S_{xy}}\{g(s,t)\}]\)</span> 我们使用这个滤波器，与平均滤波器做个比较吧。其结果显示在下图。
+<p align="center">
+<img src="http://img.blog.csdn.net/20140717183706562" width="500" >
+</p>
+<p align="center">
+<img src="http://img.blog.csdn.net/20140717183928626" width="500" >
+</p>
+图片上，纵轴表示画质SSIM，横轴表示噪声的方差。绿线表示中点滤波器，红线表示算术滤波器。可以看出，均匀噪声上，中点滤波器的性能还是优于算术平均滤波器的。(当然，这可能跟选用的评价图像有关，但是基本是这个趋势)。</li>
+<li><span style="color:red"><strong><em>修正的阿尔法均值滤波器</em></strong></span> 从很小的时候开始，对唱歌节目就有这样的一个映像，评委打分的时候，总是要去掉一个最高分，去掉一个最低分，然后求均值。这个是个什么样的原理呢？其实这是一个很典型的滤波器，可以更好的反应一个选手的水平。 假设在领域<span class="math inline">\(S_{xy}\)</span>内去掉<span class="math inline">\(g(s,t)\)</span>最低灰度值的<span class="math inline">\(d/2\)</span>和最高灰度值的<span class="math inline">\(d/2\)</span>.令<span class="math inline">\(g_r(s,t)\)</span>代表剩下的<span class="math inline">\(mn-d\)</span>个像素。有这些剩余像素的平均值形成的滤波器称为修正的阿尔法均值滤波器： <span class="math display">\[\hat{f})(x,y)=\frac{1}{MN-d}\sum_{(s,t)\in　S_{xy}}g_r(s,t)\]</span> 简单的理解一下这个滤波器，首先，我们将滤波范围<span class="math inline">\(S_{xy}\)</span>的<span class="math inline">\(MN\)</span>个数据进行排序，从大到下的顺序去除<span class="math inline">\(d\)</span>个数据，从小到大的顺序去除<span class="math inline">\(d\)</span>个数据。将剩下的数据计算均值。 这样的滤波器，很擅长去除椒盐噪声与其他类型噪声一起污染过的图片。依然是实验，首先将图片染上盐粒密度为0.1，胡椒密度为0.1的椒盐噪声。然后，再将这幅图像染上高斯噪声。在将图片进行去噪。得到的结果如下所示
+<p align="center">
+<img src="http://img.blog.csdn.net/20140717185545266" width="500" >
+</p>
+可以出，对于复数的噪声，这样的滤波器的效果是最好的。</li>
+</ol></li>
+<li><span style="color:red"><strong><em>自适应滤波器</em></strong></span>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>自适应局部降低噪声滤波器</em></strong></span> 防止由于缺乏图像噪声方差知识而产生的无意义结果，适用均值和方差确定的加性高斯噪声。 滤波器作用于局部区域<span class="math inline">\(S_{xy}\)</span>,滤波器在该区域中心任意一点<span class="math inline">\((x,y)\)</span>上的响应基于以下4个量：
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(g(x,y)\)</span>, 带噪声图像在点<span class="math inline">\((x,y)\)</span>的值；</li>
+<li><span class="math inline">\(\delta_n^2\)</span>, 污染<span class="math inline">\(f(x,y)\)</span>以形成<span class="math inline">\(g(x,y)\)</span>的噪声的方差</li>
+<li><span class="math inline">\(m_l,S_{xy}\)</span>中像素的局部均值</li>
+<li><span class="math inline">\(\delta_L^2,S_{xy}\)</span>中像素的局部方差。 我们希望滤波器性能如下：</li>
+<li>如果<span class="math inline">\(\delta_n^2\)</span>为零，则滤波器应该简单的返回<span class="math inline">\(g(x,y)\)</span>的值。</li>
+<li>如果局部方差与<span class="math inline">\(\delta_n^2\)</span>是高度相关的，则滤波器返回<span class="math inline">\(g(x,y)\)</span>的一个近似值。典型地，高局部方差与边缘相关，并且应该保护这些边缘；</li>
+<li>如果2个方差相等，则希望滤波器返回<span class="math inline">\(S_{xy}\)</span>中像素的算术均值。这种情况发生在局部区域与整个图像有相同特性的条件下，并且局部噪声将通过简单地求平均来降低。 基于这些假设得到的<span class="math inline">\(\hat{f}(x,y)=g(x,y)-\frac{\delta_{\eta}^2}{\delta_L^2}[g(x,y)-m_L]\)</span></li>
+</ol></li>
+<li><span style="color:red"><strong><em>自适应中值滤波器</em></strong></span> 自适应中值滤波器可以处理具有更大概率的脉冲噪声，自适应中值滤波器的另一个有优点是平滑非脉冲噪声时视图保留细节，这是传统中值滤波器做不到的。 我们要很好的使用中央值滤波器，只有一个要点！就是找一个最适合的滤波器尺寸，使得原图就是这个滤波器的root信号，那么，就可以得到一个完美的结果（当然，最适合的滤波器是不存在的）。那么，这里就可以有个想法了，在执行滤波器操作的时候，尽可能多的尝试各种尺寸，选择一个最适合的，让原图很接近这个尺寸的滤波器的root信号。这样的话，就可以得到一个不错的结果了。 当然，之对于椒盐噪声的话，还可以加入这样一个功能，由于噪声的灰度值是已知的(盐粒噪声为1，胡椒噪声0)，那么只有当中央值不是0或者1的时候，滤波器生效，否则，扩大滤波器尺寸。 来看看这个滤波器的效果，将图像加一个很强的噪声椒盐噪声。盐粒密度为0.3，胡椒密度为0.3。同时将同样的图像，使用5x5的中央值滤波器。两个滤波器的不同，还是很容易看出来的。
+<p align="center">
+<img src="http://img.blog.csdn.net/20140717182410078" width="800" >
+</p></li>
+</ol></li>
+</ol>
+<h3 id="用频率域滤波消除周期噪声"><span style="color:red"><strong><em>用频率域滤波消除周期噪声</em></strong></span></h3>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>带阻滤波器</em></strong></span> 顾名思义，所谓“带阻”就是阻止频谱中某一频带范围的分量通过，其他频率成份则不受影响。常见的带阻滤波器有理想带阻滤波器和高斯带阻滤波器。 主要应用之一是在频率域噪声分量的一般位置近似已知的应用中消除噪声。 理想带阻滤波器的表达式为：<span class="math inline">\(H(u,v)=\begin{cases}0,|D-D_0|\le W\\1,|D-D_0|&gt;W\end{cases}\)</span> 式中：<span class="math inline">\(D_0\)</span>是阻塞频带中心频率到频率原点的距离；<span class="math inline">\(W\)</span>是阻塞频带宽度；<span class="math inline">\(D\)</span>是<span class="math inline">\((u,v)\)</span>点到频率原点的距离。于是，理想带阻滤波器的频域特性曲面如图
+<p align="center">
+<img src="http://write.epubit.com.cn/api/storage/getbykey/screenshow?key=150563b0784199e9a2d3" width="400" >
+</p></li>
+<li><span style="color:red"><strong><em>高斯带阻滤波器</em></strong></span> 本案例中使用了高斯带阻滤波器，下面直接给出高斯带阻滤波器的表达式。 <span class="math display">\[
+H(u,v)=1-e^{-\frac{1}{2}[\frac{D^2(u,v)-D_0^2}{D(u,v)W}]}
+\]</span> 式中：<span class="math inline">\(D_0\)</span>是阻塞频带中心频率到频率原点的距离；<span class="math inline">\(W\)</span>是阻塞频带宽度；<span class="math inline">\(D\)</span>是<span class="math inline">\((u,v)\)</span>点到频率原点的距离。于是，二维高斯带阻滤波器的频域特性曲面如图所示。
+<p align="center">
+<img src="http://write.epubit.com.cn/api/storage/getbykey/screenshow?key=1505492b7065a200e413" width="400" >
+</p></li>
+<li><span style="color:red"><strong><em>带通滤波器</em></strong></span> 带通滤波器执行与带阻滤波器相反的操作。<span class="math inline">\(H_{BP}(u,v)=1-H_{BR}(u,v)\)</span>.</li>
+<li><span style="color:red"><strong><em>陷波滤波器</em></strong></span> 陷波滤波器阻止事先定义的中心频率的邻域内的频率。</li>
+<li><span style="color:red"><strong><em>最佳陷波滤波器</em></strong></span> 当存在几种干扰分量时，前面讨论的方法有时就不能采用了，因为它们在滤波的过程中可能会消除太多的图像信息。。。最佳陷波滤波在一定意义上最小化了复原估计值的局部方差. 最佳陷波滤波主要分两步：
+<ol style="list-style-type: decimal">
+<li>通过频谱分析确定一个陷波带通滤波器，以提取噪声模型，逆傅里叶变换后得到空间域噪声模型的估计 <span class="math display">\[\eta(x,y)=\xi^{-1}\{H_{NP}(u,v)G(u,v)\}\]</span></li>
+<li>为了更逼近真实噪声模型，最佳陷波滤波对上一步的估计设置加权系数，这样最终的恢复结果为 <span class="math display">\[\hat{f}(x,y)=g(x,y)-w(x,y)\eta(x,y)\}\]</span> 其中加权系数w(x,y)的确定主要考虑使得恢复结果和真实结果的窗口内方差取极小值得到。 <span class="math display">\[w(x,y)=\frac{\bar{g(x,y)\eta(x,y)-\bar{g}(x,y)\bar{\eta}(x,y)}}{\bar{\eta^2}(x-y)-\bar{\eta}^2(x,y)}\]</span> 了减小运算量，一般将窗口内的所有权重取相同的值，即对一个窗口来说，<span class="math inline">\(w(x,y)\)</span>为常数，此时上式每个值取窗口中心值计算即可 ### <span style="color:red"><strong><em>线性，位置变化的退化</em></strong></span></li>
+</ol></li>
+</ol>
+<p>图像复原前，输入、输出关系可表示为:<span class="math inline">\(g(x,y)=H[f(x,y)+\eta(x,y)]\)</span>. 若对于任意<span class="math inline">\(f(x,y), \alpha, \beta\)</span>, 如果<span class="math inline">\(H[f(x-\alpha,y-\beta)]=g(x-\alpha,y-\beta)\)</span> 则输入输出关系具有<span class="math inline">\(g(x,y)=H[f(x,y)]\)</span>的算子称为位置（或空间）不变系统。说明图像中任意一点处的响应只取决于该点处的输入值，而与该点的位置无关。</p>
+<h3 id="估计退化函数"><span style="color:red"><strong><em>估计退化函数</em></strong></span></h3>
+<p>图像的退化过程一般可归纳为退化函数和噪声的影响：<span class="math inline">\(g(x,y)=H[f(x,y)]+\eta(x,y)\)</span> 其中h(x,y)是退化函数，<span class="math inline">\(\eta(x,y)\)</span>是噪声函数，转换到频率域可将卷积运算简化为乘积运算.</p>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>图像观察估计</em></strong></span> 令<span class="math inline">\(g_s(x,y)\)</span>表示要观察的子图像，令<span class="math inline">\(\hat{f}_s(x,y)\)</span>表示处理过的子图像。然后，假设噪声的影响由于选择了一个强信号区域而忽略，得到:<span class="math inline">\(H_s(u,v)=\frac{G_s(u,v)}{\hat{F}_s(u,v)}\)</span>. 根据这一函数特性，我们可基于位置不变的假设还原完整的退化函数<span class="math inline">\(H(u,v)\)</span>.</li>
+<li><span style="color:red"><strong><em>试验估计</em></strong></span> 一个冲激可以由一个亮点来模拟，该亮点尽可能亮，以便将噪声的影响降低到可以忽略的程度。 <span class="math inline">\(H(u,v)=\frac{G(u,v)}{A}\)</span></li>
+<li><span style="color:red"><strong><em>建模估计</em></strong></span> 建模的主要方法是从基本原理开始推导一个数学模型。</li>
+</ol>
+<h3 id="逆滤波"><span style="color:red"><strong><em>逆滤波</em></strong></span></h3>
+<p>简单的来考虑，加法的逆运算是减法，乘法的逆运算的除法，微分的逆运算是积分(严密一点说是不定积分)。那么就可以得到一个简单的结论了，要出去卷积的话，肯定需要用到卷积的逆运算。卷积的逆运算是---------反卷积，额，好像是一个理所应当的名字。我们建立了一个关于卷积的直观认识，将信号反转与滤波器系数求积和。那么，反卷积是一种什么样的运算呢？或者具体的来讲，反卷积的空间运算表现形式是什么样的？这样的考虑其实是多余的，或者说，不用考虑的那么复杂。</p>
+<p>空间域内的卷积，其实就是频域内的乘积。那么这么考虑，就非常简单了，频域内的逆滤波运算，其实就是做除法。我们通过傅里叶变换，可以得到如下一个频域内的老化模型:<span class="math inline">\(G(u,v)=H(u,v)F(u,v)+N(u,v)\)</span></p>
+<p>这样一个表达式内，没有了卷积运算，是一个很简单的四则运算。那么，所谓的去卷积或者逆滤波，就是将退化函数<span class="math inline">\(H(u,v)\)</span>去除的过程。这样看来的话，直接做除法就可以了，如下所示。 <span class="math display">\[
+\hat{F}(u,v)=\frac{G(u,v)}{H(u,v)}=F(u,v)+\frac{N(u,v)}{H(u,v)}
+\]</span> 按照教材上的说法，这个表达式很有趣.首先，必须知道精确的退化函数<span class="math inline">\(H(u,v)\)</span>,其次，如果退化函数<span class="math inline">\(H(u,v)\)</span>含有0值或者极小值的话，会使得噪声项<span class="math inline">\(N(u,v)\)</span>变得极大。 综上所述，其实逆滤波的问题点有两个：1. 退化函数<span class="math inline">\(H(u,v)\)</span>的推测。2. 尽可能的不让噪声项<span class="math inline">\(N(u,v)\)</span>影响画质。</p>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>两个退化函数的模型</em></strong></span>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>大气湍流模型</em></strong></span> <span class="math display">\[H(u,v)=e^{-k(u^2+v^2)^{5/6}}\]</span> 这个模型很简单，与高斯LPF很相似。伴随着k值的增大，得到的图像越来越模糊。以下是这个模型执行的结果。
+<p align="center">
+<img src="http://img.blog.csdn.net/20140723160508341" width="500" >
+</p>
+从表示式上可以看出，这个模型是不会有0值的，不过，这个模型与低通滤波器很相似，阻带的值都是极小的。这可能会使得图像的直接逆滤波失败。这个之后再说。</li>
+<li><span style="color:red"><strong><em>运动模糊模型</em></strong></span> 这个模型其实在Photoshop上也有一个同名的滤镜。详细的推倒我就不做了，这个模型的表达式如下所示。 <span class="math display">\[
+H(u,v)=\frac{Tsin[\pi(ua_vb)]}{\pi(ua+vb)}e^{-j\pi(ua+vb)}
+\]</span> 这里有几个参数，说明一下。<span class="math inline">\(T\)</span>表示曝光时间，这里的<span class="math inline">\(a\)</span>与<span class="math inline">\(b\)</span>表示了水平移动量与垂直移动量。值得一提的是，不要忘记下面这样一个重要的极限。<span class="math inline">\(lim_{x\rightarrow 0}\frac{sinx}{x}=1\)</span> <span style="color:red"><strong><em>注意</em></strong></span>，运动模糊后的图像的尺寸会变化，如果还是按照原图截取，会造成图像成分的损失，在复原图像时候效果不是太好，而且不知道导致效果不好的原因，是由于成分的缺失，还是噪声的干扰。所以，这里我适当的扩展了图像的尺寸，以保留图像的所有成分 此模型的执行结果如下所示。
+<p align="center">
+<img src="http://img.blog.csdn.net/20140723161942410" width="500" >
+</p>
+<p align="center">
+<img src="http://img.blog.csdn.net/20140723161951879" width="500" >
+</p></li>
+</ol></li>
+<li><span style="color:red"><strong><em>图像的逆滤波</em></strong></span>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>实验步骤与实验用图像</em></strong></span> 我们是这样的一个实验步骤，首先，使用退化函数<span class="math inline">\(H(u,v)\)</span>处理图像，然后加上适当的可加性噪声<span class="math inline">\(N(u,v)\)</span>。使用这样的图像进行逆滤波实验。 下面是实验用图像。图像的噪声选用的是高斯噪声，均值为0，方差为0.08。退化函数则选用先前叙述的两种，一个个大气湍流模型，一个是运动模糊。
+<p align="center">
+<img src="http://img.blog.csdn.net/20140723190916015" width="500" >
+</p>
+<p align="center">
+<img src="http://img.blog.csdn.net/20140723191250812" width="500" >
+</p></li>
+<li><span style="color:red"><strong><em>直接逆滤波</em></strong></span> 所谓直接逆滤波，就是不管噪声的影响，直接进行逆滤波的方法。 <span class="math display">\[\hat{F}(u,v)=\frac{G(u,v)}{H(u,v)}=F(u,v)+\frac{N(u,v)}{H(u,v)}\]</span> 对于大气湍流模型而言，直接逆滤波会得到很不理想的结果。下面是直接逆滤波的实验结果。
+<p align="center">
+<img src="http://img.blog.csdn.net/20140723192026707" width="500" >
+</p>
+实验结果完全没有任何价值。观察其频谱，频谱的四角很亮，而原本频谱最亮的直流分量都看不到了。所以，这里做一个限制处理。也就是，仅仅只处理靠近直流分量的部分，其他的不做处理。然后处理完的结果，过一个10阶巴特沃斯低通滤波器。可以得到如下结果。
+<p align="center">
+<img src="http://img.blog.csdn.net/20140723192459286" width="500" >
+</p>
+这样的话，只需要调整限制半径，可以得到一个比之前较好的结果。当然，这招在运动模糊的图片面前，就略显得无力了。结果我就不贴了。</li>
+<li><span style="color:red"><strong><em>最小均方误差（维纳）滤波</em></strong></span> 维纳滤波器的推导，其实是个很复杂的过程。这里就不推导了，直接看结果，可以得到一些有用的结论。 <span class="math display">\[
+\hat{F}=[\frac{1}{H(u,v)}\frac{|H(u,v)|^2}{|H(u,v)|^2+K}]G(u,v)
+\]</span> 观察式子，对于合适的常数<span class="math inline">\(K\)</span>,有如下两个结论。
+<ol style="list-style-type: decimal">
+<li>对于退化函数很小的点，相对而言常数<span class="math inline">\(K\)</span>的值很大，其倒数<span class="math inline">\(\frac{1}{H(u,v)}\)</span>不会太大。</li>
+<li>对于退化函数很小的点，相对而言常数<span class="math inline">\(K\)</span>的值很小，其倒数<span class="math inline">\(\frac{1}{H(u,v)}\)</span>基本保持不变。 下面的维纳滤波器的实验结果：
+<p align="center">
+<img src="http://img.blog.csdn.net/20140723193723267" width="500" >
+</p>
+<p align="center">
+<img src="http://img.blog.csdn.net/20140723194356668" width="500" >
+</p>
+该方法建立在图像和噪声都是随机变量的基础上，目标是找到未污染图像<span class="math inline">\(f\)</span>的一个估计<span class="math inline">\(\hat{f}\)</span>。使得它们之间的均方误差最小，这种误差为：<span class="math inline">\(e^2=E\{(f-\hat{f})^2\}\)</span> 其中，<span class="math inline">\(E\{.\}\)</span>是参数的期望值。</li>
+</ol></li>
+<li><span style="color:red"><strong><em>约束最小二乘方滤波</em></strong></span> 实这个方法是一个很好的想法，将图像的能量作为评价图像平滑程度的度量，尽可能的将其平滑。设噪声的能量是一个定值，使用拉普拉斯未定系数法，将其进行迭代，然后解开。这种方法有了很多的变种，包括很著名的TV(Total Variation，全变分)模型. 在这里，使用本方法的目的是，减少噪音对于逆滤波的影响。表达式如下所示。 <span class="math display">\[
+\hat{F}=[\frac{1}{H(u,v)}\frac{|H(u,v)|^2}{|H(u,v)|^2+  \gamma |P(u,v)|^2}]G(u,v)
+\]</span> 这个滤波器，可以消除很严重的噪声，并且复原图像。将实验用图像的噪声的方差提升到0.2，再进行滤波，可以得到如下结果。
+<p align="center">
+<img src="http://img.blog.csdn.net/20140723200249698" width="500" >
+</p></li>
+</ol></li>
+</ol>
+<h3 id="几何均值滤波"><span style="color:red"><strong><em>几何均值滤波</em></strong></span></h3>
+<p>将维纳滤波稍加推广，就是所谓的几何均值滤波器的形式。</p>
+<h3 id="由投影重建图像"><span style="color:red"><strong><em>由投影重建图像</em></strong></span></h3>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>计算机断层原理</em></strong></span> 计算机层析成像(Computed Tomography，CT)是通过对物体进行不同角度的射线投影测量而获取物体横截面信息的成像技术，涉及到放射物理学、数学、计算机学、图形图像学和机械学等多个学科领域。CT技术不但给诊断医学带来革命性的影响．还成功地应用于无损检测、产品反求和材料组织分析等工业领域。CT技术的核心是由投影重建图像的理论，其实质是由扫描所得到的投影数据反求出成像平面上每个点的衰减系数值。</li>
+<li><span style="color:red"><strong><em>投影和雷登变换</em></strong></span></li>
+<li><span style="color:red"><strong><em>傅立叶切片定理</em></strong></span></li>
+<li><span style="color:red"><strong><em>使用平行射线束滤波反投影的重建</em></strong></span></li>
+<li><span style="color:red"><strong><em>使用扇形射线束滤波反投影的重建</em></strong></span></li>
+</ol>
+<p><span style="color:red"><strong>Reference:</strong></span> <a href="http://blog.csdn.net/xiaowei_cqu/article/details/7616044">图像几何变换：旋转，缩放，斜切</a> / <a href="http://blog.csdn.net/txdb/article/details/6443364">关于cv：：warpaffine函数</a> / <a href="http://blog.csdn.net/carson2005/article/details/6844025">OpenCV中的图像修复算法</a> / <a href="https://fadili.users.greyc.fr/software.html">Sparse representation-based image inpainting</a> / http://www.greyc.ensicaen.fr/~jfadili/software.html / http://www.greyc.ensicaen.fr/~jf ... MInpaint/index.html / <a href="http://www.360doc.com/content/12/1216/15/2036337_254369489.shtml">opencv图像修复算法cvInpaint(Telea的FMM算法）</a></p>
+</body>
+</html>

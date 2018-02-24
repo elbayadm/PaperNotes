@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="learning-to-generate-images-of-outdoor-scenes-from-attributes-and-semantic-layoutsproject-page"><a href="https://arxiv.org/pdf/1612.00215.pdf">Learning to Generate Images of Outdoor Scenes from Attributes and Semantic Layouts</a>/<a href="http://web.cs.hacettepe.edu.tr/~karacan/projects/al-cgan/">Project Page</a></h1>
+<div class="figure">
+<img src="http://web.cs.hacettepe.edu.tr/~karacan/projects/al-cgan/segmentation_conditioned_model.jpeg" />
+
+</div>
+<h2 id="attribute-layout-conditioned-generative-adversarial-networks-al-cgans">Attribute-Layout Conditioned Generative Adversarial Networks (AL-CGANs)</h2>
+<p>The generator and discriminator are formulated as <span class="math inline">\(\begin{cases}G:\mathbb{R}^Z\times \mathbb{R}^S \times \mathbb{R}^{A}\rightarrow \mathbb{R}^M\\D:\mathbb{R}^S\times \mathbb{R}^A\rightarrow \{0,1\}\end{cases}\)</span>, where the <u>noise</u> vector is <span class="math inline">\(Z\)</span>-dim, the <u>semantic</u> layout is <span class="math inline">\(S\)</span>-dim, the <u>transient</u> attribute vector is <span class="math inline">\(A\)</span>-dim.</p>
+<p>The objective function of AL-CGAN is :</p>
+<p><span class="math display">\[
+\begin{aligned}
+\min_G\max_DV(D,G)&amp;=E_D+E_D\\
+&amp;=E_{x,s,a\sim p_{data}(x,s,a)[\log D(x,s,a)]}+E_{x\sim p_z(z);s, a\sim p_{data}(s,a)}[\log(1-D(G(z,a)))]
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(z\sim \mathcal{N}(0,1)\)</span>, and <span class="math inline">\(s\)</span> is the spatial layout, and <span class="math inline">\(a\)</span> is transient attributes.</p>
+</body>
+</html>

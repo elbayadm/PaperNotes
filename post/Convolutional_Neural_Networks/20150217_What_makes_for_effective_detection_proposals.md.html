@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="what-makes-for-effective-detection-proposals"><a href="http://arxiv.org/abs/1502.05082">What makes for effective detection proposals?</a></h2>
+<p><a href="https://www.mpi-inf.mpg.de/departments/computer-vision-and-multimodal-computing/research/object-recognition-and-scene-understanding/how-good-are-detection-proposals-really/">论文的项目地址</a>.</p>
+<p><a href="http://zhangliliang.com/2015/05/19/paper-note-object-proposal-review-pami15/">ref</a></p>
+<h3 id="大纲"><strong><em>大纲</em></strong></h3>
+<p>根据文章的描述顺序，<strong><em>以下内容大概会是</em></strong>：</p>
+<ol style="list-style-type: decimal">
+<li>回顾<strong><em>object proposal（以下简称为OP）的各种方法</em></strong>，将其分类。</li>
+<li>讨论不同<strong><em>OP</em></strong>在图片被扰动之后的在<strong><em>复现上的鲁棒性</em></strong></li>
+<li>讨论不同OP在<strong><em>PASCAL和ImageNet上的Recall</em></strong>，这里作者提出了Average Recall（简称AR）的一种新的标准</li>
+<li>讨论<strong><em>不同OP对于实际分类的性能比较</em></strong>（用了DPM和RCNN这两个著名detector进行比较），以及说明了AR是一个跟性能相当相关的标准。</li>
+</ol>
+<p>先上一个<strong><em>效果的一览表格</em></strong>:</p>
+<p align="center">
+<img src="http://hexo-pic-zhangliliang.qiniudn.com/小Q截图-20150519105213.png" width="600" >
+</p>
+<p>注意到这里只列出了可以找到源码的方法，那么，下面一点点开始整理。</p>
+<h3 id="各种op方法的回顾"><strong><em>各种OP方法的回顾</em></strong></h3>
+<p>作者大致将OP方法分成了两类，一类叫<strong><em>grouping method</em></strong>，一类叫<strong><em>window scoring method</em></strong>。</p>
+<p>前者是指先将图片打碎，然后再聚合的一种方法，比如selective search。</p>
+<p>后者是生成大量window并打分，然后过滤掉低分的一种方法，比如objectness。另外还有一些介乎两者之间的方法，比如multibox。</p>
+<ol style="list-style-type: decimal">
+<li><strong><em>Grouping proposal methods</em></strong></li>
+</ol>
+<p>作者将grouping的方法继续细分为三个小类。SP，对superpixel进行聚合；GC，使用种子点然后groupcut进行分割；EC，从边缘图提取proposal。下面分别调一个进行介绍</p>
+<ul>
+<li><strong><em>Selective Search (SP)</em></strong>: 无需学习，首先将图片打散为superpixel，然后根据人为定义的距离进行聚合</li>
+<li><strong><em>CPMC (GC)</em></strong>: 随机初始化种子点，然后做graphcut进行分割，反复多次，然后定义了某个很长的特征进行排序。（所以速度超级慢）</li>
+<li><strong><em>MCG (EC)</em></strong>: 首先用现成方法快速得到一个层次分割的结果，然后利用边缘信息进行聚合。</li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li><strong><em>Window scoring proposal methods</em></strong></li>
+</ol>
+<p>不同于前者需要通过聚合小块来生成候选框，这里的方法是先生成候选框，然后直接打分排序来过滤掉低分的候选框。介绍<strong><em>两种比较出名的方法</em></strong></p>
+<ul>
+<li><strong><em>Bing</em></strong>: 训练了一个简单的线性分类器来通过类似滑窗的方式来过滤候选框，速度惊人地快，在CPU上能够达到ms级别。但是被文献[40]攻击说分类性能不是来自于学习而是几何学。</li>
+<li><strong><em>EdgeBoxes</em></strong>: 跟selective search一样是一个不需要学习的方法，结合滑窗，通过计算窗口内边缘个数进行打分，最后排序。</li>
+</ul>
+<ol start="3" style="list-style-type: decimal">
+<li><strong><em>Aliternate proposal methods</em></strong></li>
+</ol>
+<ul>
+<li><strong><em>multibox</em></strong>, 目前笔者所知唯一基于CNN提取proposal的方法，通过CNN回归N个候选框的位置并进行打分，目前在ImageNet的dectection track上应该是第一的。</li>
+</ul>
+<ol start="4" style="list-style-type: decimal">
+<li><strong><em>Baseline proposal methods</em></strong></li>
+</ol>
+<p>这里用了<strong><em>Uniform，Gaussian，Sliding Window</em></strong>和<strong><em>Superpixels</em></strong>作为<strong><em>baseline</em></strong>，不是重点就不展开说了。</p>
+<h3 id="各种op方法对于复现的鲁棒性的讨论"><strong><em>各种OP方法对于复现的鲁棒性的讨论</em></strong></h3>
+<p>这里作者提出这样的假设：</p>
+<p><strong><em>一个好的OP方法应该具有比较好的复现能力</em></strong>，也就是相似的图片中检索出来的object应该是具有一致性的。</p>
+<p>验证的方法是对PASCAL的图片做了各种扰动（如Figure 2），然后<strong><em>看是否还能检测出来相同的object的recall是多少</em></strong>，根据IoU的严格与否能够得到一条曲线，最后计算曲线下面积得到repeatability。</p>
+<p>作者的结论，Bing和Edgeboxes在repeatability上表现最好</p>
+<h3 id="各种op方法的recall"><strong><em>各种OP方法的recall</em></strong></h3>
+<p>这里提出了<strong><em>好的OP方法应该有着较高的recall，不然就要漏掉检测的物体了</em></strong>。这里讨论了三种衡量recall的方式：</p>
+<ol style="list-style-type: decimal">
+<li><strong><em>Recall versus IoU threshold</em></strong>: 固定proposal数量，根据不同的IoU标准来计算recall</li>
+<li><strong><em>Recall versus number of proposal windows</em></strong>: 跟1互补，这里先固定IoU，根据不同的proposal数目来计算recall</li>
+<li><strong><em>Average recall(AR)</em></strong>: 作者提出的，这里只是根据不同的proposal数目，计算IoU在0.5到1之间Recall。</li>
+</ol>
+<p>数据集方面，作者在PASCAL VOC07和ImagNet Detection dataset上面做了测试。 这里又有不少图，这里只贴一张AP的，其他请参考原论文咯。</p>
+<p align="center">
+<img src="http://hexo-pic-zhangliliang.qiniudn.com/小Q截图-20150519112811.png
+" width="600" >
+</p>
+<p><strong><em>还是直接上结论</em></strong></p>
+<ul>
+<li><strong><em>MCG， EdgeBox，SelectiveSearch, Rigor和Geodesic</em></strong>在不同proposal数目下表现都不错</li>
+<li>如果只<strong><em>限制小于1000的proposal</em></strong>，MCG,endres和CPMC<strong><em>效果最好</em></strong></li>
+<li>如果一开始<strong><em>没有较好地定位好候选框的位置</em></strong>，随着IoU标准严格，recall会下降比较快的包括了Bing, Rahtu, Objectness和Edgeboxes。其中Bing下降尤为明显。</li>
+<li>在<strong><em>AR这个标准下，MCG表现稳定</em></strong>；Endres和Edgeboxes在较少proposal时候表现比较好，当允许有较多的proposal时候，Rigor和SelectiveSearch的表现会比其他要好。</li>
+<li>PASCAL和ImageNet上，各个OP方法都是比较相似的，这说明了这些OP方法的泛化性能都不错。</li>
+</ul>
+<h3 id="各种op方法在实际做detection任务时候的效果"><strong><em>各种OP方法在实际做detection任务时候的效果</em></strong></h3>
+<p>这里作者在OP之后接上了两种在detection上很出名的detector来进行测试，一个是<strong><em>文献[54]的LM-LLDA（一个DPM变种）</em></strong>，另外一个自然是<strong><em>R-CNN</em></strong>了，值得注意的是，这两个detector的作者都是rbg。。。真大神也。。。</p>
+<p>这里用了各种OP方法提取了1k个proposal，之后作比较。 也是直接给作者结论：</p>
+<ul>
+<li>如果<strong><em>OP方法定位越准确，那么对分类器帮助会越大</em></strong>，因为定位越准确，分类器返回的分数会越高：
+<p align="center">
+<img src="http://hexo-pic-zhangliliang.qiniudn.com/小Q截图-20150519140548.png" width="600" >
+</p></li>
+<li>在LM-LLDA和R-CNN下，使得<strong><em>mAP最高的前5个OP方法</em></strong>都是MCG,SeletiveSearch,EdgeBoxes,Rigor和Geodesic。分数一览如下图。
+<p align="center">
+<img src="http://hexo-pic-zhangliliang.qiniudn.com/小Q截图-20150519134819.png" width="600" >
+</p></li>
+<li>通过分析，作者发现<strong><em>AR和mAP有着很强的相关性</em></strong>： http://hexo-pic-zhangliliang.qiniudn.com/小Q截图-20150519134830.png</li>
+<li>作者用<strong><em>AR作为指导去tuning EdgeBoxes的参数，然后取得了更好的mAP</em></strong>（提高1.7个点） http://hexo-pic-zhangliliang.qiniudn.com/小Q截图-20150519134857.png</li>
+</ul>
+<h3 id="全文的总结和讨论"><strong><em>全文的总结和讨论</em></strong></h3>
+<p><strong><em>总结：</em></strong></p>
+<ul>
+<li>对于repeatability这个标准，目前的OP方法效果都一般。可能通过对噪声和扰动更加鲁棒的特征能够提高OP方法的repeatablilty。但是repeatability低不代表最后mAP就低，比如SelectiveSearch，所以最后还是看要应用场景。</li>
+<li>如果OP方法定位越准确，那么对分类器帮助会越大。所以对于OP方法来说，IoU为0.5的recall不是一个好的标准。高recall但是定位不准确，会伤害到最后的mAP</li>
+<li>MCG,SeletiveSearch,EdgeBoxes,Rigor和Geodesic是目前表现最好的5个方法，其中速度以EdgeBoxes和Geodesic为优。</li>
+<li>目前的OP方法在<strong><em>VOC07和ImageNet的表现都差不多</em></strong>，说明它们都有着<strong><em>不错的泛化性能</em></strong>。</li>
+</ul>
+<p><strong><em>讨论：</em></strong></p>
+<ul>
+<li>如果计算能力上去了，OP还有用吗？作者认为<strong><em>如果运算性能允许的话，滑动窗口加上CNN等强分类器会有着更好的效果</em></strong>。 <strong><em>作者观察到在目前OP中使用的特征（比如object boundary和superpixel），不会在分类器中使用；然后OP方法中除了- MultiBox之外就没有其他OP有使用CNN特征。作者期待会有工作能够结合下这两者的优势</em></strong>。</li>
+<li>最后，作者对做了三点猜测：之后<strong><em>top down可能会在OP中起到更加重要的作用</em></strong>；以后OP和detector的联系会更加紧密；<strong><em>OP生成的segmentation mask会起到更加重要的作用</em></strong>。</li>
+</ul>
+</body>
+</html>

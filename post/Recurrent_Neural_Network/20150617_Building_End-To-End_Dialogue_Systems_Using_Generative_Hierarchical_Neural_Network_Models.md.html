@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="building-end-to-end-dialogue-systems-using-generative-hierarchical-neural-network-models"><a href="http://arxiv.org/abs/1507.04808">Building End-To-End Dialogue Systems Using Generative Hierarchical Neural Network Models</a></h2>
+<p>TLDR; The authors train a Hierarchical Recurrent Encoder-Decoder (HRED) network for dialog generation. The &quot;lower&quot; level encodes a sequence of words into a though vector, and the higher-level encoder uses these thought vectors to build a representation of the context. The authors evaluate their model on the <em>MoviesTriples</em> dataset using perplexity measures and achieve results better than plain RNNs and the DCGM model. Pre-training with a large Question-Answer corpus significantly reduces perplexity.</p>
+<h4 id="key-points"><strong><em>Key Points</em></strong></h4>
+<ul>
+<li><strong><em>Three RNNs</em></strong>: Utterance encoder, context encoder, and decoder. GRU hidden units, ~300d hidden state spaces.</li>
+<li><strong><em>10k vocabulary. Preprocessing</em></strong>: Remove entities and numbers using NLTK</li>
+<li>The context in the experiments is only a single utterance</li>
+<li>MovieTriples is a small dataset, about 200k training triples. Pretraining corpus has 5M Q-A pairs, 90M tokens.</li>
+<li>Perplexity is used as an evaluation metric. Not perfect, but reasonable.</li>
+<li>Pre-training has a much more significant impact than the choice of the model architecture. It reduces perplexity ~10 points, while model architecture makes a tiny difference (~1 point).</li>
+<li>Authors suggest exploring architectures that separate semantic from syntactic structure</li>
+<li>Realization: Most good predictions are generic. Evaluation metrics like BLEU will favor pronouns and punctuation marks that dominate during training and are therefore bad metrics.</li>
+</ul>
+<h4 id="notesquestions"><strong><em>Notes/Questions</em></strong></h4>
+<ul>
+<li>Does using a <strong><em>larger dataset</em></strong> eliminate the need for pre-training?</li>
+<li>What about the <strong><em>more challenging task</em></strong> for longer contexts?</li>
+</ul>
+</body>
+</html>

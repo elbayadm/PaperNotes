@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="progressive-neural-networks"><a href="http://arxiv.org/abs/1606.04671">Progressive Neural Networks</a></h2>
+<p>TLDR; The authors propose Progressive Neural Networks (ProgNN), a new way to do transfer learning without forgetting prior knowledge (as is done in finetuning). ProgNNs train a neural neural on task 1, freeze the parameters, and then train a new network on task 2 while introducing lateral connections and adapter functions from network 1 to network 2. This process can be repeated with further columns (networks). The authors evaluate ProgNNs on 3 RL tasks and find that they outperform finetuning-based approaches.</p>
+<h4 id="key-points">Key Points</h4>
+<ul>
+<li>Finetuning is a destructive process that forgets previous knowledge. We don't want that.</li>
+<li>Layer h_k in network 3 gets additional lateral connections from layers h_(k-1) in network 2 and network 1. Parameters of those connections are learned, but network 2 and network 1 are frozen during training of network 3.</li>
+<li>Downside: # of Parameters grows quadratically with the number of tasks. Paper discussed some approaches to address the problem, but not sure how well these work in practice.</li>
+<li>Metric: AUC (Average score per episode during training) as opposed to final score. Transfer score = Relative performance compared with single net baseline.</li>
+<li>Authors use Average Perturbation Sensitivity (APS) and Average Fisher Sensitivity (AFS) to analyze which features/layers from previous networks are actually used in the newly trained network.</li>
+<li>Experiment 1: Variations of Pong game. Baseline that finetunes only final layer fails to learn. ProgNN beats other baselines and APS shows re-use of knowledge.</li>
+<li>Experiment 2: Different Atari games. ProgNets result in positive Transfer 8/12 times, negative transfer 2/12 times. Negative transfer may be a result of optimization problems. Finetuning final layers fails again. ProgNN beats other approaches.</li>
+<li>Experiment 3: Labyrinth, 3D Maze. Pretty much same result as other experiments.</li>
+</ul>
+<h4 id="notes">Notes</h4>
+<ul>
+<li>It seems like the assumption is that layer k always wants to transfer knowledge from layer (k-1). But why is that true? Network are trained on different tasks, so the layer representations, or even numbers of layers, may be completely different. And Once you introduce lateral connections from all layers to all other layers the approach no longer scales.</li>
+<li>Old tasks cannot learn from new tasks. Unlike humans.</li>
+<li>Gating or residuals for lateral connection could make sense to allow to network to &quot;easily&quot; re-use previously learned knowledge.</li>
+<li>Why use AUC metric? I also would've liked to see the final score. Maybe there's a good reason for this, but the paper doesn't explain.</li>
+<li>Scary that finetuning the final layer only fails in most experiments. That's a very commonly used approach in non-RL domains.</li>
+<li>Someone should try this on non-RL tasks.</li>
+<li>What happens to training time and optimization difficult as you add more columns? Seems prohibitively expensive.</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="数字图像处理--小波和多分辨率处理"><span style="color:red"><strong><em>数字图像处理--小波和多分辨率处理</em></strong></span></h2>
+<h3 id="背景"><span style="color:red"><strong><em>背景</em></strong></span></h3>
+<p>当观察图像时，通常看到的是相连接的纹理与灰度级相似的区域，它们相结合形成物体。如果物体的尺寸很小或对比度不高，通常采用较高的分辨率观察；如果物体尺寸很大或对比很强，只需要较低的分辨率。如果物体尺寸有大有小，或对比有强有弱的情况同时存在，以若干分辨率对它们进行研究将具有优势。当然，这就是多分辨率处理的魅力所在。</p>
+<p>从数学的观点看，图像是一个亮度值的二维矩阵，像边界和对比强烈区域那样的突变特性的不同组合会产生统计值的局部变化。在同一图像的不同部分，即使是一阶统计值也会大不相同，因此，无法对整个图像定义一个简单的统计模型。</p>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>图像金字塔</em></strong></span> 以多个分辨率来表示图像的一种有效且概念简单的结构是图像金字塔。图像金字塔最初用于<span style="color:red"><strong><em>机器视觉和图像压缩</em></strong></span>。一个图像金字塔式一系列以金字塔形状排列的、分辨率逐步降低的图像集合。<span style="color:red"><strong><em>金字塔底部</em></strong></span>是待处理图像的高分辨率表示，而<span style="color:red"><strong><em>顶部</em></strong></span>则包含一个低分辨率近似。当向金字塔的上层移动时，尺寸和分辨率就降低。因为基础级J的尺寸是<span class="math inline">\(2^J\times 2^J\)</span>或<span class="math inline">\(N\times N\)</span>(<span class="math inline">\(J=log2N\)</span>)，中间级j的尺寸是<span class="math inline">\(2^j\times 2^j\)</span>，其中<span class="math inline">\(0\le j\le J\)</span>。完整的金字塔由<span class="math inline">\(J+1\)</span>个分辨率级组成，由<span class="math inline">\(2^J\times 2^J\)</span>到<span class="math inline">\(20\times 20\)</span>，但大部分金字塔只有P+1级，其中j＝J-P，……，J-2，J-1，J且1≤P≤J。也就是说，通常限制它们只使用P级来减少原始图像近似值的尺寸。 例如，一幅512×512图像的l×1或单像素近似值将非常小。P+1级金字塔(P&gt;0)中的元素总数是：<span class="math inline">\(N^2(1+\frac{1}{(4)^1}+\frac{1}{(4)^2}+...+\frac{1}{(4)^p})\le \frac{4}{2}N^2\)</span>
+<p align="center">
+<img src="http://www.ityuedu.com/myimages/1/485213396463.jpg" width="400" >
+</p>
+上图显示了一个<span style="color:red"><strong><em>建立图像金字塔的简单系统</em></strong></span>。<span class="math inline">\(j-l\)</span>级的近似输出用来建立近似值金字塔，包括原始图像的一个或多个近似值。作为金字塔基级的原始图像和它的P级减少的_盼辨率近似都能直接获取并调整。 上图中<span style="color:red"><strong><em>j级的预测残差输出</em></strong></span>用于建立预测残差金字塔。这些金字塔包括了原始图像的<span class="math inline">\(J-P\)</span>级低分辨率的近似信息，以及建立<span class="math inline">\(P\)</span>级较高分辨率的近似信息。<span class="math inline">\(j\)</span>级的信息在相应近似金字塔的j级近似与基于<span class="math inline">\(j-1\)</span>级预测残差得到的近的估计之间是不同的。<span style="color:red"><strong><em>对这些差异进行编码(用于存储或传输)将比对近似值进行编码有效得多</em></strong></span>.
+<p align="center">
+<img src="http://7pulhb.com1.z0.glb.clouddn.com/ip-%E9%87%91%E5%AD%97%E5%A1%94%E5%BB%BA%E7%AB%8B%E8%BF%87%E7%A8%8B.jpg" width="400" >
+</p>
+上面的框图所表明的，近似值和预测残差金字塔都是以一种迭代的方式进行计算的。<span class="math inline">\(P+1\)</span>级金字塔通过执行<span class="math inline">\(P\)</span>次框图中的操作建立。第一次迭代和传递时，<span class="math inline">\(j=J\)</span>，并且<span class="math inline">\(2^J\times 2^J\)</span>的原始图像作为<span class="math inline">\(J\)</span>级的输入图像，从而产生<span class="math inline">\(J-1\)</span>级近似值和<span class="math inline">\(J\)</span>级预测残差。对于<span class="math inline">\(j=J-1,J-2,...,J-P+I\)</span>(按这一顺序)的传递，前面迭代的<span class="math inline">\(j-1\)</span>级近似值输出将作为输入。每次传递由3个连续步骤组成：
+<ol style="list-style-type: decimal">
+<li>计算输入图像的减少的分辨率近似值。这可以通过对输入进行滤波并以2为步长进行抽样去做(即子抽样)。可以采用的滤波操作有很多，如邻域平均(它可生成平均值金字塔)，高斯低通滤波器(它可生成高斯金字塔)，或者不进行滤波，生成子抽样金字塔。生成近似值的质量是所选滤波器的函数，在上图中以<span class="math inline">\(j-1\)</span>级近似值进行标记。没有滤波器，在金字塔的上一层混淆变得很显著，子抽样点对所采取的区域没有很好的代表性。</li>
+<li>对上一步的输出进行内插——因子仍为2——并进行过滤。这将生成与输入等分辨率的预测图像。由于在步骤1的输出像素之间进行插值运算，插 入滤波器决定了预测值与步骤1的输入之间的近似程度。如果插入滤波器被忽略了，预测值将是步骤1输出的内插形式，复制像素的块效应将变得很明显。</li>
+<li>计算步骤2的预测值和步骤1的输入之间的差异。以j级预测残差进行标识的这个差异将用于原始图像的重建。在没有量化差异的情况下，预测残差金字塔可以用于生成相应的近似金字塔，包括原始图像，而没有误差。 执行上述过程P次将产生密切相关的P+l级近似值和预测残差金字塔。j-I级近似值的输出用于提供近似值金字塔；而j级预测残差的输出被放在预测残差金字塔中。如果不需要预测残差金字塔，步骤2、3和内插器、插入滤波器以及图中的加法器都可以省略 。</li>
+</ol></li>
+<li><span style="color:red"><strong><em>子带编码</em></strong></span> 另一种与多分辨率分析相关的重要图像技术是子带编码。在子带编码中，一幅图像被分解成为一系列限带分量的集合，称为子带，它们可以重组在一起无失真地重建原始图像。最初是为语音和图像压缩而研制的，每个子带通过对输入进行带通滤波而得到。因为所得到的子带带宽要比原始图像的带宽小，子带可以进行无信息损失的抽样。原始图像的重建可以通过内插、滤波和叠加单个子带来完成。</li>
+<li><span style="color:red"><strong><em>哈尔变换</em></strong></span> 将要了解的第三个和最后一个与多分辨率分析有关的图像处理手段是哈尔变换(Haar[1910])。本章的内容中，其重要性体现在它的基函数是众所周知的最古老也是最简单的正交小波。下述部分将给出若干应用范例。 哈尔变换可以用如下矩阵形式表示：<span class="math inline">\(T=HFH^T\)</span>,其中，<span class="math inline">\(F\)</span>是一个<span class="math inline">\(N\times N\)</span>图像矩阵，<span class="math inline">\(H\)</span>是<span class="math inline">\(N\times N\)</span>变换矩阵，<span class="math inline">\(T\)</span>是<span class="math inline">\(N\times N\)</span>变换的结果。对于哈尔变换，变换矩阵<span class="math inline">\(H\)</span>包含哈尔基函数<span class="math inline">\(h_k(z)\)</span>，它们定义在连续闭区间z∈[O，1]，k=0，1，2，…，N-1，这里<span class="math inline">\(N=2^n\)</span>。为生成H矩阵，定义整数k，即<span class="math inline">\(k=2^p+q-1\)</span>(这里O≤P≤n一1，p=0时，q=0或1，p≠0时，1≤q≤2p)。可得哈尔基函数为：<span class="math inline">\(h_0(z)=h_{00}(z)=\frac{1}{\sqrt{N}},z\in [0,1]\)</span>,和<span class="math inline">\(h_z(z)=h_{pq}(z)=\begin{cases}2^{p/2},(q-1)/2^p\le z \le (q-0.5)/2^p\\-2^{p/2},(q-0.5)/2^p \le z \le q/2^p \\ 0, \text{ others }, z\in [0,1]\end{cases}\)</span> N×N哈尔变换矩阵的第i行包含了元素<span class="math inline">\(h_i(z)\)</span>，其中<span class="math inline">\(z=O/N,I/N,2/N,...,(N-1)/N\)</span>。 ### <span style="color:red"><strong><em>多分辨率展开</em></strong></span></li>
+<li><span style="color:red"><strong><em>级数展开</em></strong></span> 信号或函数尅很好的分解成一系列展开函数的线性组合：<span class="math inline">\(f(x)=\sum_{k}\alpha_k\phi_k(x)\)</span></li>
+<li><span style="color:red"><strong><em>尺度函数</em></strong></span> 考虑由整数平移和实数二值尺度、平方可积函数<span class="math inline">\(\phi(x)\)</span>组成的展开函数集合，即<span class="math inline">\(\{\phi_{j,k}(x)\}\)</span>。</li>
+<li><span style="color:red"><strong><em>小波函数</em></strong></span> 与标准的傅里叶变换相比，小波分析中使用到的小波函数<span class="math inline">\(\Phi(t)\)</span>具有不唯一性，即小波函数 具有多样性。小波分析在工程应用中，一个十分重要的问题就是最优小波基的选择问题，因为用不同的小波基分析同一个问题会产生不同的结果。目前我们主要是通过用小波分析方法处理信号的结果与理论结果的误差来判定小波基的好坏，由此决定小波基。 ### <span style="color:red"><strong><em>一维小波变换</em></strong></span></li>
+<li><span style="color:red"><strong><em>小波级数展开</em></strong></span></li>
+<li><span style="color:red"><strong><em>离散小波变换</em></strong></span></li>
+<li><span style="color:red"><strong><em>连续小波变换</em></strong></span> ### <span style="color:red"><strong><em>快速小波变换</em></strong></span> ### <span style="color:red"><strong><em>二维小波变换</em></strong></span> ### <span style="color:red"><strong><em>小波包</em></strong></span></li>
+</ol>
+</body>
+</html>

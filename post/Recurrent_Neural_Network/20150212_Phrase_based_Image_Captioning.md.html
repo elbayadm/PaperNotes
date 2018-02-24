@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="phrase-based-image-captioning"><a href="">Phrase-based Image Captioning</a><br/></h2>
+<p><strong>Phrase representations initializaition</strong></p>
+<p>They define a metric between the <strong>image <span class="math display">\[i\]</span></strong> and a <strong>phrase <span class="math display">\[c\]</span></strong> as a bilinear operation: <span class="math display">\[
+f_{\theta}(c,i)=u_c^TV_{Z_i}\]</span> where: <span class="math display">\[i\]</span> is a image(<span class="math display">\[i \in I \]</span>), <span class="math display">\[z_i\]</span> is a feature vector extract from pre-trained CNN. <span class="math display">\[c\]</span> is a pharse, <span class="math display">\[\theta\]</span> is a trainable parameters. And <span class="math display">\[U=(u_{c1}, ..., U_{c|c|})\]</span> and <span class="math display">\[V\]</span> are full-matrix(low-rank)</p>
+<p><span class="math display">\[u_c\]</span> is a vector representation for a phrase <span class="math display">\[c=\{w_1,...,w_K\}\]</span> which is then calculated by averaging its word vector representations: <span class="math display">\[u_c= \frac{1}{K}\sum_{k=1}^{K}X_{wk}\]</span>. And each phrase <span class="math display">\[c\]</span> composed of <span class="math display">\[K\]</span> words <span class="math display">\[w_k\]</span> is therefore represented by a vector <span class="math display">\[X_{wk}\in R^m\]</span>, this can be producted by word representation model pre-trained on <strong>large unlabeled text corpara</strong></p>
+<p>vecotr representations for all phrases <span class="math display">\[c\in C\]</span> can thus be obtained to initialized the metrix <span class="math display">\[U\]</span>. Then <span class="math display">\[f_{\theta}(c,i)=u_c^TV_{Z_i}\]</span> can be represented as : <span class="math display">\[
+f_{\theta}(c,i)=(\frac{1}{K}\sum_{k=1}^{K}X_{wk})^TV_{Z_i}\]</span> <span class="math display">\[V\]</span> is initialized randomly and trained to encode images(<span class="math display">\[z_i\in R^n\]</span>) in the same vector space than the phrase used for their descriptions.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Training with negative sampling</li>
+</ol>
+<p>Each image <span class="math display">\[i\]</span> is described by a multitude of possible phrases <span class="math display">\[C^i\]</span>. Consider <span class="math display">\[C\]</span> classifers attributing a score for each phrase. They train a model to disciminate a traget phrase <span class="math display">\[c_j\]</span> from a set of negative phrases <span class="math display">\[c_k\in C\]</span>. The minimize the logistic loss function with respect to <span class="math display">\[\theta\]</span>: <span class="math display">\[
+\theta \rightarrow \sum_{i\in I}\sum_{c_j \in C^i}(log(1+e^{-u_{c_j}^T})+\sum_{c_k \in C^{-}}log(1+e^{+u_{c_K}^T V_{z_i}}))\]</span></p>
+<ol start="3" style="list-style-type: decimal">
+<li>Phrases to sentence</li>
+</ol>
+<p>The likelihood of a certain sentence is given by <span class="math display">\[P(c_1,c_2,..,c_l)=\Pi_{J=1}^l P(c_j|c_1,...,c_{j-1})\]</span>, it can be approximated with a trigram language model: <span class="math display">\[P(c_1,c_2,..,c_l)=\Pi_{J=1}^l P(c_j|c_{j-2},c_{j-1})\]</span><br/></p>
+<p>They constrain the decoding algorithm to include prior knowledge on chunking tages<span class="math display">\[t \in \{NP,VP,PP\}\]</span></p>
+<p><span class="math display">\[
+\Pi_{j=1}^l \sum_{t}P(c_j|t_j=t,c_{j-2},c_{j-1})P(t_j=t|c_{j-2}c_{j-1})\]</span></p>
+</body>
+</html>

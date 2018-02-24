@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="neural-machine-translation-by-jointly-learning-to-align-and-translate"><a href="http://arxiv.org/abs/1409.0473">Neural Machine Translation by Jointly Learning to Align and Translate</a></h2>
+<p>TLDR; The authors propose a novel &quot;attention&quot; mechanism that they evaluate on a Machine Translation task, achieving new state of the art (and large improvements in dealing with long sentences). Standard seq2seq models typically try to encode the input sequence into a fixed length vector (the last hidden state) based on which the decoder generates the output sequence. However, it is unreasonable to assume the all necessary information can be encoded in this one vector. Thus, the authors let the decoder depend on a attention vector, which based on the weighted sum (expectation) of the input hidden states. The attention weights are learned jointly, as part of the network architecture.</p>
+<h4 id="data-sets-and-model-performance">Data Sets and model performance</h4>
+<p>Bidirectional GRU, 1000 hidden units. Multilayer maxout to compute output probabilities in decoder.</p>
+<p>WMT '14 BLEU: 36.15</p>
+<h4 id="key-takeaways">Key Takeaways</h4>
+<ul>
+<li>Attention mechanism is a weighted sum of the hidden states computed by the encoder. The weights come from a softmax-normalized attention function (a perceptron in this paper), which are learned during training.</li>
+<li>Attention can be expensive, because it must be evaluated for each encoder-decoder output pair, resulting in a len(x) * len(y) matrix.</li>
+<li>The attention mechanism improves performance across the board, but has a particularly large affect on long sentences, confirming the hyptohesis that the fixed vector encoding is a bottleneck.</li>
+<li>The authors use a bidirectional-GRU, concatenating both hidden states into a final state at each time step.</li>
+<li>It is easy to visualize the attention matrix (for a single input-ouput sequence pair). The authors show that in the case of English to French translations the matrix has large values on the diagonal, showing the these two languages are well aligned in terms of word order.</li>
+</ul>
+<h4 id="questionnotes">Question/Notes</h4>
+<ul>
+<li>The attention mechanism seems limited in that it computes a simple weighted average. What about more complex attention functions that allow input states to interact?</li>
+</ul>
+</body>
+</html>

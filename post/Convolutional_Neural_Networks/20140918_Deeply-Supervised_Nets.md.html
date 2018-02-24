@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="deeply-supervised-nets"><a href="http://arxiv.org/abs/1409.5185">Deeply-Supervised Nets</a></h2>
+<p>项目地址：http://vcl.ucsd.edu/~sxie/2014/09/12/dsn-project/</p>
+<h2 id="动机和概述"><strong><em>动机和概述</em></strong></h2>
+<p align="center">
+<img src="http://hexo-pic-zhangliliang.qiniudn.com/小Q截图-20141102205625.png" width="800" >
+</p>
+<p>如上图，一般CNN<strong><em>只在顶层接一个分类器</em></strong>。DSN认为如果隐层特征更具判别性，对于整体效果会更好。于是在<strong><em>隐层也接了SVM</em></strong>.</p>
+<h2 id="核心公式实现"><strong><em>核心公式实现</em></strong></h2>
+<p align="center">
+<img src="http://hexo-pic-zhangliliang.qiniudn.com/小Q截图-20141102205852.png" width="800" >
+</p>
+<p>核心优化的<strong><em>loss函数</em></strong>是上图中的(3)，又可以分成两部分来看:</p>
+<ul>
+<li><strong><em>左半部分</em></strong>是顶层（输出层）的loss，标准的SVM的<strong><em>square hinge loss</em></strong></li>
+<li><strong><em>右半部分</em></strong>是隐层的loss求和，也是标准的SVM的<strong><em>square hinge loss</em></strong></li>
+</ul>
+<p align="center">
+<img src="http://hexo-pic-zhangliliang.qiniudn.com/小Q截图-20141102210138.png" width="800" >
+</p>
+<p>BP时候的公式如上，也很直观，就是对square hinge loss进行求导。</p>
+<p>对于第二个式子，<span class="math inline">\(\alpha_m\)</span>是逐渐减少的，是为了<strong><em>让隐层的梯度逐渐消失</em></strong>。这<span class="math inline">\(\gamma\)</span>是一个阈值，当隐层的loss小到一定程度时候，就会设置为0。（是为了加速吗？）</p>
+<h2 id="具体代码实现"><strong><em>具体代码实现</em></strong></h2>
+<p>代码github在这里：https://github.com/s9xie/DSN</p>
+<p>目前作者给出了CIFAR10上重现实验的数据和脚本。跑了一下，结果可以重现。</p>
+<p>看了代码实现，跟论文提供的公式相比有两个实现上的差别，已经有眼尖的同学发现并在issue中 回帖了，附上链接：</p>
+<ol style="list-style-type: decimal">
+<li>https://github.com/s9xie/DSN/issues/1 这个链接讨论的是<span class="math inline">\(\alpha_m\)</span>实现相关，目前代码用的是通过调节lr实现，比较合理的方式是通过调节loss_weight实现。作者当时的代码版本中不包含loss_weight于是没有实现。</li>
+<li>https://github.com/s9xie/DSN/issues/2 这个链接讨论的是<span class="math inline">\(\gamma\)</span>的实现。在代码中没有<span class="math inline">\(\gamma\)</span>. 的相关代码，作者使用的方式是early stopping，也就是通过验证集得到一个较为合适的迭代次数，之后的迭代会将隐层的SVM摘掉。</li>
+</ol>
+</body>
+</html>

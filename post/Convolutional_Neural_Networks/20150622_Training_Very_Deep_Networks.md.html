@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="training-very-deep-networks"><a href="http://arxiv.org/abs/1507.06228">Training Very Deep Networks</a></h2>
+<p>TLDR; The authors propose &quot;Highway Networks&quot;, which uses gates (inspired by LSTMs) to determine how much of a layer's activations to transform or just pass through. Highway Networks can be used with any kind of activation function, including recurrent and convnolutional units, and trained using plain SGD. The gating mechanism allows highway networks with tens or hundreds of layers to be trained efficiently. The authors show that highway networks with fewer parameters achieve results competitive with state-of-the art for the MNIST and CIFAR tasks. Gates outputs vary significantly with the input examples, demonstrating that the network not just learns a &quot;fixed structure&quot;, but dynamically routes data based for specific examples examples.</p>
+<p>Datasets used: MNIST, CIFAR-10, CIFAR-100</p>
+<h4 id="key-takeaways">Key Takeaways</h4>
+<ul>
+<li>Apply LSTM-like gating to networks layers. Transform gate T and carry gate C.</li>
+<li>The gating forces the layer inputs/outputs to be of the same size. We can use additional plain layers for dimensionality transformations.</li>
+<li>Bias weights of the transform gates should be initialized to negative values (-1, -2, -3, etc) to initially force the networks to pass through information and learn long-term dependencies.</li>
+<li>HWN does not learn a fixed structure (same gate outputs), but dynamic routing based on current input.</li>
+<li>In complex data sets each layer makes an important contritbution, which is shown by lesioning (setting to pass-through) individual layers.</li>
+</ul>
+<h4 id="notes-questions">Notes / Questions</h4>
+<ul>
+<li>Seems like the authors did not use dropout in their experiments. I wonder how these play together. Is dropout less effective for highway networks because the gates already learn efficients paths?</li>
+<li>If we see that certain gates outputs have low variance across examples, can we &quot;prune&quot; the network into a fixed strucure to make it more efficient (for production deployments)?</li>
+</ul>
+</body>
+</html>

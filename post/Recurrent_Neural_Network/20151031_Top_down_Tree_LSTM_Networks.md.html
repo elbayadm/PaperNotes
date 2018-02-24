@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="top-down-tree-long-short-term-memory-networks"><a href="">Top-down Tree Long Short-Term Memory Networks</a><br/></h2>
+<p>They develop TreeLong Short-Term Memory (TREELSTM), aneural network model based on LSTM<br/> TREELSTM defines the probability of a sentence by estimating the generation probability of its dependency tree. <br/> (1) dependency path<br/> Let <span class="math inline">\(w_o\)</span> dnoted a node in a three, and <span class="math inline">\(w_1,w_2,..,w_n\)</span> its left dependents.Let <span class="math inline">\(w_k, 1&lt;k \le N\)</span> denote a non-first left dependent of <span class="math inline">\(w_o\)</span>.<br/> (2) tree probability<br/> The core problem in syntax-based language modeling is to estimate the probability of sentence <span class="math inline">\(S\)</span> given its corresponding tree <span class="math inline">\(T\)</span>. Assume generation starts at the <span style="color:red">ROOT </span> node. first its left dependents are generated from closest to farthest and then the right dependents. The same process is applied to the next node at the same level or a node at the next level.<br/></p>
+<ol start="3" style="list-style-type: decimal">
+<li><p>tree lstms<br/></p></li>
+<li><p>left dependent tree lstms<br/></p></li>
+</ol>
+</body>
+</html>

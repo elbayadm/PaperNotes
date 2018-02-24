@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="数字图像处理--灰度变换与空间滤波">数字图像处理--灰度变换与空间滤波</h2>
+<p><span style="color:red"><strong><em>空间域又称图像空间(image space)</em></strong></span>。由图像像元组成的空间。在图像空间中以长度(距离)为自变量直接对像元值进行处理称为空间域处理。以时间作为变量所进行的研究就是时域；以频率作为变量所进行的研究就是频域；以空间坐标作为变量进行的研究就是空间域（空间域处理主要分为灰度变换和空间滤波。）；以波数作为变量所进行的研究称为波数域．</p>
+<h3 id="一些基本的灰度变换函数"><span style="color:red"><strong><em>一些基本的灰度变换函数</em></strong></span></h3>
+<p>空间域处理可以表示为：<span class="math inline">\(g(x,y)=T[f(x,y)]\)</span>，　其中<span class="math inline">\(f(x,y)\)</span>是输入的图像，<span class="math inline">\(g(x,y)\)</span>是处理后的图像，<span class="math inline">\(T\)</span>是在点<span class="math inline">\((x,y)\)</span>的邻域上定义的关于<span class="math inline">\(f\)</span>的一种算子．最小的邻域大小是<span class="math inline">\(1\times 1\)</span>．其中邻域与预定义的操作一起称为<span style="color:red"><strong><em>空间滤波器（也称为空间掩膜，核，模板或窗口）</em></strong></span>，在邻域中执行的类型决定了滤波处理的特性．</p>
+如下图的的情况，g取决于点<span class="math inline">\((x,y)\)</span>处的<span class="math inline">\(f\)</span>的值，<span class="math inline">\(g(x,y)=T[f(x,y)]　\Rightarrow s=T(r)\)</span>, 这是一个灰度变换函数（灰度级或映射）：
+<p align="center">
+<img src="http://images.cnitblog.com/blog/527351/201310/05153248-b89a1140296c4d33991992996360d846.png" width="400" >
+</p>
+<p>其中，令<span class="math inline">\(r,s\)</span>分别表示变量，即<span class="math inline">\(g,f\)</span>在任意点<span class="math inline">\((x,y)\)</span>处的灰度．若按照左图处理，则对<span class="math inline">\(f\)</span>中的每一个像素施以变换产生相应的<span class="math inline">\(g\)</span>的像素的效果将比原始图像有更高的对比度，也就是低于<span class="math inline">\(m\)</span>的灰度级更暗，而高于<span class="math inline">\(m\)</span>的灰度级更亮．这种技术有时称为对比度拉伸．在该技术中，低于<span class="math inline">\(m\)</span>的被变换函数压缩在一个较窄范围内，接近黑色．而高于<span class="math inline">\(m\)</span>的与此相反．<span style="color:red"><strong><em>右图则是一种极限情况，<span class="math inline">\(T(r)\)</span>产生了一幅二级图像，这种称为阈值处理函数．</em></strong></span></p>
+<p>下面介绍一下基本的灰度变换函数：</p>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>图像反转</em></strong></span> 这种处理特别适用与增强嵌入在一副图像的暗区域中的白色或灰色细节，特别是黑色面积在尺寸中占主导地位时．图像反转定义为：<span class="math inline">\(s=L-1-r\)</span>．</li>
+<li><span style="color:red"><strong><em>对数变换</em></strong></span> 对数变换的通用形式为：<span class="math inline">\(s=clog(1+r)\)</span>.其中，<span class="math inline">\(c\)</span>是一个常数．该变换将输入中范围<span style="color:red"><strong><em>较窄的低灰度值映射为输出中较宽范围的灰度值</em></strong></span>．同样，对高度的输入灰度值也是如此．我们使用这种类型的变换来扩展图像中的暗像素的值，同时压缩更高灰度级的值．<span style="color:red"><strong><em>反对数变换的作用于此相反</em></strong></span>．
+<p align="center">
+<img src="http://itfish.net/Home/Modules/Images/itfish_10042_2.jpg" width="300" >
+</p></li>
+<li><p><span style="color:red"><strong><em>幂律（伽马）变换</em></strong></span> 幂变换的基本形式是：<span class="math inline">\(s=cr^{\gamma}\)</span>, 其中c和<span class="math inline">\(\gamma\)</span>为正常数．与对数变换的情况类似，部分<span class="math inline">\(\gamma\)</span>值的幂律曲线将较窄范围的暗色输入值映射为较宽范围的输出值．</p>
+伽马矫正是很重要的，不恰当的图像看起来不是太亮就是太暗．随着数字图像在互联网上应用的增多，伽马矫正变得越来越重要．因为大多数浏览者会有不同的监视器或设置，有些计算机系统甚至会内置伽马矫正．因此，合理的方法就是利用伽马值(在开发市场中，任意给定时间点，各种型号的监视器和计算机系统所期望的平均值)对图像进行预处理．</li>
+<li><span style="color:red"><strong><em>分段线性变换函数</em></strong></span>
+<ol style="list-style-type: decimal">
+<li><p><span style="color:red"><strong><em>对比度拉伸</em></strong></span>：最简单的分段线性函数是对比度拉伸变换． 低对比度图像可由照明不足，成像传感器动态范围太小，甚至在图像获取过程中镜头光圈设置错误引起．对比度拉伸是扩展图像灰度级动态范围的处理，因此尅跨越记录介质和显示装置的全部灰度处理范围。</p>
+<p>分段线性变换函数：增强原图各部分的反差，即增强输入图像中感兴趣的灰度区域，相对抑制那些不感兴趣的灰度区域。<span style="color:red"><strong><em>优势在于形式可以任意合成，缺点是是需要更多的用户输入</em></strong></span>。</p>
+<p>分段的灰度拉伸可以更加灵活地控制输出灰度直方图的分布，可以有选择地拉伸某段灰度区间，以改善输出图像。如果一幅图像灰度集中在<span style="color:red"><strong><em>较暗的区域</em></strong></span>而导致图像偏暗，可以用灰度拉伸功能来<span style="color:red"><strong><em>扩展（斜率&gt;1）</em></strong></span>物体的灰度区间以改善图像；如果图像灰度集中在<span style="color:red"><strong><em>较亮的区域</em></strong></span>而导致图像偏亮，也可以用灰度拉伸功能来<span style="color:red"><strong><em>压缩（斜率&lt;1）</em></strong></span>物体灰度区间以改善图像质量。</p>
+<p align="center">
+<img src="http://img.blog.csdn.net/20130630175241390?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvc2hpY2h1YW53YW5n/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" width="200" >
+</p></li>
+<li><span style="color:red"><strong><em>灰度级分层</em></strong></span> 突出图像中特定灰度范围的亮度是很重要的，其应用包括增强特征（卫星图像中大量的水和X射线图像中的缺陷）。通 <span class="math display">\[
+T(r)=\begin{cases}c,A\le r\le B\\ r, \text{other}\end{cases}
+\]</span> 常称为灰度级分层的出处理有很多，大多数基于2中基本方法的变形：
+<ol style="list-style-type: decimal">
+<li>将感兴趣范围内的所有灰度值显示为一个值，其他灰度值显示为另一个值，该变换产生了一幅二值图像。</li>
+<li>第二种是以前一种为基础，使得感兴趣范围的灰度变亮或变暗，保持图像中的其他灰度级不变。</li>
+</ol></li>
+<li><span style="color:red"><strong><em>比特平面分层</em></strong></span> 一副8比特图像可以考虑为8个1比特平面组成，其中平面1包含图像中所有像素的最低阶比特，而平面8包含图像中所有像素的最高阶比特。
+<p align="center">
+<img src="http://images.cnitblog.com/blog/557352/201402/212205056108488.png" width="400" >
+</p>
+<p>把一副图像分解成比特平面，对于分析图像中每个比特的相对重要性是很有用的．可以帮我们确定用于量化该图像的比特数的充分性．这种分解对图像压缩也很有用．</p>
+<p>在图像压缩用，重建一幅图像时所用到的平面比全部平面要少．重建是用第n个平面的像素乘以常数<span class="math inline">\(2^{n-1}\)</span>来完成的．</p>
+<p>在重建中使用更多的平面对图像的外观不会有更大的贡献，所以<span style="color:red"><strong><em>存储４个高阶比特平面允许我们以可接受的细节来重建元图像</em></strong></span>．</p></li>
+</ol></li>
+</ol>
+<h3 id="直方图处理"><span style="color:red"><strong><em>直方图处理</em></strong></span></h3>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>直方图均衡</em></strong></span> 用变量<span class="math inline">\(r\)</span>表示待处理图像的灰度。假设<span class="math inline">\(r\)</span>的取值区间为<span class="math inline">\([0,L-1]\)</span>,且<span class="math inline">\(r=0\)</span>表示黑色，<span class="math inline">\(r=L-1\)</span>表示白色。对于一个输入图像具有r值的像素值产生一个输出灰度值s，假设：<span class="math inline">\(T(r)\)</span>在区间<span class="math inline">\(0\le r \le L-1\)</span>上为单调递增函数，当<span class="math inline">\(0\le r \le L-1\)</span>时，<span class="math inline">\(0\le T(r) \le L-1\)</span>. <span style="color:red"><strong><em>单调递增</em></strong></span>是为了保证输出灰度值不少于相应的输入值，防止灰度反变换时产生人为缺陷。当严格单调不满足时，就要使用寻找最接近整数匹配的方法来解决非唯一反变换的问题。 一个图形的灰度级可看成是区间<span class="math inline">\([0,L-1]\)</span>内的随机变量，随机变量的基本描绘子是其概率密度函数PDF。令<span class="math inline">\(p_r(r),p_s(s)\)</span>分别表示随机变量<span class="math inline">\(r,s\)</span>的概率密度函数。如果<span class="math inline">\(p_r(r),p_s(s)\)</span>已知，且在感兴趣的值域上<span class="math inline">\(T(r)\)</span>是连续且可微的，则变换后的变量s的PDF可以由简单公式得到： <span class="math inline">\(p_s(s)=p_r(r)|\frac{dr}{ds}|\)</span>. 这样，输出灰度变量s的PDF就 <span style="color:red"><strong><em>由输入灰度的PDF和所用的变换函数决定</em></strong></span>。 在图像处理中特别重要的变换函数有：<span class="math inline">\(\begin{cases}s=T(r)=(L-1)\int_{0}^r p_r(w)dw\\\frac{ds}{dr}=(L-1)\frac{d}{dr}\int_0^rp_r(w)dw=(L-1)p_r(r)\end{cases}\)</span>, 合并后得到<span class="math inline">\(p_s(s)=p_r(r)|\frac{dr}{ds}|=\frac{1}{L-1}\)</span>. 所以<span class="math inline">\(p_s(s)\)</span>是<span style="color:red"><strong><em>一个均匀概率密度函数</em></strong></span>。 对于离散值，处理其概率与求和来替代处理概率密度函数与积分.<span class="math inline">\(\begin{cases}p_r(r_k)=\frac{n_k}{MN}\\ s_k=T(r_k)=(L-1)\sum_{j=0}^k p_r(r_j)=\frac{L-1}{MN}\sum_{j=0}^k n_j, k=0,1,2,...,L-1 \end{cases}\)</span>, 其中<span class="math inline">\(MN\)</span>是<span style="color:red"><strong><em>图像中像素的总数</em></strong></span>，<span class="math inline">\(n_k\)</span>是<span style="color:red"><strong><em>灰度为<span class="math inline">\(r_k\)</span>的像素个数</em></strong></span>，<span class="math inline">\(L\)</span>是图像中<span style="color:red"><strong><em>可能的灰度级的数量</em></strong></span>。与<span class="math inline">\(r_k\)</span>相对的<span class="math inline">\(p_r(r_k)\)</span>图形通常称为<span style="color:red"><strong><em>直方图</em></strong></span>。</li>
+</ol>
+<p>因为直方图是PDF的近似，而且在处理中不允许造成新的灰度级，所以在实际的直方图均衡中，很少见到有完美平坦的直方图.因此，<span style="color:red"><strong><em>不像连续的情况，通常不能证明离散直方图均衡会导致均匀的直方图</em></strong></span>．</p>
+<ol start="2" style="list-style-type: decimal">
+<li><p><span style="color:red"><strong><em>直方图匹配（规定化）</em></strong></span> 直方图均衡能<span style="color:red"><strong><em>自动的确定变换函数</em></strong></span>，该函数寻求有均匀直方图的输出图像，当需要自动增强时，这是一种好方法．但是，某些函数，采用均匀直方图的基本增强并不是最好的方法．比如希望处理后的图像具有规定的直方图形状可能更有用．这种处理后有特殊直方图的方法叫：<span style="color:red"><strong><em>直方图匹配或直方图规定化</em></strong></span>．</p>
+<p>对于连续的灰度<span class="math inline">\(r\)</span>和<span class="math inline">\(z\)</span>,<span class="math inline">\(p_r(r),p_z(z)\)</span>是它们所对应的连续概率密度函数．<span class="math inline">\(r\)</span>和<span class="math inline">\(z\)</span>分别表示输入图像和输出图像(已处理)的灰度级．可以由给定的输入图像估计<span class="math inline">\(p_r(r)\)</span>,而<span class="math inline">\(p_z(z)\)</span>是我们希望输出图像所具有的制定概率密度函数． 令，<span class="math inline">\(\begin{cases}s=T(r)=(L-1)\int_{0}^rp_r(w)dw\\G(z)=(L-1)\int_{0}^zp_z(t)dt\end{cases}\Rightarrow z=G^{-1}[T(r)]=G^{-1}(s)\)</span>, 一旦由输入图像估计出<span class="math inline">\(p_r(r)\)</span>,<span style="color:red"><strong><em>变换函数<span class="math inline">\(T(r)\)</span></em></strong></span>就可以得到．同理，<span class="math inline">\(p_z(z)\)</span>已知，<span style="color:red"><strong><em>变换函数<span class="math inline">\(G(z)\)</span></em></strong></span>也可以得到．</p>
+使用下列步骤，可由<span style="color:red"><strong><em>一幅图像得到一幅灰度级具有制定概率密度函数的图像</em></strong></span>：
+<ol style="list-style-type: decimal">
+<li>由输入图像得到<span class="math inline">\(p_r(r)\)</span>，并计算<span class="math inline">\(s=T(r)=(L-1)\int_{0}^rp_r(w)dw\)</span>;</li>
+<li>使用<span class="math inline">\(G(z)=(L-1)\int_{0}^zp_z(t)dt\)</span>中制定的ＰＤＦ求得变换函数<span class="math inline">\(G(z)\)</span>;</li>
+<li>求得反变换函数<span class="math inline">\(z=G^{-1}(s)\)</span>,由于<span class="math inline">\(z\)</span>是由<span class="math inline">\(s\)</span>得到的，所以该处理是s到z的映射，而后者正是我们期望的值．</li>
+<li>首先用<span class="math inline">\(s=T(r)=(L-1)\int_{0}^rp_r(w)dw\)</span>对输入图像进行均衡得到输出图像：该图像的像素值是<span class="math inline">\(s\)</span>值．对均衡后的图像中具有<span class="math inline">\(s\)</span>值的每个像素执行反映射<span class="math inline">\(z=G^{-1}(s)\)</span>,得到输出图像中的相应像素．当所有的像素都处理完后，输出图像的ＰＤＦ将等于制定的ＰＤＦ．</li>
+</ol>
+<span style="color:red"><strong><em>总结直方图规定划如下</em></strong></span>;
+<ol style="list-style-type: decimal">
+<li>计算给定图像的直方图<span class="math inline">\(p_r(r)\)</span>，并寻找直方图均衡变换，把<span class="math inline">\(s_k\)</span>四舍五入为范围<span class="math inline">\([0,L-1]\)</span>内的整数；</li>
+<li>对<span class="math inline">\(q=0,1,2...,L-1\)</span>计算变换函数G的所有值，其中<span class="math inline">\(p_z(z_i)\)</span>是规定的直方图的值。把G的值四舍五入为范围<span class="math inline">\([0,L-1]\)</span>内的整数，将G的值存储在一个表中。 3.对每个值<span class="math inline">\(s_k\)</span>使用步骤2存储的G值寻找相应的<span class="math inline">\(z_q\)</span>值，以使<span class="math inline">\(G(z_q)\)</span>最接近<span class="math inline">\(s_k\)</span>，并存储这些从s到z的映射。当满足给定<span class="math inline">\(s_k\)</span>的<span class="math inline">\(z_q\)</span>值多与一个时，按惯例选择最小的值。</li>
+<li>首先对输入图像进行均衡，然后使用步骤3找到的映射把该图像中的每个均衡后的像素值<span class="math inline">\(s_k\)</span>映射为直方图规定化后的图像中的相应<span class="math inline">\(z_q\)</span>值，形成直方图规定划后的图像。</li>
+</ol></li>
+<li><p><span style="color:red"><strong><em>局部直方图处理</em></strong></span> <span style="color:red"><strong><em>局部直方图处理是定义一个邻域</em></strong></span>，并把该区域的中心从一个像素移至另一个像素。在每个位置，计算邻域中的点的直方图，并且得到的不是直方图均衡化，就是规定化变换函数。这个函数最终用于映射邻域中心像素的灰度。然后，邻域的中心北移至一个相邻像素位置，并重复该过程。</p></li>
+<li><p><span style="color:red"><strong><em>在图像增强中使用直方图统计</em></strong></span> 考虑用于增强目的的均值和方差的2中应用，全局均值和方差是在整幅图像上计算的，这对于全面灰度和对比度的总体调整是有用的。这些参数的一种更强有力的应用是局部增强，在局部增强中，局部均值和方差是根据图像中每一像素的邻域内的图像特征进行改变的基础。 直方图的那副图像的<span style="color:red"><strong><em>灰度<span class="math inline">\(r_i\)</span>出现的概率</em></strong></span>定义为：<span class="math inline">\(\mu_n(r)=\sum_{i=0}^{L-1}(r_i-m)^np(r_i)\)</span> 其中<span class="math inline">\(m\)</span>是<span class="math inline">\(r\)</span>的均值，也就是平均灰度:<span class="math inline">\(m=\frac{1}{MN}\sum_{x=0}^{M-1}\sum_{y=0}^{N-1}f(x,y)\)</span>, 类似的，取样方差为：<span class="math inline">\(\delta^2=\frac{1}{MN}\sum_{x=0}^{M-1}\sum_{y=0}^{N-1}[f(x,y)-m]^2\)</span></p>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>邻域均值和方差</em></strong></span> <span class="math inline">\(S_{xy}\)</span>表示规定大小的以<span class="math inline">\((x,y)\)</span>为中心的邻域（子图像），该邻域中像素的均值由下式给出：<span class="math inline">\(m_{S_{xy}}^2=\sum_{i=0}^{L-1}(r_i-m_{S_{xy}})^2p_{S_{xy}}(r_i)\)</span> 局部均值是邻域<span class="math inline">\(S_{xy}\)</span>中平均灰度的度量，局部方差（或标准差）是邻域中灰度对比度的度量．</li>
+</ol>
+<p>用局部均值和方差进行图像处理的一个重要方面是它的灵活性，提供了简单而强有力的基于统计度量的增强技术，而统计度量与图像的外观有紧密，可预测的关系．</p></li>
+</ol>
+<p><span style="color:red"><strong>Reference:</strong></span> <a href="http://blog.csdn.net/yuexin2/article/details/23838523">matlab 的直方图均衡化</a> / <a href="http://bbs.csdn.net/topics/390459333">如何对图像进行亮度自适应处理，有哪些算法？</a> / <a href="http://www.cnblogs.com/Imageshop/archive/2013/04/07/3006334.html">限制对比度自适应直方图均衡化算法原理、实现及效果</a> / <a href="http://wenku.baidu.com/link?url=FmLcutKtlTZ9BxfE17IOPXWPY6Y9812UJVSzzu3-nYIytvJvlmd4nBWkK0RjbRhcV6IGRFRANKaTyMGrR4n9U3_mCDY8gs4ZeF0Sdgrtalm">直方图的均衡化</a> / <a href="http://wenku.baidu.com/view/3339a36648d7c1c708a14558.html">一种基于直方图均衡化的图像增强方法</a> / <a href="http://blog.csdn.net/zrongh/article/details/7302816">直方图均衡化原理</a> / <a href="http://wenku.baidu.com/link?url=FmLcutKtlTZ9BxfE17IOPXWPY6Y9812UJVSzzu3-nYIytvJvlmd4nBWkK0RjbRhcV6IGRFRANKaTyMGrR4n9U3_mCDY8gs4ZeF0Sdgrtalm">直方图的均衡化</a> / <a href="https://code.google.com/p/dd-evaluator/source/browse/trunk/src/clahe.cpp?r=49">svn/ trunk/ src/ clahe.cpp</a> / <a href="http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_histograms/py_histogram_equalization/py_histogram_equalization.html">Histograms - 2: Histogram Equalization</a> / <a href="http://blog.csdn.net/yeyang911/article/details/22752935">cv::CLAHE 使用CLAHE算法例子</a> / <a href="http://blog.csdn.net/liyuefeilong/article/details/43709359">OpenCV2学习笔记（二）：图像的直方图</a>/<a href="http://answers.opencv.org/question/12024/use-of-clahe/">Use of CLAHE</a> / <a href="http://m.blog.csdn.net/blog/migan2008/6155110">基于opencv的CLAHE</a> / <a href="http://blog.csdn.net/nemo2011/article/details/9007161">Mat 转 IplImage</a> / <a href="http://www.cnblogs.com/kennel/archive/2012/05/08/2489494.html">使用cvReleaseImage出错</a> / <a href="http://www.cnblogs.com/Key-Ky/p/4150531.html">CvMat，Mat和IplImage之间的转化和拷贝</a></p>
+<h3 id="空间滤波基础">空间滤波基础</h3>
+<p>空间滤波是一种采用滤波处理的图像增强方法。其理论基础是空间卷积和空间相关。目的是改善图像质量。空间滤波的模板被称为空间滤波器。 滤波一词借用于频域处理。本意是指信号有各种频率的成分，滤掉不想要的成分，即为滤掉常说的噪声，留下想要的成分，这既是滤波的过程，也是滤波的目的。 线性空间滤波与频域滤波之间存在着一一对应的关系。空间滤波可以提供相当多的功能，还可以用于非线性滤波，而这在频域中是做不到的。</p>
+<ol style="list-style-type: decimal">
+<li><p><span style="color:red"><strong><em>空间滤波机理</em></strong></span> 在图像中的任意一点<span class="math inline">\((x,y)\)</span>，滤波器的响应<span class="math inline">\(g(x,y)\)</span>是滤波器系数与该滤波器包围的图像像素的<span style="color:red"><strong><em>乘积之和</em></strong></span>。 一般来说，用大小为<span class="math inline">\(m\times n\)</span>的滤波器对大小为<span class="math inline">\(M\times N\)</span>的图像进行线性空间滤波，可由下式表示：<span class="math inline">\(g(x,y)=\sum_{s=-a}^a\sum_{t=-b}^bw(s,t)f(x+s,y+t)\)</span>. <span class="math inline">\(w\)</span>是滤波器的系数，<span class="math inline">\(f\)</span>是像素值。对于<span class="math inline">\(m\times n\)</span>的模板，我们假设<span class="math inline">\(m = 2a + 1\)</span>，<span class="math inline">\(n = 2b + 1\)</span>，a，b为正整数。</p></li>
+<li><span style="color:red"><strong><em>空间相关与卷积</em></strong></span>
+<ol style="list-style-type: decimal">
+<li>执行线性空间滤波时，必须要先清楚的理解两个概念。相关和卷积。 <span style="color:red"><strong><em>相关</em></strong></span>：滤波器模板移过图像并计算每个位置乘积之和的处理； <span style="color:red"><strong><em>卷积</em></strong></span>：类似，但是滤波器首先要旋转180度
+<p align="center">
+<img src="http://img.blog.csdn.net/20150907210610141" width="400" >
+</p></li>
+<li>有几点需要注意：
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>相关</em></strong></span>是滤波器位移的函数。</li>
+<li>滤波器w与只包含一个1其余全是0的函数相关，得到的结果是旋转了180°的滤波器w。</li>
+<li>我们将只包含一个1其余全是0的函数称为<span style="color:red"><strong><em>离散单位冲激</em></strong></span>。</li>
+<li>因此，我们可以得出一个结论：<span style="color:red"><strong><em>一个函数与离散单位冲激相关，在该冲激位置产生这个函数的一个翻转的版本</em></strong></span>。</li>
+</ol></li>
+<li>卷积的概念是线性系统理论的基石。 <span style="color:red"><strong><em>卷积的基本特征是</em></strong></span>，某个函数与某个单位冲激卷积，得到的是在该冲激处的这个函数的拷贝。 前面的概念很容易扩展到图像上。对于大小是m * n的滤波器，我们在图像的顶部和底部需要填充m - 1行0，在左侧和右侧填充n - 1列0.eg。假设滤波器的大小为3 * 3。
+<p align="center">
+<img src="http://img.blog.csdn.net/20150908100513782" width="400" >
+</p>
+如果图像f包含一个与w完全相等的区域在图像的中心，当w位于f区域的中心时，相关函数（归一化后）的值将是最大的。如此看来，相关还可以用于寻找图像中的匹配。</li>
+<li><span style="color:red"><strong><em>总结</em></strong></span> 下面我们通过公式来总结一下前面的讨论。 一个大小为<span class="math inline">\(m\times n\)</span>的滤波器<span class="math inline">\(w(x,y)\)</span>与一幅图像<span class="math inline">\(f(x,y)\)</span>做相关操作，可表示为: <span class="math inline">\(w(x,y)\)</span>☆<span class="math inline">\(f(x,y)=\sum_{s=-a}^{a}\sum_{t=-b}^bw(s,t)f(x+s,y+t)\)</span> <span class="math inline">\(w(x,y)\bigstar f(x,y)=\sum_{s=-a}^{a}\sum_{t=-b}^bw(s,t)f(x-s,y-t)\)</span> 其中等式右侧的减号表示翻转<span class="math inline">\(f\)</span>（即旋转180°）。为简化符号表示，我们遵循惯例，翻转移位<span class="math inline">\(w\)</span>而不是<span class="math inline">\(f\)</span>。结果是一样的。</li>
+<li>使用相关或卷积执行空间滤波时优先选择的方法。事实上，无论是卷积还是相关，我们都可以通过<span style="color:red"><strong><em>简单的平移滤波器</em></strong></span>去执行其功能，重要的是在给定的滤波任务中，按对应于期望操作的方式来指定滤波器模板。</li>
+<li>还有一点需要注意的是，在图像处理文献中，我们很可能会遇到<span style="color:red"><strong><em>卷积滤波器、卷积模板或卷积核这些术语</em></strong></span>。按照惯例，这些术语用来表示一种空间滤波器，并且滤波器未必用于真正的卷积。类似地，模板与图像卷积通常用于表示我们之前讨论得滑动乘积求和处理，而不必区分相关与卷积的差别。更合适的是，它通常用于表示两种操作之一。这一不太严密的术语是产生混淆的根源</li>
+</ol></li>
+<li><span style="color:red"><strong><em>线性滤波的向量表示</em></strong></span> 当我们的兴趣在于相关或卷积的模板的响应特征R时，有时写成乘积的求和形式是方便的： 相关或卷积的模板的响应特性<span class="math inline">\(R=w_1z_1+w_2z_2+...+w_{mn}z_{mn}=\sum_{k=1}^{mn}w_kz_k=w^Tz\)</span> 其中w项是一个大小为<span class="math inline">\(m\times n\)</span>的滤波器系数，<span class="math inline">\(z\)</span>为由滤波器覆盖的相应图像的灰度值。</li>
+<li><p><span style="color:red"><strong><em>空间滤波器模板的产生</em></strong></span> 生成一个大小为<span class="math inline">\(m\times n\)</span>的线性滤波器要求指定<span class="math inline">\(mn\)</span>个模板系数，这些系数是根据该滤波器支持什么样的操作来选择的． 例如，一个具有2个变量的高斯函数有如下形式：<span class="math inline">\(h(x,y)=exp(-\frac{x^2+y^2}{2\delta^2})\)</span>. 产生非线性滤波器要求我们确定邻域大小，以及将对包含在邻域内的图像像素执行的操作。</p></li>
+</ol>
+<h3 id="平滑空间滤波器"><span style="color:red"><strong><em>平滑空间滤波器</em></strong></span></h3>
+<p>平滑空间滤波器是低频增强的空间滤波技术。它的目的有两类：一是模糊处理，二是降低噪声。这里介绍的平滑空间滤波器也分为两类，一类是线性滤波器，比如最简单的简单平均法；另一类是<span style="color:red"><strong><em>统计排序滤波器</em></strong></span>。<span style="color:red"><strong><em>平滑处理也常称为模糊处理</em></strong></span>。是因为对于线性滤波器来说，一般<span style="color:red"><strong><em>高通是锐化，低通是模糊</em></strong></span>。</p>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>平滑线性滤波器</em></strong></span> <span style="color:red"><strong><em>平滑线性空间滤波器的输出（响应）</em></strong></span>是包含在滤波器模板邻域内的像素的简单平均值。这些滤波器有时也称为均值滤波器。也可以把它们归入低通滤波器。 这种处理的结果降低了<span style="color:red"><strong><em>图像灰度的尖锐变化</em></strong></span>。由于典型的随机噪声由灰度级的急剧变化组成，因此常见的平滑处理的应用就是降噪。 然而，由于<span style="color:red"><strong><em>图像边缘</em></strong></span>（几乎总是一幅图像希望有的特性）也是由图像灰度尖锐变化带来的特性，所以均值滤波器处理还是存在着不希望有的<span style="color:red"><strong><em>边缘模糊的负面效应</em></strong></span>。
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>简单平均的滤波器模板</em></strong></span> 下面这幅图中的是最为常见的简单平均的滤波器模板：
+<p align="center">
+<img src="http://img.blog.csdn.net/20150920125528258" width="３00" >
+</p>
+所有系数都相等的空间均值滤波器，有时也被称为<span style="color:red"><strong><em>盒状滤波器</em></strong></span>。</li>
+<li><span style="color:red"><strong><em>加权平均滤波器模板</em></strong></span>
+<p align="center">
+<img src="http://img.blog.csdn.net/20150920130017422" width="３00" >
+</p>
+在这个例子所示的模板中，中心位置的系数最大，因此在均值计算中可以为该像素提供更大的权重。其他像素离中心越近就赋予越大的权重。 这种加权重的策略的目的是，在平滑处理中，试图降低模糊。 我们也可以选择其他权重来达到相同的目的。 但是，这个例子中所有系数的和等于16，这对于计算机来说是一个很有吸引力的特性，因为它是2的整数次幂。 在实践中，由于这些模板在一幅图像中的任何一个位置所跨越的区域很小，通常很难看出这两个模板或者类似方式进行平滑处理后的图像之间的区别。 <span style="color:red"><strong><em>一幅<span class="math inline">\(M\times N\)</span>的图像经过一个大小为<span class="math inline">\(m\times n\)</span>的加权均值滤波器滤波过程为：</em></strong></span> <span class="math display">\[
+g(x,y)=\frac{\sum_{s=-a}^a\sum_{t=-b}^bw(s,t)f(x+s,y+t)}{\sum_{s=-a}^{a}\sum_{t=-b}^b w(s,t)}
+\]</span>
+<ul>
+<li><span style="color:red"><strong><em>当图像的细节与滤波器模板近似相同时，图像中的一些细节受到的影响比较大。</em></strong></span></li>
+<li>邻域越大平滑的效果越好。但是<span style="color:red"><strong><em>邻域过大，平滑会使边缘信息损失的越大</em></strong></span>，从而使输出的图像变得模糊，因此需要合理的选择邻域的大小。</li>
+<li>模板的大小由那些即将融入背景中的物体R的尺寸来决定。</li>
+<li>滤波后的图像中可能会有<span style="color:red"><strong><em>黑边</em></strong></span>。这是由于我们用0（黑色）填充原图像的边界，经滤波后，再去除填充区域的结果，某些黑的混入了滤波后的图像。对于使用较大滤波器平滑的图像，这就成了问题。</li>
+</ul></li>
+</ol></li>
+<li><span style="color:red"><strong><em>统计排序（非线性滤波器）</em></strong></span> 统计排序滤波器是一种非线性空间滤波器，这种滤波器的<span style="color:red"><strong><em>响应以滤波器包围的图像的像素的排序为基础</em></strong></span>，然后使用<span style="color:red"><strong><em>统计排序结果</em></strong></span>决定的值代替中心像素的值。 这一类中最知名的就要数<span style="color:red"><strong><em>中值滤波器了</em></strong></span>~它是将像素邻域内的灰度值的中值代替该像素的值。 中值滤波器的使用非常的普遍，它对于一定类型的随机噪声提供了一种<span style="color:red"><strong><em>优秀的去噪能力</em></strong></span>。而且比同尺寸的线性平滑滤波器的<span style="color:red"><strong><em>模糊程度明显要低</em></strong></span>。不足之处就是<span style="color:red"><strong><em>中值滤波花费的时间是均值滤波的5倍以上</em></strong></span>。
+<ul>
+<li>中值滤波器对于处理脉冲噪声非常有效，这种噪声称为<span style="color:red"><strong><em>椒盐噪声</em></strong></span>，因为这种噪声是以黑白点的形式叠加在图像上的。</li>
+<li>中值滤波器的<span style="color:red"><strong><em>主要功能是使拥有不同灰度的点看起来更接近于他们的相邻点</em></strong></span>。</li>
+<li>我们使用<span style="color:red"><strong><em><span class="math inline">\(m\times m\)</span></em></strong></span>中值滤波器来去除那些相对于<span style="color:red"><strong><em>其邻域像素更亮或更暗并且其区域小于(m^2)/2（滤波器区域一半）</em></strong></span>的孤立像素族。
+<table width="100%" border="0">
+<tr>
+<td>
+<img src="http://img.blog.csdn.net/20150923111941674" alt="" align="left" />
+</td>
+<td>
+<img src="http://img.blog.csdn.net/20150923112014549" alt="" align="center" />
+</td>
+<td>
+<img src="http://img.blog.csdn.net/20150923141846428" alt="" align="right"/>
+</td>
+</tr>
+</table>
+从左到右分别为:(a)添加了椒盐噪声的图像;(b)添加了椒盐噪声的图像;(c)中值滤波后的结果.很明显，中值滤波的效果要比均值滤波好的多~ ### <span style="color:red"><strong><em>锐化空间滤波器</em></strong></span></li>
+</ul></li>
+</ol>
+<p>锐化处理的主要目的是突出灰度的过渡部分。补偿轮廓，增强图像的边缘及灰度跳变的部分，使图像变得清晰。图像锐化的用途多种多样，应用范围从电子印刷和医学成像到工业检测和军事系统的制导等。 图像的<span style="color:red"><strong><em>模糊</em></strong></span>可以通过<span style="color:red"><strong><em>积分</em></strong></span>来实现（均值处理与积分类似）。而<span style="color:red"><strong><em>图像锐化</em></strong></span>，则需要<span style="color:red"><strong><em>微分</em></strong></span>来实现。</p>
+<ol style="list-style-type: decimal">
+<li><p><span style="color:red"><strong><em>基础</em></strong></span> 基本上。微分算子的响应程度与图像在用算子操作的这一点的突变程度成正比，这样，<span style="color:red"><strong><em>图像微分增强边缘和其他突变（如噪声），而削弱灰度变化缓慢的区域</em></strong></span>。 对于一维函数f（x），其一阶微分的基本定义是差值。对于二维函数，我们将沿着两个空间轴处理偏微分。 <span style="color:red"><strong><em>一阶微分</em></strong></span>：<span class="math inline">\(\frac{\partial f}{\partial x}=f(x+1)-f(x)\)</span> <span style="color:red"><strong><em>二阶微分</em></strong></span>：<span class="math inline">\(\frac{\partial ^2f}{\partial x^2}=f(x+1)+f(x-1)-2f(x)\)</span> 图像中的边缘在灰度上常常类似于斜坡过渡，就导致图像的一阶微分产生较粗的边缘，因为沿着斜坡的微分非零。二阶微分产生由零分开的一个像素宽的双边缘。由此，二阶微分在增强细节方面要比一阶微分好得多，这是一个适合锐化图像的理想特性。</p>
+例如：一段扫描线，下面是扫描线中的灰度值
+<p align="center">
+<img src="http://img.blog.csdn.net/20150921112822627" width="300" >
+</p>
+<p>数字图像中的边缘在灰度上常常类似于<span style="color:red"><strong><em>斜坡过渡</em></strong></span>，如上面的例子那样，这样会导致图像的一阶微分会产生较粗的边缘，因为沿着斜坡的积分非零。 另一方面，<span style="color:red"><strong><em>二阶微分产生零分开的一个像素的双边缘</em></strong></span>。 由此可以得出结论，<span style="color:red"><strong><em>二阶微分在增强细节方面要比一阶微分好得多</em></strong></span>，这是一个适合<span style="color:red"><strong><em>锐化</em></strong></span>图像的理想特性。 所以我们开始主要注意二阶微分。下面，我们来考虑二维函数二阶微分的实现以及在图像锐化处理中的应用。</p></li>
+<li><span style="color:red"><strong><em>使用二阶微分进行图像锐化－－拉普拉斯算子</em></strong></span> 基本方法是，先定义一个二阶微分的离散公式，然后<span style="color:red"><strong><em>构造一个基于该公式的滤波器模板</em></strong></span>，然后再把该模板与原图片卷积，从而实现锐化。 我们最关注的是一种<span style="color:red"><strong><em>各向同性的滤波器</em></strong></span>，这种滤波器的响应与滤波器作用的图像的突变方向无关。也就是说，<span style="color:red"><strong><em>各向同性滤波器是旋转不变的，即将原图像旋转之后进行滤波处理，与先对图像滤波再旋转的结果应该是相同的</em></strong></span>，。最简单的各向同性微分算子是<span style="color:red"><strong><em>拉普拉斯算子,不同的算子对应了不同的求微分的方法。</em></strong></span>。
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>二维图像拉普拉斯算子</em></strong></span> 一个二维图像函数<span class="math inline">\(f(x,y)\)</span>的拉普拉斯算子定义为:<span class="math inline">\(\nabla ^2f=\frac{\partial ^2f}{\partial x^2}+\frac{\partial ^2f}{\partial f^2}\)</span> 因为任意阶微分都是线性操作，所以拉普拉斯变换也是一个线性算子。为了从离散形式描述这一公式，我们使用二阶微分的公式来进行推导： <span class="math inline">\(\begin{cases} \frac{\partial ^f}{\partial x^2}=f(x+1,y)+f(x-1,y)-2f(x,y)\\ \frac{\partial ^f}{\partial y^2}=f(x,y+1)+f(x,y-1)-2f(x,y) \end{cases}\)</span> 然后得到：<span class="math inline">\(\nabla^2f(x,y)=f(x+1,y)+f(x-1,y)+f(x,y+1)+f(x,y-1)-4f(x,y)\)</span></li>
+<li>例子 滤波器模板如下：
+<p align="center">
+<img src="http://img.blog.csdn.net/20150921133408863" width="100" >
+</p>
+这个滤波器可以实现拉普拉斯算子，这个模板给出了以90°为增量进行旋转的一个各向同性结果。 但其实对角线方向也可以这样组成：在数字拉普拉斯变换的定义中，在左边加入两项，即两个对角线方向各加上一个。每个新添加项的形式与<span class="math inline">\(\frac{\partial ^f}{\partial x^2}\)</span>类似，只是其坐标轴的方向沿着对角线的方向。 由于每个对角线方向上的项还包含一个 <span class="math inline">\(-2f(x,y)\)</span>，所以一共应该减去8个<span class="math inline">\(f(x,y)\)</span>. 将产生如下的模板：
+<p align="center">
+<img src="http://img.blog.csdn.net/20150921134134194" width="100" >
+</p>
+这个模板对45°增幅的结果是各向同性的。</li>
+<li>由于拉普拉斯是一种<span style="color:red"><strong><em>微分算子</em></strong></span>，因此其应用强调的是图像中的灰度突变，并不强调灰度级缓慢变化的区域。将<span style="color:red"><strong><em>原图像和拉普拉斯图像叠加在一起的简单方法</em></strong></span>，可以复原背景特性并保持拉普拉斯锐化处理的效果。 <span class="math inline">\(g(x,y)=f(x,y)+c[\nabla^2f(x,y)]\)</span></li>
+<li>如果所使用的模板定义有<span style="color:red"><strong><em>负的中心系数</em></strong></span>，那么必须将原图像<span style="color:red"><strong><em>减去经拉普拉斯变换后的图像</em></strong></span>，而不是加上他，从而得到锐化后的结果。 <span class="math inline">\(g(x,y)=f(x,y)-c[\nabla^2f(x,y)]\)</span> 由于拉普拉斯图像中即有正值又有负值，并且<span style="color:red"><strong><em>所有负值在显示时都被修剪为0</em></strong></span>，所以<span style="color:red"><strong><em>变换后的图像大部分都是黑色的</em></strong></span>。 其中，<span class="math inline">\(f(x,y)\)</span>和<span class="math inline">\(g(x,y)\)</span>分别是输入图像和锐化后的图像。</li>
+<li>一个典型的<span style="color:red"><strong><em>标定拉普拉斯图像的方法</em></strong></span>是对它的最小值加上一个新的替代0的最小值，然后将结果标定到整个灰度范围[0，L - 1]内。</li>
+</ol></li>
+<li><span style="color:red"><strong><em>非锐化掩蔽和高提升滤波</em></strong></span> 在印刷和出版界经常使用的图像锐化处理过程是从原图像中减去一副非锐化版本，这称为非锐化掩蔽的处理过程由一下步骤组成：
+<ol style="list-style-type: decimal">
+<li>模糊原图像</li>
+<li>从原图像中减去模糊图像（产生的差值图像称为模板）</li>
+<li>将模板加到原图像上</li>
+</ol>
+令<span class="math inline">\(\bar{f}(x,y)\)</span>表示模糊图像，非锐化掩蔽以公式形式描述。首先，得到模板： <span class="math inline">\(g_{mask}(x,y)=f(x,y)-\bar{f}(x,y)\)</span> 然后，在原图像上加上该模板的一个权重部分： <span class="math inline">\(g(x,y)=f(x,y)+k*g_{mask}(x,y)\)</span> 上式中，当k=1时，我们得到上面定义的<span style="color:red"><strong><em>非锐化掩蔽</em></strong></span>，当k&gt;1时，该处理称为<span style="color:red"><strong><em>高提升滤波</em></strong></span>，当k&lt;1时，则<span style="color:red"><strong><em>不强调非锐化模板的贡献</em></strong></span>。</li>
+<li><span style="color:red"><strong><em>使用一阶微分对（非线性）图像锐化－－梯度</em></strong></span> 图像处理中的一阶微分是用梯度幅值来实现的，一个函数<span class="math inline">\(f\)</span>在<span class="math inline">\(f(x,y)\)</span>的梯度是定义为二维列向量（这是一个矢量，给定了一个方向）： <span class="math inline">\(\nabla f=grad(f)\)</span>=<span class="math inline">\(\begin{bmatrix}g_x\\g_y\end{bmatrix}\)</span>=<span class="math inline">\(\begin{bmatrix}\frac{\partial f}{\partial x}\\ \frac{\partial f}{\partial y}\end{bmatrix}\)</span> <span style="color:red"><strong><em>该向量具有重要的几何特性，指出了在位置<span class="math inline">\((x,y)\)</span>出<span class="math inline">\(f\)</span>的最大变化率的方向。</em></strong></span>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>梯度在三维坐标中表示为：</em></strong></span>
+<p align="center">
+<img src="http://img.blog.csdn.net/20150201162712251?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvVG9ueVNoZW5nVGFu/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" width="300" >
+</p>
+图像梯度方向给出图像变化最快方向，当前点的梯度长度为：<span class="math inline">\(M(x,y)=mag(\nabla f)=\sqrt{g_x^2+g_y^2}\)</span> 它是梯度向量方向率在<span class="math inline">\((x,y)\)</span>处的值。注意，<span class="math inline">\(M(x,y)\)</span>是与原图像大小相同的图像，它是当x和y允许在f中的所有像素位置变化时产生的。通常称为梯度图像。后面的表达式仍保留了灰度的变换，但丢失掉了其<span style="color:red"><strong><em>各向同性</em></strong></span>。(<em>具体原因是三角形三遍关系原理，因为梯度方向和长度对于旋转是不变的，所以，x轴和y轴发生旋转的时候，直角三角形两边发生变化，但保持斜边长度和方向不变，因此两个直角边的长度和必然发生改变，也就是上面的M值必然会改变，顾其不具有旋转不变形。</em>) 下面介绍两种算子：<span style="color:red"><strong><em>一阶Roberts交叉梯度算子和二阶Soble算子</em></strong></span>.</li>
+<li><span style="color:red"><strong><em>一阶Roberts交叉梯度算子</em></strong></span> 奇葩算子Robert，说它奇葩确实奇葩，因为不知道Robert哪来的勇气或者推导过程，使用一个2x2的模板，而且是对角线做差，其差分为：<span class="math inline">\(g_x=(z_9-z_5)\)</span>和<span class="math inline">\(g_y=(z_8-z_6)\)</span> 因为向量无法在图像中显示，我们要计算梯度向量的长度：<span class="math inline">\(M(x,y)=[(z_9-z_5)^2+(z_8-z_6)^2]^{1/2}\)</span> 简化为绝对值方法：<span class="math inline">\(M(x,y)=|z_9-z_5|+|z_8-z_6|\)</span> 这个就是Robert交叉算子。模板：
+<p align="center">
+<img src="http://img.blog.csdn.net/20150201141912982?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvVG9ueVNoZW5nVGFu/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" width="300" >
+</p>
+<p align="center">
+<img src="http://img.blog.csdn.net/20150201145019915?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvVG9ueVNoZW5nVGFu/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" width="300" >
+</p>
+这个过程就用Robert产生了Sobel，同样的纵向移动就会产生x轴方向的算子。Sobel算子原理的论文不多，但都说这是个很好的边缘检测算子。
+<table width="100%" border="0">
+<tr>
+<td>
+<img src="http://img.blog.csdn.net/20150201145426245?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvVG9ueVNoZW5nVGFu/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" align="left" />
+</td>
+<td>
+<img src="http://img.blog.csdn.net/20150201145637551?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvVG9ueVNoZW5nVGFu/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" align="right" />
+</td>
+</tr>
+</table></li>
+<li><span style="color:red"><strong><em>二阶Soble算子</em></strong></span> 为Robert算子是2x2的模板，不是对称的奇数模板，我们更喜欢3x3的模板，所以，要根据上面的Robert算子改造出来一个3x3模板，提出了下面这个计算方法： <span class="math inline">\(\begin{cases}g_x=\frac{\partial f}{\partial x}=(z_7+2z_8+z_9)-(z_1+2z_2+z_3)\\g_y=\frac{\partial f}{\partial y}=(z_3+2z_6+z_9)-(z_1+2z_4+z_7)\end{cases}\)</span> 怎么来的？说实话我一开始也不知道，只是说根据上面Robert算子，搞出来一个等价的，其数字模板为：
+<p align="center">
+<img src="http://img.blog.csdn.net/20150201144622639?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvVG9ueVNoZW5nVGFu/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" width="300" >
+</p>
+并且其下降速率（梯度的长度）计算公式：<span class="math inline">\(M(X,Y)=|(z_7+2z_8+z_9)-(z_1+2z_2+z_3)|+|(z_3+2z_6+z_9)-(z_1+2z_4+z_7)|\)</span> 所有上面的疑惑就是这个公式：<span class="math inline">\(\begin{cases}g_x=\frac{\partial f}{\partial x}=(z_7+2z_8+z_9)-(z_1+2z_2+z_3)\\g_y=\frac{\partial f}{\partial y}=(z_3+2z_6+z_9)-(z_1+2z_4+z_7)\end{cases}\)</span> 到底是怎么来的，为什么中间会有2，以及为什么是隔行相减，下面的过程是猜测的，没有数学依据，只是自己的猜测，根据Robert算子的两个式子，横向划过3x3的所有位置，然后相加，就得到了Sobel算子：
+<table width="100%" border="0">
+<tr>
+<td>
+<img src="http://img.blog.csdn.net/20150201145426245?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvVG9ueVNoZW5nVGFu/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" align="left" />
+</td>
+<td>
+<img src="http://img.blog.csdn.net/20150201151321376?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvVG9ueVNoZW5nVGFu/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" align="right" />
+</td>
+</tr>
+</table></li>
+<li>总结 Sobel和Robert都能对边缘有较强的响应，而且<span style="color:red"><strong><em>Sobel对边缘的响应较宽而且更加强烈</em></strong></span>，<span style="color:red"><strong><em>Robert算子对边缘响应较弱</em></strong></span>，而且对弯曲的边缘敏感度第（Robert1中圆形弧形部分亮度低）。</li>
+</ol></li>
+</ol>
+<h3 id="使用模糊技术进行灰度变换和空间滤波"><span style="color:red"><strong><em>使用模糊技术进行灰度变换和空间滤波</em></strong></span></h3>
+灰度变换和空间滤波是图像处理中最常使用的模糊技术，而模糊集合在解决那些不以精确概念为基础来表述的问题时，为体现人类知识提供了一个框架． <span style="color:red"><strong><em>隶属度函数<span class="math inline">\(\mu(z)\)</span></em></strong></span>：用以描述一个元素是否属于集合的模糊程度，若是一个阶跃函数，可以认为是一个我们所了解的&quot;干脆的&quot;集合，若是一个分段函数，则可以看做一个模糊集合：
+<p align="center">
+<img src="http://images.cnitblog.com/blog/557352/201402/212205126931951.png" width="500" >
+</p>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>模糊集合论原理</em></strong></span>
+<ol style="list-style-type: decimal">
+<li>在计算机编程的时候，常常会使用一种“干脆的”集合。在判断某件事，或者某个变量的时候，常常使用的是布尔值（因为某件事，不是真就是假）。通过一个阈值，去判断这件事，而这样的一个阈值的设定，会产生一个问题。还是使用《Digital Image Processing》 Rafael C. Gonzalez / Richard E. Woods书中的例子，看以下两个图。
+<p align="center">
+<img src="http://img.blog.csdn.net/20131029093646796" width="500" >
+</p></li>
+<li>当一个人的年龄超过20岁，那么这个人就不再属于年轻人范畴。这样来说，未免有些太过“残忍”，毕竟，20多岁的人还是“比较”年轻的。这里就出现了一个模糊的定义，“比较”年轻，这个集合既不属于年轻，也不属于非年轻，也就是其实年轻与非年轻之间的过度不应该是干脆的，而应该是渐进的过度。</li>
+<li>定义<span class="math inline">\(Z\)</span>为对象集，其中，<span class="math inline">\(z\)</span>表示<span class="math inline">\(Z\)</span>中的一类元素（比如<span class="math inline">\(z\)</span>表示年龄）。<span class="math inline">\(Z\)</span>中的一个模糊集合<span class="math inline">\(A\)</span>主要由一个隶属度(Degree of membership)来表示。对此，模糊集合A是一个由z值和隶属度函数组成的集合，即即<span class="math inline">\(A={z,\mu_A(z)|z\in Z}\)</span> 当<span class="math inline">\(\mu_A(z)=1\)</span>的时候，所有的<span class="math inline">\(z\)</span>是模糊集合<span class="math inline">\(A\)</span>的完全成员‘；当<span class="math inline">\(\mu_A(z)=0\)</span>的时候，所有的z都不是模糊集合A的成员，当的值介于0和1之间，那么此时的z称为模糊集合A的不完全成员. 其中<span style="color:red"><strong><em>隶属度函数是关键</em></strong></span>，表明了元素z到集合的一种对应关系。<span style="color:red"><strong><em>如果隶属度函数仅有0,1两个值，那么模糊集合退化为&quot;干脆的&quot;集合</em></strong></span>。下面这张图展示了模糊集合间的一些关系：
+<p align="center">
+<img src="http://images.cnitblog.com/blog/557352/201402/212205129325494.png" width="500" >
+</p></li>
+<li>下面，还有几个<span style="color:red"><strong><em>重要的性质</em></strong></span>。
+<ul>
+<li>对于所有的<span class="math inline">\(z\in Z\)</span>，模糊集合A的补集(NOT)，其隶属度函数:<span class="math inline">\(\mu_{\bar{A}}(z)=1-\mu_A(z)\)</span>;</li>
+<li>对于所有的<span class="math inline">\(z\in Z\)</span>，模糊集合A与模糊集合B的并集(OR)U，其隶属度函数:<span class="math inline">\(\mu_U(z)=\text{max}[\mu_A(z),\mu_B(z)]\)</span></li>
+<li>对于所有的<span class="math inline">\(z\in Z\)</span>，模糊集合A与模糊集合B的交集(AND)I，其隶属度函数:<span class="math inline">\(\mu_I(z)=\text{min}[\mu_A(z),\mu_B(z)]\)</span> 到这里，其实已经可以用模糊集合来做一些事情了。对于一个问题的处理，在使用模糊集合来解决的时候，我们可以参考以下步骤。首先，需要将输入量折算为隶属度，这个过程叫做“模糊化”。然后，使用得到的隶属度来进行计算，或者判断，或者其他更复杂的算法。最后，需要将隶属度再次折算为输出，这个过程称为“去模糊”或者“反模糊”。</li>
+</ul></li>
+<li><span style="color:red"><strong><em>使用模糊集合进行灰度变换</em></strong></span><a href="http://blog.csdn.net/zhoufan900428/article/details/13502329">ref</a> 使用模糊集合来进行灰度变换，从而增强图像。首先可以在常理下考虑一下，一般的对于动态范围较小的图像，我们一般的处理的方法是灰度拉升，或者直方图均衡。这两种的方法的本质就是，让原图较暗的像素更加暗，让原图较亮的像素更加亮。那么，我们规定如下模糊规则 <span style="color:red"><strong><em>R1：IF 一个像素是暗的，THEN 让这个像素更暗；</em></strong></span> <span style="color:red"><strong><em>R2：IF 一个像素是灰的，THEN 让他保持是灰的；</em></strong></span> <span style="color:red"><strong><em>R3：IF 一个像素是亮的，THEN 让这个像素更亮；</em></strong></span> 这个规则就代表了我们的处理方法。当然，IF条件中的像素是暗的(或者灰的，或者是亮的)，这个概念都是模糊的。同理THEN结论中的更暗(或者保持灰的，或者更亮)亦是模糊的。为此，我们需要确立一个隶属度函数，从而来判断一个像素对于三个条件的隶属度 实际上，隶属度函数的确定是很复杂的，然而，这里我们则尽量想得简单一点。首先，一个像素是暗的(模糊)，那么其隶属度函数大致的形状是，在低于某个值<span class="math inline">\(z_1\)</span>的时候域隶属度为1，在灰度越过某一个值<span class="math inline">\(z_2\)</span>之后，其隶属度为0，当然<span class="math inline">\(z_1\ne z_2\)</span>。然后与之间进行线性插值，那么，我们就可以得到R1的隶属度函数了。同理，R2与R3也是一样的。 为了简单起见，我们将THEN结论中的更暗设置为较为简单的函数。为了让这个像素更黑，其输出都为0。同理，为了使这个像素保持灰的，我们将其输出设为0.5，为了使得一个像素更亮，我们将其设置为1。 根据以上讨论，我们所决定的隶属度函数如下所示。
+<p align="center">
+<img src="http://img.blog.csdn.net/20131029104244906" width="500" >
+</p>
+使用输入的隶属度函数，可以得到模糊化后的数据。对于一个像素<span class="math inline">\(z_0\)</span>,需要根据规则R1，R2与R3，计算出<span class="math inline">\(z_0\)</span>所对应的隶属度<span class="math inline">\(\mu_{dark}(z_0),\mu_{gray}(z_0),\mu_{bright}(z_0)\)</span>,，这个过程，称之为模糊化。将一个输入量模糊化，所使用的函数(或者说是对应关系)，称之为知识库。 模糊化之后，得到一个像素所对应的三个隶属度<span class="math inline">\(\mu_{dark}(z_0),\mu_{gray}(z_0),\mu_{bright}(z_0)\)</span>之后，就可以进行反模糊化了。反模糊化的算法很多，这里使用简单的重心法去进行计算: <span class="math display">\[
+v_0=\frac{\mu_{dark}(z_0)\times v_d+\mu_{gray}(z_0)\times v_g+\mu_{bright}(z_0)\times v_b}{\mu_{dark}(z_0)+\mu_{gray}(z_0)+\mu_{bright}(z_0)}
+\]</span> 到此，就得到了输出<span class="math inline">\(v_0\)</span>,整个算法的效果如下图所示。
+<p align="center">
+<img src="http://img.blog.csdn.net/20131029121657109" width="500" >
+</p>
+<p align="center">
+<img src="http://img.blog.csdn.net/20131029121702843" width="500" >
+</p>
+根据以上算法，所得到的结果还是比较理想的。从灰度直方图来看，处理后的图像的直方图的动态范围得到了扩展，所得的图像也比原图更加的明亮清晰，图片的一些细节处理的较为妥当。</li>
+<li><span style="color:red"><strong><em>使用模糊集合进行边缘检测</em></strong></span> 有一些常用的隶属度函数，如三角形、梯形、∑型、S型、种型、截尾高斯型等，之后用到了会另作介绍。</li>
+</ol></li>
+<li><span style="color:red"><strong><em>模糊集合的应用</em></strong></span> 为了更深刻的理解模糊集合的性质，可以将规则的难度加深一些。若想进行一幅图像的边缘检测，在空间域上的想法是：“如果一个像素是处在平滑区域的，那么使得这个像素为亮，否则，则使得这个像素为暗。”为了使得这个算法在模糊集合的概念可以用，我们可以考虑使用灰度差来表示像素的平滑程度。
+<p align="center">
+<img src="http://img.blog.csdn.net/20131029122957406" width="300" >
+</p>
+如上图所示，我们将一个像素8个相邻的像素，各减去这个像素的值，即<span class="math inline">\(d_i=z_i-z_5\)</span>。我们可以得到如上图右侧的结果。基与此，可以推出以下规则:
+<p align="center">
+<img src="http://img.blog.csdn.net/20131029123758484" width="300" >
+</p>
+注意，上述的zero，white与black都是模糊的概念。同样的，根据这三个规则模糊化之后，用重心法去模糊。同时，我们还希望，当两个点的灰度很接近的时候，去模糊能给予一个很强的响应，将灰度拉至很高(很亮)。所以，我们的输入隶属度函数需要再0处有一个较大的隶属度，这里，我使用了高斯分布的一部分。其输出隶属度函数，也不是像上面的例子一样简单，我希望若是白色的隶属度很高，其输出的灰度值就越高(越亮)，反之则越低(越暗)。根据上述，我指定的输入输出隶属度函数如下所示。
+<p align="center">
+<img src="http://img.blog.csdn.net/20131029125207453" width="400" >
+</p>
+以上规则还出现了几个比较需要注意的地方。我们制定规则的时候，使用了AND，将两个条件相连了。这里在模糊集合里面，就相当于两个模糊集合的交集。首先，应该依次算出两个条件所对应的隶属度的值，然后，取最小值即可，如下所示。 <span class="math display">\[
+\mu(d_m,d_n)=min\{\mu_{zero}(d_m),\mu_{zero}(d_n)\}
+\]</span> 其次，这里还出现了ELSE语句，这里，可以视为以上四个条件的补集的交集(有点拗口)。其实看数学式的话，应该很好明白的。 <span class="math display">\[
+\mu_{else}=\text{min}\{1-\mu_{zero}(z_i);i=1,2,3,4\}
+\]</span> 到这里，我们就可以顺利的算出上述五个条件的隶属度，然后同样的，使用最简单的重心法，就可以得到结果了。结果如下所示。
+<p align="center">
+<img src="http://img.blog.csdn.net/20131029125846359" width="400" >
+</p>
+从结果可以看出来，根据整定的规则，我们已经很好的得到了图像的边缘。在这幅图像上再次进行加工，二值化什么的，就比较容易了。所得到的结果图像还是比较清晰的。</li>
+<li><span style="color:red"><strong><em>几个问题</em></strong></span>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>隶属度函数的制定有什么样的原则</em></strong></span>？</li>
+<li>我们再使用模糊算法之前，<span style="color:red"><strong><em>希望得到一个什么样的结果</em></strong></span>，而实际得到的结果又怎么样去评估这个算法的好坏呢？</li>
+<li><span style="color:red"><strong><em>其他的反模糊算法与重心法的区别是什么</em></strong></span>？</li>
+</ol></li>
+</ol>
+</body>
+</html>

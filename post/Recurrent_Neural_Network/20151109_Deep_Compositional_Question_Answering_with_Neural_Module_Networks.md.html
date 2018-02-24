@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="deep-compositional-question-answering-with-neural-module-networks"><a href="https://arxiv.org/abs/1511.02799">Deep Compositional Question Answering with Neural Module Networks</a></h2>
+<p>Home Page: http://www.cs.berkeley.edu/~jda/ Code: http://github.com/jacobandreas/nmn2</p>
+<p><span style="color:purple"> <i>Visual question answering is fundamentally compositional in nature - a question like <b><u>where is the dog</u></b> shares substructure with questions like <u>what color is the dog</u> and <u>where is the cat</u> .This paper seeks to simultaneously exploit the representational capacity of deep networks and the compositional linguistic structure of questions.</i> </span></p>
+<blockquote>
+<p>They describe a procedure for constructing and learning <b>neural module networks</b>, <u>which compose collections of jointly-trained neural modules into deep networks for question answering</u>.</p>
+</blockquote>
+<p><span style="color:purple"><i> Their approach decomposes questions into their linguistic substructures, and uses these structures to dynamically instantiate modular networks (with reusable components for recognizing dogs, classifying colors, etc.). </i></span></p>
+<h2 id="related-worksgeneral-compositional-semantics">Related works(General compositional semantics)</h2>
+<p><span style="color:purple"><i> There is a large literature on learning to answer questions about structured knowledge representations from question–answer pairs,both with and without joint learning of meanings for simple predicates <font size="2">(<a href="https://cs.stanford.edu/~pliang/papers/dcs-acl2011.pdf">&quot;Learning dependency-based compositional semantics&quot;</a>,<a href="http://www.jayantkrish.com/papers/tacl2013-krishnamurthy-kollar.pdf">&quot;Jointly learning to parseand perceive: connecting natural language to the physical world&quot;</a>)</font>. </i></span></p>
+<p><span style="color:purple"><i> Outside of question answering, several models have been proposed for instruction following that impose a discrete “planning structure” over an underlying continuous control signal<font size="2">(<a href="http://people.eecs.berkeley.edu/~jda/papers/ak_paths.pdf">&quot;Grounding Language with Points and Paths in Continuous Spaces&quot;</a>,<a href="https://homes.cs.washington.edu/~lsz/papers/mfzbf-icml12.pdf">&quot;A joint model of language and perception for grounded attribute learning&quot;</a>)</font>. </i></span></p>
+<p><span style="color:purple"><i> They are unaware of <u>past use of a semantic parser to predict network structures</u>,or more generally to exploit the natural similarity between set-theoretic approaches to <u>classical semantic parsing and attentional approaches</u> to computer vision. </i></span></p>
+<h1 id="neural-module-networks-for-visual-qa">Neural module networks for visual QA</h1>
+<p>Each training datum for this task can be thought of as a <u>3-tuple (<span class="math inline">\(w;x;y\)</span>)</u>, where</p>
+<ul>
+<li><span class="math inline">\(w\)</span> is a natural-language question</li>
+<li><span class="math inline">\(x\)</span> is an image</li>
+<li><span class="math inline">\(y\)</span> is an answer</li>
+</ul>
+<p><span style="color:purple"><i> <span style="color:red">A model is fully specified by a collection of modules <span class="math inline">\(m\)</span></span>, each with associated parameters <span class="math inline">\(\theta_m\)</span>, and a network layout predictor <span class="math inline">\(P\)</span> which maps from strings to networks.</p>
+<p>Given <span class="math inline">\((w;x)\)</span> as above, the model instantiates a network based on <span class="math inline">\(P(w)\)</span>, passes <span class="math inline">\(x\)</span>(and possibly <span class="math inline">\(w\)</span> again) as inputs, and obtains a distribution over labels. Thus a model ultimately encodes a predictive distribution <span class="math inline">\(p(y|w; x;\theta)\)</span> </i></span></p>
+<p><span style="color:purple"><i> Their goal here is to identify a small set of modules that can be assembled into all the configurations necessary for our tasks. This corresponds to identifying a minimal set of composable vision primitives. The modules operate on three basic data types: <span style="color:red">images, unnormalized attentions, and labels</span>. </i></span></p>
+<p>For the particular task and modules describedin this paper, almost all interesting compositional phenomena occur in the space of attentions, and it is not unreasonable to characterize our contribution more narrowly as an“attention-composition” network. Nevertheless, other types may be easily added in the future (for new applications orfor greater coverage in the VQA domain).</p>
+<blockquote>
+<p>First, some notation</p>
+</blockquote>
+<p>module names are type-set in a fixed width font, and are of the form TYPE<a href="ARG1,%20...">INSTANCE</a>.</p>
+<p><span style="color:red"><span class="math inline">\(TYPE\)</span></span> is a high-level moduletype (attention, classification, etc.) of the kind described in this section.</p>
+<p><span style="color:red"><span class="math inline">\(INSTANCE\)</span></span> is the particular instance of the modelunder consideration—for example,<span style="color:green"><span class="math inline">\(attend[red]\)</span></span> locates red things, while <span style="color:green"><span class="math inline">\(attend[dog]\)</span></span> locates dogs. Weights may be shared at both the type and instance level. Modules with noarguments implicitly take the image as input; higher-levelarguments may also inspect the image.</p>
+<ol style="list-style-type: decimal">
+<li><span style="color:red">Attention </span> <span class="math display">\[\text{attend}: Image \rightarrow Attention \tag{1}\]</span> An attention module <span style="color:green"> <span class="math inline">\(attend[c]\)</span></span> convolves every positionin the input image with a weight vector (distinct for eachc) to produce a heatmap or unnormalized attention. So,for example, the output of the moduleattend[dog]is amatrix whose entries should be in regions of the imagecontaining cats, and small everywhere else, as shown above.</li>
+<li><span style="color:red">Re-attention </span> <span class="math display">\[\text{re-attend}: Attention \rightarrow Attention \tag{2}\]</span> A re-attention module <span style="color:green"><span class="math inline">\(re-attend[c]\)</span></span> is essentially just a multilayer perceptron with rectified nonlinearities (ReLUs),performing a fully-connected mapping from one attentionto another. Again, the weights for this mapping are distinctfor each <span style="color:green"><span class="math inline">\(c\)</span></span>. So <span style="color:green"><span class="math inline">\(re-attend[above]\)</span></span> should take an attentionand shift the regions of greatest activation upward (as above), while <span style="color:green"><span class="math inline">\(re-attend\)</span>[not]$</span> should move attention away from the active regions. For the experiments in this paper,the first fully-connected (FC) layer produces a vector ofsize 32, and the second is the same size as the input.</li>
+<li><span style="color:red">Combination </span> <span class="math display">\[\text{combine}: Attention \times Attention \rightarrow Attention \tag{3}\]</span> A combination module <span style="color:green"><span class="math inline">\(combine[c]\)</span></span> merges two attentions into a single attention. For example,<span style="color:green"><span class="math inline">\(combine[and]\)</span></span> should be active only in the regions that are active in both inputs,while <span style="color:green"><span class="math inline">\(combine[except]\)</span></span> should be active where the first input is active and the second is inactive.</li>
+<li><span style="color:red">Classification </span> <span class="math display">\[\text{classify}: Image \times Attention \rightarrow Label \tag{4}\]</span> A classification module <span style="color:green"><span class="math inline">\(classify[c]\)</span></span> takes an attention andthe input image and maps them to a distribution over labels. For example, <span style="color:green"><span class="math inline">\(classify[color]\)</span></span> should return a distribution over colors in the region attended to.</li>
+<li><span style="color:red">Measurement </span> <span class="math display">\[\text{measure}:  Attention \rightarrow Label \tag{5}\]</span> A measurement module <span style="color:green"><span class="math inline">\(measure[c]\)</span></span> takes an attention aloneand maps it to a distribution over labels. Because attentions passed between modules are unnormalized, <span style="color:green"><span class="math inline">\(measure\)</span></span> is suitable for evaluating the existence of a detected object, orcounting sets of objects</li>
+</ol>
+<h1 id="from-strings-to-networks">From strings to networks</h1>
+<ol style="list-style-type: decimal">
+<li>Having built up an inventory of modules, then assemble them into the layout specified by the question.</li>
+<li>The transformation from a natural language question to an instantiated neural network takes place in two steps.</li>
+<li>First map from natural language questions to layouts, which specify both the set of modules used to answer a given question, and the connections between them.</li>
+<li>Next use these layouts are used to assemble the final prediction networks.We use standard tools pre-trained on existing linguistic resources to obtained structured representations of ques-tions.</li>
+<li>Future work might focus on learning (or at least fine-tuning) this prediction process jointly with the rest of thesystem</li>
+</ol>
+<h2 id="parsing">Parsing</h2>
+<ol style="list-style-type: decimal">
+<li><p>Parsing each question with the Stan-ford Parser <a href="http://people.eecs.berkeley.edu/~klein/papers/unlexicalized-parsing.pdf">&quot;Accurate unlexicalized parsing&quot;</a>. to obtain a universal dependency represen-tation <a href="http://nlp.stanford.edu/pubs/dependencies-coling08.pdf">&quot;the Stanford typeddependencies representation&quot;</a>.</p></li>
+<li>Next, filter the set of dependencies to those connected the wh-word in the question (the exact distance wetraverse varies depending on the task). This gives a simple symbolic form expressing (the primary) part of the sen-tence’s meaning.</br> For example, <span style="color:green"><span class="math inline">\(what \ is \ standing \ in \ the \ field\)</span></span> be comes <span style="color:green"><span class="math inline">\(what(stand)\)</span></span>; <span style="color:green"><span class="math inline">\(what \ color \ is \ the \ truck\)</span></span> be comes <span style="color:green"><span class="math inline">\(color(truck)\)</span></span>, and <span style="color:green"><span class="math inline">\(is \ there \ a \ circle \ next \ to \ a \ square\)</span></span> becomes <span style="color:green"><span class="math inline">\(is(circle, next-to(square))\)</span></span>. </br> In the process they also strip away function words like determiners and modals, so <span style="color:green"><span class="math inline">\(what \ type \ of \ cakes \  were \ they?\)</span></span> and <span style="color:green"><span class="math inline">\(what \ type \ of \  cake \ is \ it ?\)</span></span> both get converted to <span style="color:green"><span class="math inline">\(type(cake)\)</span></span>.</li>
+<li>The code for transforming parse trees to structured queries will be provided in the accompanying software package. These representations bear a certain resemblance to pieces of a combinatory logic <a href="https://cs.stanford.edu/~pliang/papers/dcs-acl2011.pdf">&quot;Learning dependency-based compositional semantics.&quot;</a>: every leaf is implicitly a function taking the image as input, and the root representsthe final value of the computation.</li>
+<li><p>While compositional and combinatorial, is crucially not logical :the inferential computations operate on continuous representations produced by neural networks, becoming discreteonly in the prediction of the final answer.</p></li>
+</ol>
+<h2 id="layout">Layout</h2>
+<p><span style="color:red">These symbolic representations already determine the structure of the predicted networks</span>, but not the identities of the modules that compose them. - <span style="color:red">This final assignment of modules is fully determined by the structure of the parse</span>. - <span style="color:red">All leaves become attend modules</span>, - <span style="color:red">all internal nodes become re-attend or combine modules dependent on their arity</span>, - <span style="color:red">and root nodes become measure modules for yes/no questions and classify modules for all other question types</span>.</p>
+<p>Given the mapping from queries to network layouts described above, we have for each training example a network structure, an input image, and an output label.</p>
+<p>In many cases, these network structures are different, but have tied parameters.</p>
+<p>Networks which have the same high-level structure but different instantiations of individual modules (for example <span style="color:green"><span class="math inline">\(what \ color \ is \ the \ cat?\)</span></span>—<span style="color:green"><span class="math inline">\(classify[color](attend[cat])\)</span></span> and <span style="color:green"><span class="math inline">\(where \ is \ the \ truck\ ?\)</span></span>—<span style="color:green"><span class="math inline">\(classify[where](attend[truck]))\)</span></span> can be processed in the same batch, resulting in efficient computation.</p>
+<h2 id="generalizations">Generalizations</h2>
+<p>It is easy to imagine applications where the input to the layout stage comes from something other than a natural language parser. Users of an image database,for example, might write SQL-like queries directly in orderto specify their requirements precisely, e.g.</p>
+<p><span class="math display">\[IS(cat)\ AND \ NOT \ (IS(dog)\]</span></p>
+<p>or even mix visual and non-visual specifications in theirqueries:</p>
+<p><span class="math display">\[IS(Cat) \ and \ table \ &gt; \ 2014-11-5\]</span></p>
+<h2 id="answering-natural-language-questions">Answering natural language questions</h2>
+<p>So far our discussion has focused on the neural modulenet architecture.</p>
+<p>Their final model combines the output from the neural module network with predictions from a simple LSTM question encoder.</p>
+<p>This is important for two reasons.</p>
+<ol style="list-style-type: decimal">
+<li>First,because of the relatively aggressive simplification of the　question that takes place in the parser, grammatical cues that　do not substantively change the semantics of the question,but which might affect the answer, are discarded. For example,<span style="color:green"><span class="math inline">\(what　\ is \ flying?\)</span></span> and <span style="color:green"><span class="math inline">\(what \ are \ flying?\)</span></span> both get converted to <span style="color:green"><span class="math inline">\(what(fly)\)</span></span>, but their answers should be <span style="color:green"><span class="math inline">\(kite\)</span></span> and <span style="color:green"><span class="math inline">\(kites\)</span></span> respectively, even given the same underlying image features.The question encoder thus allows us to model underlying syntactic regularities in the data.</li>
+<li>Second, it allows us to capture semantic regularities: with missing or low-quality image data, it is reasonable to guess that <span style="color:green"><span class="math inline">\(what \ color \ is \ the \ bear?\)</span></span> is answered by <span style="color:green"><span class="math inline">\(brown\)</span></span>, and unreasonable to guess <span style="color:green"><span class="math inline">\(green\)</span></span>. The question encoder also allows us to model effects of this kind. All experiments in this paper use a standard single-layer LSTM with 1024 hidden units.</li>
+<li>The question modeling component predicts a distribution over the set of answers,like the root module of the NMN. The final prediction fromthe model is a geometric average of these two probability distributions, dynamically reweighted using both text andimage features.</li>
+<li>The complete model, including both the NMN and sequence modeling component, is trained jointly.</li>
+</ol>
+<p align="center">
+<img src="https://dl.dropboxusercontent.com/s/tebddvvstfdmo2i/Screenshot%20from%202016-05-25%2022%3A55%3A00.png?dl=0" width="500" >
+</p>
+<h2 id="training-neural-module-networks">Training neural module networks</h2>
+<p>Their training objective is simply to find module parameters maximizing the likelihood of the data.</p>
+<p>By design, the last module in every network outputs a distribution over labels, and so each assembled network also represents a probability distribution.</p>
+<p>Because of the dynamic network structures used to answer questions, some weights are updated much more frequently than others.</p>
+<p>For this reason they found that learning algorithms with adaptive per-weight learning rates per-formed substantially better than simple gradient descent.All the experiments described below use AdaDelta <a href="https://arxiv.org/abs/1212.5701">&quot;ADADELTA: An adaptive learning ratemethod&quot;</a> (thus there was no hyperparameter search over step sizes).</p>
+<p>It is important to emphasize that the labels we have assigned to distinguish instances of the same module type—cat,and, etc.—are a notational convenience, and do not reflect any manual specification of the behavior of the corresponding modules. <span style="color:green"><span class="math inline">\(detect[cat]\)</span></span> is not fixed or even initialized as cat recognizer (rather than a couch recognizeror a dog recognizer), and <span style="color:green"><span class="math inline">\(combine[and]\)</span></span> isn’t fixed to com-pute intersections of attentions (rather than unions or differences).</p>
+<p>Instead, they acquire these behaviors as a by product of the end-to-end training procedure. As can be seen in Figure below, the image–answer pairs and parameter tying together encourage each module to specialize in the appropriate way.</p>
+<p align="center">
+<img src="https://dl.dropboxusercontent.com/s/dmkt50mgwo4pumn/Screenshot%20from%202016-05-25%2023%3A02%3A23.png?dl=0" width="700" >
+</p>
+<h2 id="experiments-compositionality">Experiments: compositionality</h2>
+<p>They begin with a set of motivating experiments on synthetic data.</p>
+<p>Compositionality, and the corresponding ability to answer questions with arbitrarily complex structure,is an essential part of the kind of deep image understanding visual QA datasets are intended to test.</p>
+<p>At the same time, <span style="color:red">questions in most existing natural image datasets are quite simple</span>, for the most part requiring that only one or two pieces of information be extracted from an image in order to answer it successfully, and with little evaluation of robustness in the presence of distractors (e.g. asking <span style="color:red">is there a blue house in an image of a red house and a blue car</span>).</p>
+<p>They have created <a href="https://github.com/jacobandreas/nmn2/tree/shapes">SHAPES</a>, a synthetic dataset that places such compositional phenomena at the forefront.</p>
+<h2 id="experiments-natural-images">Experiments: natural images</h2>
+<ol style="list-style-type: decimal">
+<li><p>They consider the model’s ability to handle hard perceptual problems involving natural images. Here they evaluate on the VQA dataset.</p></li>
+<li><p>They out perform the best published results on this task. A break down of their questions by answer type reveals that our model performs especially well on questions answered by <span style="color:red">an object, attribute, or number</span>, but worse than <span style="color:red">a sequence baseline in the yes/no category</span>.</p></li>
+<li><p><span style="color:red"> Inspection of training-set accuracies suggests that performance on yes/no questions is due to overfitting</span>.</p></li>
+<li><p>An ensemble with a sequence-only system might achieve even better results; future work within the NMN framework should focus on <span style="color:red"> redesigning the measure module to reduce effects from overfitting</span>.</p></li>
+<li><p>Inspection of <span style="color:red">parser outputs</span> also suggests that there is substantial room to improve the system using a better parser. A hand inspection of the first 50 parses in the training setsuggests that <span style="color:red">most (80–90%) of questions asking for simple properties of objects are correctly analyzed</span>, but <span style="color:red">more complicated questions</span> are more prone to picking up irrelevant predicates.</p></li>
+<li><p>For example <span style="color:red">are these people most likely experiencing a work day?</span> is parsed as <span style="color:red">be(people, likely)</span>,when the desired analysis is <span style="color:red">is(people, work)</span>.</p></li>
+<li><p>Parser errors of this kind could be fixed with joint learning.</p></li>
+</ol>
+<h1 id="conclusions-and-future-work">Conclusions and future work</h1>
+<ol style="list-style-type: decimal">
+<li><p>Introduced neural module networks(NMN), which provide a general-purpose framework for learning collections of neural modules which <span style="color:red">can be dynamically assembled into arbitrary deep networks</span>.</p></li>
+<li><p>Introduced <span style="color:red">a new dataset of highly compositional questions about simple arrangements of shapes</span>, and shown that ourapproach substantially outperforms previous work.</p></li>
+<li><p>They have maintained a strict separation between predicting network structures and learning network parameters. And <span style="color:red">they think it is easy to imagine that these two problems mightbe solved jointly, with uncertainty maintained over network structures throughout training and decoding</span>.</p></li>
+<li><p>This might be accomplished either with a monolithic network, by using some higher-level mechanism to “attend” to relevant portions of the computation, or else by integrating with existing tools for learning semantic parsers.</p></li>
+</ol>
+</body>
+</html>

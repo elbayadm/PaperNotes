@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="中值滤波和均值滤波的比较"><span style="color:red"><strong><em>中值滤波和均值滤波的比较</em></strong></span></h2>
+<p>噪声对图像处理的影响很大，它影响图像处理的输入、采集和处理等各个环节以及输出结果。因此，在进行其它的图像处理前，需要对图像进行去噪处理。 从统计学的观点来看，<span style="color:red"><strong><em>凡是统计特征不随时间变化的噪声称为平稳噪声</em></strong></span>，而统计特征随时间变化的噪声称为<span style="color:red"><strong><em>非平稳噪声</em></strong></span>。<span style="color:red"><strong><em>幅值基本相同，但是噪声出现的位置是随机的，称为椒盐噪声</em></strong></span>；如果噪声的幅值是随机的，根据幅值大小的分布，<span style="color:red"><strong><em>有高斯型和瑞利型两种</em></strong></span>，分别称为高斯噪声和瑞利噪声。由于去除噪声处理的原理和方法很多，这里只给出了简单的描述和我自己已实现的几种方法的java源代码。 常见的去噪处理有<span style="color:red"><strong><em>均值滤波，中值滤波，灰度最小方差均值滤波，K近邻平滑滤波，对称近邻均值滤波，西戈玛平滑滤波等</em></strong></span>。</p>
+<h3 id="均值滤波"><span style="color:red"><strong><em>均值滤波</em></strong></span></h3>
+<p>均值滤波方法是，对待处理的当前像素，选择一个模板，该模板为其邻近的若干个像素组成，用模板的均值来替代原像素的值的方法。</p>
+<p>一幅<span class="math inline">\(M\times N\)</span>的图像经过一个大小为<span class="math inline">\(m\times n\)</span>(m和n是奇数)的加权均值滤波器的过程为： <span class="math display">\[g(x,y)=\frac{\sum_{s=-m/2}^{m/2}\sum_{s=-n/2}^{n/2}w(s,t)f(s+s,y+t)}{\sum_{s=-m/2}^{m/2}\sum_{s=-n/2}^{n/2}w(s,t)}\]</span></p>
+<p><span style="color:red"><strong><em>优点</em></strong></span>：算法简单，计算速度快； <span style="color:red"><strong><em>缺点</em></strong></span>：降低噪声的同时使图像产生模糊，特别是景物的边缘和细节部分。当图像细节与滤波器模板近似相同时，图像中一些细节受到的影响较大．</p>
+<h3 id="中值滤波"><span style="color:red"><strong><em>中值滤波</em></strong></span></h3>
+<p>中值滤波（Median filter）是一种典型的非线性滤波技术，基本思想是用像素点邻域灰度值的中值来代替该像素点的灰度值，该方法在去除脉冲噪声、椒盐噪声的同时又能保留图像边缘细节.</p>
+<p>中值滤波方法是，对待处理的当前像素，选择一个模板，该模板为其邻近的若干个像素组成，对模板的像素由小到大进行排序，再用模板的中值来替代原像素的值的方法。</p>
+<p>优缺点 <span style="color:red"><strong><em>优点</em></strong></span>：抑制效果很好，画面的清析度基本保持； <span style="color:red"><strong><em>缺点</em></strong></span>：对高斯噪声的抑制效果不是很好。其对点、线和尖顶多的图像不宜采用中值滤波。例如对方向性很强的指纹图像进行滤波处理时 ,有必要引入方向信息,即利用指纹方向图来指导中值滤波的进行。</p>
+</body>
+</html>

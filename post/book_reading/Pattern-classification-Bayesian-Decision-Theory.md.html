@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="模式分类--贝叶斯决策论"><span style="color:red"><strong><em>模式分类--贝叶斯决策论</em></strong></span></h2>
+<h3 id="引言"><span style="color:red"><strong><em>引言</em></strong></span></h3>
+<p>贝叶斯决策论从概率角度分析不同分类决策以及决策代价之间定量折中。</p>
+<p><em>通俗点讲，把分类问题看做是概率问题，从已知的样本集中，估计一些概率值，进而估计下一次出现某个预测样本时（条件），样本属于某一类别（随机变量）的概率（后验概率）。寻找判别函数，假如决策代价相同，那么判别函数为后验概率大的类别作为预测类别。</em></p>
+<p>首先，可以根据已知信息假定下一条鱼是鲈鱼的“先验概率”为<span class="math inline">\(P(w_1)\)</span>，下一条鱼是鲑鱼的“先验概率”是<span class="math inline">\(P(w_2)\)</span>)，则<span class="math inline">\(P(w_1)+P(w_2)=1\)</span>（当然，在已知信息很少的情况下，可以假定<span class="math inline">\(P(w_1)=P(w_2)=0.5\)</span>）。</p>
+<p>显然，我们不能只根据先验概率判断下一条鱼的类别，因为这样对每一条传送过来的鱼，我们都将得到相同的结果（显然这是与实际不符的，很可能出错的），而若是这样，我们也并没有利用现有的、传送过来的鱼的信息（如光泽度等），就如“说美帝好的都是汉奸”这个谬误的论断，因为我们下的论断是“凡是传送过来的都是鲑鱼”（假设鲑鱼的先验概率比较大）。所以更合理的判断规则是，如果我们观察到正传送过来的鱼的特征xx，我们就可以计算这条鱼可能是鲈鱼的概率<span class="math inline">\(P(w_1|x)\)</span>和可能是鲑鱼的概率<span class="math inline">\(P(w_2|x)\)</span>；若<span class="math inline">\(P(w_1|x)&gt;P(w_2|x)\)</span>，则可判断这条鱼是鲈鱼，反之是鲑鱼。</p>
+<p>对于特征<span class="math inline">\(x\)</span>，假定其为一个连续随机变量，其分布取决于类别状态，表示成<span class="math inline">\(p(x|w)\)</span>，即类别状态为<span class="math inline">\(w\)</span>时的<span class="math inline">\(x\)</span>的概率密度函数。于是<span class="math inline">\(p(x|w_1)\)</span>与<span class="math inline">\(p(x|w_2)\)</span>之间的区别就表示了鲈鱼和鲑鱼之间特征（如光泽度）的区别。</p>
+<p>由条件概率的定义可知，处于类别<span class="math inline">\(w_j\)</span>且具有特征值xx的模式的联合概率密度可写成两种形式：</p>
+<p><span class="math display">\[p(w_{j},x)=P(w_{j}|x)p(x)=p(x|w_{j})P(w_{j})\]</span></p>
+<p>转换一下，即为著名的贝叶斯公式：</p>
+<p><span class="math display">\[P(w_{j}|x)=\frac{p(x|w_{j})P(w_{j})}{\sum_{j=1}^{2}p(x|w_{j})P({w_{j}})} \]</span></p>
+<p>通过以上公式，我们就可以通过观察得到的特征<span class="math inline">\(x\)</span>和先验概率<span class="math inline">\(P(w_j)\)</span>及概率密度函数<span class="math inline">\(p(x|w_j)\)</span>来计算后验概率<span class="math inline">\(P(w_j|x)\)</span>。</p>
+<p>下面来验证一下为什么<span class="math inline">\(P(w_1|x)&gt;P(w_2|x)\)</span>时，判断真实类别是w1w1是一种好的决策</p>
+<p>证明：假设<span class="math inline">\(R_1\)</span>是<span class="math inline">\(w_1\)</span>类对应的特征空间，（同理，<span class="math inline">\(R_2\)</span>对应于<span class="math inline">\(w_{2}\)</span>），其中<span class="math inline">\(R_{1} \cap R_{2} = \emptyset\)</span>，且<span class="math inline">\(R_{1}\cup R_{2} = \mathbb{R}\)</span>（<span class="math inline">\(\mathbb{R}\)</span>表示<span class="math inline">\(x\)</span>的所有可能值的集合。当然，可以这样定义<span class="math inline">\((R_{1})\)</span>和<span class="math inline">\(R_{2}\)</span>:<span class="math inline">\(R_{1}=\{x \in \mathbb{R} | p(x|w_{1}) \ge p(x|w_{2})\}\)</span>,<span class="math inline">\(R_{2} = \{x \in \mathbb{R}| p(x|w_{1});p(x|w_{2})\}\)</span>）；当<span class="math inline">\(x \in R_{2}\)</span>而真实类别是<span class="math inline">\(w_{1}\)</span>时（或相反）就产生了错误</p>
+<p><span class="math display">\[
+P_{e}=P(x \in R_{2},w_{1})+P(x \in R_{1},w_{2})=\int_{R_{2}}P(w_{1}|x)p(x) dx + \int_{R_{1}}P(w_{2}|x)p(x)dx
+\]</span> 又由条件概率的定义可得：</p>
+<p><span class="math display">\[
+P(w_{1}) = \int_{R_{1}}P(w_{1}|x)p(x) dx + \int_{R_{2}}P(w_{1}|x)p(x) dx
+\]</span> 结合可得: <span class="math display">\[
+P_{e}= P(w_{1})-\int_{R_{1}}(P(w_{1}|x)-P(w_{2}|x))p(x) dx
+\]</span> 由上式可以看出，我们选择的决策方式是合理的。</p>
+<p><span style="color:red"><strong>Reference:</strong></span> <a href="http://blog.csdn.net/zhjm07054115/article/details/27631913">OpenCV Machine Learning 之 正态贝叶斯分类器 （Normal Bayes Classifier）</a> / <a href="http://blog.csdn.net/carson2005/article/details/6854024">openCV中贝叶斯分类器相关的API及其用法举例</a> / <a href="http://www.csdn123.com/html/exception/695/695370_695365_695363.htm">OpenCV Machine Learning 之正态贝叶斯分类器（Normal Bayes Classifier）的用法范例</a> / <a href="http://blog.csdn.net/godenlove007/article/details/8913007">OpenCV机器学习（1）：贝叶斯分类器实现代码分析</a> / <a href="http://blog.csdn.net/songzitea/article/details/23131609">贝叶斯(Bayes)决策理论</a> / <a href="http://blog.csdn.net/carson2005/article/details/6854005">贝叶斯理论简介</a> / <a href="http://www.pudn.com/downloads427/sourcecode/graph/text_recognize/detail1805874.html">基于OpenCV的皮肤检测算法实现，基于贝叶斯决策理论</a> / <a href="http://xiahouzuoxin.github.io/notes/html/Stanford机器学习课程笔记2-高斯判别分析与朴素贝叶斯.html">Stanford机器学习课程笔记2-高斯判别分析与朴素贝叶斯</a> / <a href="http://www.cnblogs.com/coser/archive/2013/05/06/3063937.html">基于最小错误率的贝叶斯决策</a> / <a href="http://blog.csdn.net/chasdmeng/article/details/38709063">EM算法求高斯混合模型参数估计——Python实现</a> / <a href="http://www.cncoders.net/article/17896/">模式识别：最大似然估计与贝叶斯估计方法</a> / <a href="http://blog.csdn.net/carson2005/article/details/6854024/">openCV中贝叶斯分类器相关的API及其用法举例</a> / <a href="http://www.xuebuyuan.com/2178605.html">数据挖掘十大经典实用算法</a> / <a href="http://blog.csdn.net/angelazy/article/details/41947427">OpenCV的machine learning模块使用</a> / <a href="http://blog.csdn.net/v_july_v/article/details/7577684">从决策树学习谈到贝叶斯分类算法、EM、HMM</a></p>
+<h3 id="最小误差率分类"><span style="color:red"><strong><em>最小误差率分类</em></strong></span></h3>
+<p>在分类问题中，通常每种类别状态都与c类中一种有关，且行为<span class="math inline">\(\alpha_i\)</span>通常被解释为类别状态被判决为<span class="math inline">\(w_i\)</span>. 如果采取行为<span class="math inline">\(\alpha_i\)</span>而实际类别<span class="math inline">\(w_j\)</span>，那么在<span class="math inline">\(i=j\)</span>的情况下判决是正确的，如果<span class="math inline">\(i\ne j\)</span>，则误判．避免误判，自然要寻找一种判决函数使得误判概率最小化．</p>
+<ol style="list-style-type: decimal">
+<li>极小化极大准则</li>
+<li>Neyman-Pearson准则</li>
+</ol>
+<h3 id="分类器判别函数及判定面"><span style="color:red"><strong><em>分类器、判别函数及判定面</em></strong></span></h3>
+<ol style="list-style-type: decimal">
+<li>多类情况</li>
+<li>两类情况</li>
+</ol>
+<h3 id="正态密度"><span style="color:red"><strong><em>正态密度</em></strong></span></h3>
+<h3 id="正态分布的判别函数"><span style="color:red"><strong><em>正态分布的判别函数</em></strong></span></h3>
+<h3 id="误差概率和误差积分"><span style="color:red"><strong><em>误差概率和误差积分</em></strong></span></h3>
+<h3 id="正态密度的误差上界"><span style="color:red"><strong><em>正态密度的误差上界</em></strong></span></h3>
+<h3 id="贝叶斯决策论离散特征"><span style="color:red"><strong><em>贝叶斯决策论——离散特征</em></strong></span></h3>
+<h3 id="丢失特征和噪声特征"><span style="color:red"><strong><em>丢失特征和噪声特征</em></strong></span></h3>
+<h3 id="贝叶斯置信网"><span style="color:red"><strong><em>贝叶斯置信网</em></strong></span></h3>
+<h3 id="复合贝叶斯决策论及上下文"><span style="color:red"><strong><em>复合贝叶斯决策论及上下文</em></strong></span></h3>
+</body>
+</html>

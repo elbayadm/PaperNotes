@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="多媒体基本知识">多媒体基本知识</h2>
+<h3 id="图像">图像</h3>
+<p>数字视频是spatio-temporal采样的视频组合。</p>
+<div class="figure">
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/32/CCD.png" />
+
+</div>
+<p>常见的图像空间有：RGB, HSV, HLS, <span class="math inline">\(YC_rC_b\)</span>. RGB是我们常见的图像，但是RGB不是一个有效表示的组合，HVS对luminance(亮度)比颜色更敏感。所以<span class="math inline">\(YC_rC_b\)</span>有优势，归纳如下： 1. <span class="math inline">\(C_r,C_b\)</span>可以用比较低的分辨率表示，而<span class="math inline">\(Y\)</span>用全分辨率表示。</p>
+<p>常见数字图像格式： 1. GIF: Graphics Interchange Format 2. JPEG: Joint Photographic Experts group 3. PNG: Portable Network Graphics</p>
+<h3 id="graphics">Graphics</h3>
+<p>Graphics is a vector image -- Mathematical descriptions of an image. Graphics primitives: lines, curves, circles. Attributes: thickness, gray-scale, color.</p>
+<h3 id="videos">videos</h3>
+<ol style="list-style-type: decimal">
+<li>Analog video</li>
+</ol>
+<ul>
+<li>composite video : chrominance and luminance signals are mixed in a single carrier wave.</li>
+<li>component video : each component is carried in its own line</li>
+<li>s-video : a compromise between composite video and component video. It uses two lines, one for luminance and another for a mix of chrominance signals.</li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li>Digital video</li>
+</ol>
+<ul>
+<li>MPEG : all developed by motion picture experts group. open format distributed by ISO. Joint video team still working on MPEG-4;</li>
+<li>DV : each manufacturer has their own particular version of the format</li>
+<li>RealMedia : Streaming technology developed by RealNetworks for transmitting live video over the Internet.</li>
+</ul>
+</body>
+</html>

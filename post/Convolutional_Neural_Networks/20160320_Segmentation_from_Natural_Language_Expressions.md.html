@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="segmentation-from-natural-language-expressions"><a href="https://arxiv.org/pdf/1603.06180v1.pdf">Segmentation from Natural Language Expressions</a></h1>
+<p>In this paper, they address the following problem:</p>
+<blockquote>
+<p>given an image and a natural language expression that describes a certain part of the image, we want to segment the corresponding region(s) that covers the visual entities described by the expression</p>
+</blockquote>
+<center>
+&lt;img src=&quot;http://ronghanghu.com/wp-content/uploads/text_objseg_method-1024x442.jpg&quot;, width=600&gt;</img>
+</center>
+<h2 id="objective-function">objective function</h2>
+<p><span class="math display">\[\begin{aligned}
+Loss &amp;= \frac{1}{WH}\sum_{i=1}^W\sum_{j=1}^HL(v_{ij},M_{ij})\\
+L(v_{ij},M_{ij})&amp;=\begin{cases}\alpha_f \log(1+\exp (-v_{ij})), \text{ if } M_{ij}=1\\
+\alpha_b \log (1+\exp (v_{ij})), \text{ if } M_{ij}=0\end{cases}
+\end{aligned}
+\]</span></p>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="数字图像处理--数字图像处理基础">数字图像处理--数字图像处理基础</h2>
+<h3 id="光和电磁波谱">光和电磁波谱</h3>
+<ol style="list-style-type: decimal">
+<li><p><span style="color:red"><strong><em>伽马射线成像</em></strong></span> 伽马射线成像主要用途包括核医学和天文观测，伽马射线成像将放射性同位素注射到病人体内，当物质衰变时放射出伽马射线，然后利用伽马射线收集到的放射物产生图像。</p></li>
+<li><p><span style="color:red"><strong><em>X射线成像</em></strong></span> X射线是最早用于成像的电磁辐射源之一，X射线管是带有阴极和阳极的真空管。阴极加热释放出自由电子，电子以很高速度向阳极移动，当电子撞击一个原子核时，能量被释放并形成X射线辐射。X射线的能量由另一边的阳极电压控制，而X射线的数量有施加于阴极灯丝的电流控制。</p></li>
+<li><p><span style="color:red"><strong><em>紫外波</em></strong></span> 紫外波应用包括：平板印刷技术、工业检测、显微镜方法、激光、生物图像以及天文观测。紫外光被用于荧光显微镜方法，是显微镜中发展最快的领域之一。</p></li>
+<li><span style="color:red"><strong><em>可见光恶化红外波成像</em></strong></span>
+<p align="center">
+<img src="http://218.60.57.155:8101/attached/image/20151107/20151107122116_9388.png" width="600" >
+</p></li>
+</ol>
+<h3 id="图像感知和获取"><span style="color:red"><strong><em>图像感知和获取</em></strong></span></h3>
+<ol style="list-style-type: decimal">
+<li>视觉感知要素
+<ol style="list-style-type: decimal">
+<li>人眼的结构 眼睛的形状近似为１个球体，平均直径２０mm，有三层薄膜包围着眼睛：<span style="color:red"><strong><em>角膜与巩膜外壳，脉络膜和视网膜</em></strong></span>．
+<p align="center">
+<img src="http://s13.sinaimg.cn/mw690/003y25nWgy6FSOYmD362c" width="３00" >
+</p></li>
+<li><span style="color:red"><strong><em>角膜</em></strong></span>是一种硬而透明的组织，覆盖着眼睛的前表面</li>
+<li>与角膜相连的一层包围眼球其余部分的不透明膜，是<span style="color:red"><strong><em>巩膜</em></strong></span></li>
+<li><span style="color:red"><strong><em>脉络膜</em></strong></span>位于巩膜的正下方，包含了血管网，<strong><em>是眼睛重要的滋养源．即使对脉络膜表面并不严重的伤害，也可能严重的损害眼睛，引起限制血液流动的炎症</em></strong>． 脉络膜外科着色很重，因此有助于减少进入眼内的外来光和眼球内反向散射光的数量．其血管供给视网膜葡萄糖及氧气。色素则吸收眼球内多余的光，防止它们因折射和散射而干扰视细胞作用的精确度。</li>
+<li><span style="color:red"><strong><em>晶状体</em></strong></span>在角膜与虹膜之后、玻璃体与视网膜之前，由附在睫状体上的纤维悬挂着，晶状体包含６０％－７０％的水．其颜色随着人的年龄增大而深．如果晶体由于各种原因造成其部分或全部混浊，引起视力障碍，此时瞳孔内呈白色，称<span style="color:red"><strong><em>白内障</em></strong></span>。
+<p align="center">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Focus_in_an_eye.svg/250px-Focus_in_an_eye.svg.png" width="３00" >
+</p></li>
+<li>眼睛最里面的是<span style="color:red"><strong><em>视网膜</em></strong></span>：视网膜含有可以感受光的视杆细胞和视锥细胞。这些细胞将它们感受到的光转化为神经信号。这些信号被视网膜上的其它神经细胞处理后演化为视网膜神经节细胞的动作电位。视网膜神经节细胞的轴突组成视神经。视网膜不但有感光的作用，它在视觉中也有重要作用。在形态形成的过程中，视网膜和视神经是从脑中延伸出来的。</li>
+<li><span style="color:red"><strong><em>眼睛中图像的形成</em></strong></span>：人眼中，晶状体和成像区域之间的距离是固定的，要实现正确聚集的焦距是通过<span style="color:red"><strong><em>改变晶状体的形状</em></strong></span>来得到的．睫状体中的纤维可以实现这一功能．</li>
+<li><span style="color:red"><strong><em>亮度适应和鉴别</em></strong></span>：
+<p align="center">
+<img src="http://www.mianfeiwendang.com/pic/030cd2e87a9c9f02c044e4f9/1-359-png_6_0_0_135_947_184_194_892.979_1262.879-341-0-349-341.jpg" width="200" >
+</p>
+视觉系统不能同时在一个范围内工作，需要通过改变整个灵敏度来完成这一较大的变动，这就是<span style="color:red"><strong><em>亮度适应现象</em></strong></span>．</li>
+</ol></li>
+<li><p><span style="color:red"><strong><em>数字图像处理的基本步骤</em></strong></span></p>
+<p><span class="math inline">\(\text{Basic steps:}\begin{cases}\text{Image acquisition}\\ \text{Image enhancement}\\ \text{Image restoration}\\ \text{Digital Color Image Processing}\\ \text{Image compression}\\ \text{Morphological processing and feature extraction}\\ \text{Image segmentation}\\ \text{Image recognition} \end{cases}\)</span></p></li>
+<li><p><span style="color:red"><strong><em>简单的图像形成模型</em></strong></span> 用<span style="color:red"><strong><em><span class="math inline">\(f(x,y)\)</span></em></strong></span>表示图像，在特定的坐标<span class="math inline">\((x,y)\)</span>处，<span class="math inline">\(f\)</span>的值和幅度是一个正的标量。值正比于物理源的辐射能量。因此，<span class="math inline">\(f(x,y)\)</span>是非零和有限的，也就是<span class="math inline">\(0&lt;f(x,y)&lt;\infty\)</span>. <span class="math inline">\(f(x,y)\)</span>由2个分量来表征：(1)<span style="color:red"><strong><em>入射到观察场景的光源总量<span class="math inline">\(i(x,y)\)</span></em></strong></span>，(2)<span style="color:red"><strong><em>场景中物体反射光的总量<span class="math inline">\(r(x,y)\)</span></em></strong></span>。</p>
+<p>2个函数<span style="color:red"><strong><em>合并</em></strong></span>得到：<span class="math inline">\(f(x,y)=i(x,y)r(x,y)\)</span>, <span class="math inline">\(\begin{cases}0&lt;f(x,y)&lt;\infty\\0&lt;r(x,y)&lt;1\end{cases}\)</span> <span class="math inline">\(r(x,y)\)</span>指出反射分量限制在0（全吸收）和1（全反射）之间，取决于成像物体的性质。<span class="math inline">\(i(x,y)\)</span>的性质取决于照射源．</p></li>
+</ol>
+<h3 id="图像取样与量化"><span style="color:red"><strong><em>图像取样与量化</em></strong></span></h3>
+<ol style="list-style-type: decimal">
+<li><p><span style="color:red"><strong><em>取样和量化</em></strong></span> 一副连续图像<span class="math inline">\(f(x,y)\)</span>，为了转换成数字形式，必须在<span style="color:red"><strong><em>坐标和幅度</em></strong></span>上都做取样操作，<span style="color:red"><strong><em>数字化坐标值称为取样，数字化幅度值称为量化</em></strong></span>。</p>
+<p align="center">
+<img src="http://www.cppblog.com/images/cppblog_com/biao/interpolation-3.jpg" width="200" >
+</p>
+取样和量化的结果是一个实际矩阵，假设产生的数字图像有M行和N列。这样坐标就变成离散量，以紧凑形式写出的完整<span class="math inline">\(M\times N\)</span>数字图像为：$ f(x,y)=
+\begin{bmatrix}a_{0,0}&amp;a_{0,1}&amp;...&amp;a_{0,N-1}\\
+a_{1,0}&amp;a_{1,1}&amp;...&amp;a_{1,N-1}\\
+...&amp;...&amp;...&amp;...\\
+a_{M-1,0}&amp;a_{M-1,1}&amp;...&amp;a_{M-1,N-1}
+\end{bmatrix}
+<span class="math inline">\(．数字化过程对M，N值没有要求，但是对&lt;span style=&quot;color:red&quot;&gt;***每个像素允许的离散灰度级别l***&lt;/span&gt;有要求，&lt;span style=&quot;color:red&quot;&gt;***灰度级典型的取值是2的整数次幂：\)</span>L=2^h<span class="math inline">\(***&lt;/span&gt;.这里，假设离散灰度级是等间隔的并且是区间\)</span>[0,L-1]<span class="math inline">\(内的整数。有时灰度级别取值范围称为图像的动态范围，把&lt;span style=&quot;color:red&quot;&gt;***占有灰度级全部有效的图像***&lt;/span&gt;叫***高动态范围图像***。此外，一副灰度级别为\)</span>l<span class="math inline">\(的图像&lt;span style=&quot;color:red&quot;&gt;***需要的存储比特***&lt;/span&gt;为\)</span>MNk$。</li>
+<li><p><span style="color:red"><strong><em>空间和灰度分辨率</em></strong></span></p>
+<ol style="list-style-type: decimal">
+<li>空间分辨率 图像中可辨别的最小细节的度量。在数量上，空间分辨率有很多中方法来说明。其中<span style="color:red"><strong><em>每单位距离线对数</em></strong></span>和<span style="color:red"><strong><em>每单位距离点数（像素数）</em></strong></span>是最通用的度量。</li>
+<li><span style="color:red"><strong><em>每单位距离线对数</em></strong></span>: 每单位距离可分辨的最大线对数量（例如每毫米100个线对），每单位距离点数是<strong><em>印刷和出版社</em></strong>常用的图像分辨率的度量。</li>
+<li><span style="color:red"><strong><em>每单位距离点数（像素数）</em></strong></span> 常用的是dpi(dots per inch/点每英寸).</li>
+<li><span style="color:red"><strong><em>灰度分辨率</em></strong></span> 在灰度级中可分辨的最小变化，灰度级数通常是2的整数次幂。</li>
+</ol></li>
+<li><span style="color:red"><strong><em>图像内插</em></strong></span> 内插是利用已知数据来估计未知位置数据的处理。
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>最近邻内插法</em></strong></span> 把原图像中最近邻的灰度赋给每个新位置。但是这种方法有产生不希望的人为缺陷的倾向，例如直边缘的严重失真。更实用的是<span style="color:red"><strong><em>双线性内插</em></strong></span>，用4个最近邻去估计给定位置的灰度。
+<ul>
+<li>假如图像的象素矩阵如下所示：<span class="math inline">\(\begin{bmatrix}234 &amp; 38&amp;22\\67 &amp;44&amp;12\\89&amp;65&amp;63\end{bmatrix}\)</span></li>
+<li>如果想把这副图放大为 4X4大小的图像，那么第一步肯定想到的是先把4X4的矩阵先画出来再说，好了矩阵画出来了，如下所示，当然，矩阵的每个像素都是未知数，等待着我们去填充：<span class="math inline">\(\begin{bmatrix}? &amp;?&amp;?&amp;?\\? &amp;?&amp;?&amp;?\\? &amp;?&amp;?&amp;?\\? &amp;?&amp;?&amp;?\end{bmatrix}\)</span></li>
+<li>然后要往这个空的矩阵里面填值了，要填的值从哪里来来呢？是从源图中来，好，先填写目标图最左上角的象素，坐标为（0，0），那么该坐标对应源图中的坐标可以由如下公式得:<span class="math inline">\(\begin{cases}srcX = dstX * (srcWidth / dstWidth) \\ srcY = dstY * (srcHeight / dstHeight)\end{cases}\)</span> 套用公式，就可以找到对应的原图的坐标了<span class="math inline">\((0*(3/4),0*(3/4))\Rightarrow(0*0.75,0*0.75)\Rightarrow(0,0)\)</span></li>
+<li>找到了源图的对应坐标,就可以把源图中坐标为<span class="math inline">\((0,0)\)</span>处的234象素值填进去目标图的(0,0)这个位置了。 接下来,如法炮制,寻找目标图中坐标为(1,0)的象素对应源图中的坐标,套用公式:<span class="math inline">\((1*0.75,0*0.75)=&gt;(0.75,0)\)</span></li>
+<li>结果发现,得到的坐标里面竟然有小数,这可怎么办?计算机里的图像可是数字图像,象素就是最小单位了,象素的坐标都是整数,从来没有小数坐标。这时候采用的一种策略就是采用四舍五入的方法（也可以采用直接舍掉小数位的方法），把非整数坐标转换成整数，好，那么按照四舍五入的方法就得到坐标<span class="math inline">\((1,0)\)</span>，完整的运算过程就是这样的：<span class="math inline">\((1*0.75,0*0.75)=&gt;(0.75,0)=&gt;(1,0)\)</span></li>
+<li>那么就可以再填一个象素到目标矩阵中了，同样是把源图中坐标为(1,0)处的像素值38填入目标图中的坐标。</li>
+<li>依次填完每个象素，一幅放大后的图像就诞生了，像素矩阵如下所示： <span class="math inline">\(\begin{bmatrix}234&amp;38&amp;22&amp;22\\67&amp;44&amp;12&amp;12\\89&amp;65&amp;63&amp;63\\89&amp;65&amp;63&amp;63 \end{bmatrix}\)</span></li>
+<li>这种放大图像的方法叫做<span style="color:red"><strong><em>最临近插值算法</em></strong></span>，这是一种最基本、最简单的图像缩放算法，效果也是最不好的，<span style="color:red"><strong><em>放大后的图像有很严重的马赛克，缩小后的图像有很严重的失真</em></strong></span>；效果不好的根源就是<span style="color:red"><strong><em>其简单的最临近插值方法引入了严重的图像失真</em></strong></span>，比如，当由目标图的坐标反推得到的源图的的坐标是一个浮点数的时候，采用了四舍五入的方法，直接采用了和这个浮点数最接近的象素的值，这种方法是很不科学的，当推得坐标值为 0.75的时候，不应该就简单的取为1，既然是0.75，比1要小0.25 ，比0要大0.75 ,那么目标象素值其实应该根据这个源图中虚拟的点四周的四个真实的点来按照一定的规律计算出来的，这样才能达到更好的缩放效果。</li>
+</ul></li>
+<li><span style="color:red"><strong><em>双线性内插</em></strong></span> 双线型内插值算法就是一种比较好的图像缩放算法，它充分的利用了<span style="color:red"><strong><em>源图中虚拟点四周的四个真实存在的像素值来共同决定目标图中的一个像素值</em></strong></span>，因此缩放效果比简单的最邻近插值要好很多，计算量比零阶插值大，但缩放后图像质量高，不会出现像素值不连续的情况。
+<ul>
+<li>对于一个目的像素，设置坐标通过反向变换得到的浮点坐标为<span class="math inline">\((i+u,j+v)\)</span>(其中i、j均为浮点坐标的整数部分，u、v为浮点坐标的小数部分，是取值[0,1)区间的浮点数)，则这个像素得值$ f(i+u,j+v) $可由原图像中坐标为 <span class="math inline">\((i,j)\)</span>、<span class="math inline">\((i+1,j)\)</span>、<span class="math inline">\((i,j+1)\)</span>、<span class="math inline">\((i+1,j+1)\)</span>所对应的周围四个像素的值决定，即：<span class="math inline">\(f(i+u,j+v) = (1-u)(1-v)f(i,j) + (1-u)vf(i,j+1) + u(1-v)f(i+1,j) + uvf(i+1,j+1)\)</span>, 其中<span class="math inline">\(f(i,j)\)</span>表示源图像<span class="math inline">\((i,j)\)</span>处的的像素值，以此类推。</li>
+<li>假如目标图的象素坐标为（1，1），那么反推得到的对应于源图的坐标是（0.75 , 0.75）, 这其实只是一个概念上的虚拟象素,实际在源图中并不存在这样一个象素,那么目标图的象素（1，1）的取值不能够由这个虚拟象素来决定，而只能由源图的这四个象素共同决定：（0，0）（0，1）（1，0）（1，1），而由于（0.75,0.75）离（1，1）要更近一些，那么（1,1）所起的决定作用更大一些，这从公式1中的系数uv=0.75×0.75就可以体现出来，而（0.75,0.75）离（0，0）最远，所以（0，0）所起的决定作用就要小一些，公式中系数为(1-u)(1-v)=0.25×0.25也体现出了这一特点；</li>
+<li>令<span class="math inline">\((x,y)\)</span>为我们想要赋以灰度值的位置的坐标，并令<span class="math inline">\(v(x,y)\)</span>表示灰度值，对双线性内插来说，赋值是有下面的公式得到：<span class="math inline">\(v(x,y)=ax+by+cxy+d\)</span>. 其中4个系数可以用<span class="math inline">\((x,y)\)</span>点最临近点写出的未知方程确定。虽然双线性内插比最近邻内插好很多，但是计算量增加。</li>
+<li><span style="color:red"><strong><em>双线性内插</em></strong></span>算法步骤详述：假设原始图像大小为<span class="math inline">\(size=\times n\)</span>，其中<span class="math inline">\(m\)</span>与<span class="math inline">\(n\)</span>分别是原始图像的行数与列数。若图像的缩放因子是<span class="math inline">\(t(t&gt;0)\)</span>，则目标图像的大小<span class="math inline">\(size=t\times m\times t\times n\)</span>。对于目标图像的某个像素点<span class="math inline">\(P(x,y)\)</span>通过<span class="math inline">\(P*1/t\)</span>可得到对应的原始图像坐标<span class="math inline">\(P&#39;(x1,y1)\)</span>,其中<span class="math inline">\(x1=x/t,y1=y/t\)</span>，由于<span class="math inline">\(x1,y1\)</span>都不是整数所以并不存在这样的点，这样可以找出与它相邻的四个点的灰度f1、f2、f3、f4，使用双线性插值算法就可以得到这个像素点<span class="math inline">\(P&#39;(x1,y1)\)</span>的灰度，也就是像素点<span class="math inline">\(P(x,y)\)</span>的灰度。
+<ol style="list-style-type: decimal">
+<li>通过原始图像和比例因子得到新图像的大小，并创建新图像。</li>
+<li>由新图像的某个像素<span class="math inline">\((x,y)\)</span>映射到原始图像<span class="math inline">\((x&#39;,y&#39;)\)</span>处。</li>
+<li>对<span class="math inline">\(x&#39;,y&#39;\)</span>取整得到<span class="math inline">\((xx,yy)\)</span>并得到<span class="math inline">\((xx,yy);(xx+1,yy);(xx,yy+1)\)</span>和<span class="math inline">\((xx+1,yy+1)\)</span>的值。</li>
+<li>利用双线性插值得到像素点(x，y)的值并写回新图像。</li>
+<li>重复步骤（2）直到新图像的所有像素写完。</li>
+</ol></li>
+<li>还有一种复杂度较高的方法是“<span style="color:red"><strong><em>双三次内插</em></strong></span>”，它包括<span style="color:red"><strong><em>16个最近邻点</em></strong></span>，赋予点<span class="math inline">\((x,y)\)</span>的灰度值为：<span class="math inline">\(v(x,y)=\sum_{i=0}^{3}\sum_{j=0}^3a_{ij}x^iy^j\)</span>. 其中，16个系数可由16个用<span class="math inline">\((x,y)\)</span>点最近邻写出的未知方程确定。通常，<span style="color:red"><strong><em>双三次内插在保持细节比双线性内插相对更好</em></strong></span>。双三次内插是商业图像编辑软件程序的标准内插方法，例如Adobe photoshop and corel photopaint.</li>
+</ul></li>
+</ol></li>
+</ol>
+<h3 id="像素直接的基本关系"><span style="color:red"><strong><em>像素直接的基本关系</em></strong></span></h3>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>相邻像素</em></strong></span> 位于坐标<span class="math inline">\((x,y)\)</span>处的像素p有4个领域，用<span class="math inline">\(N_4(p)\)</span>表示，每个像素距离<span class="math inline">\((x,y)\)</span>一个单位距离，如果<span class="math inline">\((x,y)\)</span>位于图像的边界上，则<span class="math inline">\(p\)</span>的某些相邻像素位于数字图像的外部。 <span class="math inline">\(p\)</span>的4个对角相邻像素为：<span class="math inline">\((x+1,y+1),(x+1,j-1),(x-1,j+1),(x-x,y-1)\)</span></li>
+<li><span style="color:red"><strong><em>邻接性，连通性，区域和边界</em></strong></span> <span style="color:red"><strong><em>邻接性</em></strong></span>：3种类型的邻接
+<ol style="list-style-type: lower-alpha">
+<li>4邻接：如果q在集合<span class="math inline">\(N_4(p)\)</span>中，则具有V中数值的2个像素p和q是4邻接的;</li>
+<li>8邻接：如果q在集合<span class="math inline">\(N_8(p)\)</span>中，则具有V中数值的2个像素p和q是8邻接的;</li>
+<li>m邻接（混合邻接）：如果q在<span class="math inline">\(N_4(p)\)</span>中，或q在<span class="math inline">\(N_D(p)\)</span>中，且集合<span class="math inline">\(N_4(p)\cap N_4(q)\)</span>中没有来自V中数值的像素，则具有V中数值的2个像素p和q是m邻接的。混合邻接是8邻接的改进，引入的目的是为了消除用8邻接时产生的二义性 <span style="color:red"><strong><em>连通性</em></strong></span>： 对于坐标分别为<span class="math inline">\((x,y),(s,t),(v,w)\)</span>的像素<span class="math inline">\(p,q,z\)</span>，如果：<span class="math inline">\(\begin{cases}D(p,q)\ge 0\\ D(p,q)=D(p,q) \\ D(p,z)\le D(p,q)+D(q,z)\end{cases}\)</span>,则D是距离函数或者度量。 p和q的欧式距离定义如下：<span class="math inline">\(D_{e}{p,q}=\sqrt{(x-s)^2+(y-t)^2}\)</span> p和q间的距离<span class="math inline">\(D_4\)</span>（城市街区距离）定义：<span class="math inline">\(D_4(p,q)=|x-s|+|y-t|\)</span>. 这种情况下，距离<span class="math inline">\((x,y)\)</span>的距离<span class="math inline">\(D_4\)</span>小于或等于某一个值<span class="math inline">\(r\)</span>的像素形成一个中心在<span class="math inline">\((x,y)\)</span>的菱形<span class="math inline">\(\begin{bmatrix}&amp;&amp;2&amp;&amp;\\&amp;2&amp;1&amp;2&amp;\\2&amp;1&amp;0&amp;1&amp;2\\&amp;2&amp;1&amp;2&amp;\\&amp;&amp;2&amp;&amp;\end{bmatrix}\)</span>。 p和q间的距离<span class="math inline">\(D_8\)</span>（棋盘距离）定义：<span class="math inline">\(D_8(p,q)=max(|x-s|,|y-t|)\)</span></li>
+</ol></li>
+</ol>
+<h3 id="图像处理所用到的数学工具的介绍"><span style="color:red"><strong><em>图像处理所用到的数学工具的介绍</em></strong></span></h3>
+<ol style="list-style-type: decimal">
+<li><p><span style="color:red"><strong><em>阵列和矩阵操作</em></strong></span>：例如矩阵相乘</p></li>
+<li><p><span style="color:red"><strong><em>线性操作和非线性操作</em></strong></span> 图像处理最重要的分类是它是线性还是非线性。 <span class="math inline">\(\begin{cases}H[a_if_i(x,y)+a_jf_j(x,y)]=a_iH(f_i(x,y))+a_jH(f_j(x,y))\\max\begin{bmatrix}6&amp;5\\4&amp;7\end{bmatrix}\end{cases}\)</span></p></li>
+<li><span style="color:red"><strong><em>基本集合操作</em></strong></span>：
+<ol style="list-style-type: decimal">
+<li>如果A为一个实数对组成的集合，若<span class="math inline">\(a=(a_1,a_2)\)</span>是A的一个元素，则将其写成<span class="math inline">\(a\in A\)</span>, 否则<span class="math inline">\(a\notin A\)</span>.</li>
+<li>如果集合A中的每个元素又是另一个集合B中的一个元素，则称A为B的元素，表示为：<span class="math inline">\(A\subseteq B\)</span>, 2个集合A和B的并集表示为<span class="math inline">\(C=A\cup B\)</span>, 这个集合包含集合A和B中所有元素。类似的，两个集合A和B的交集为<span class="math inline">\(D=A\cap B\)</span>,这个集合包含的元素同时属于集合A和B。</li>
+<li>集合A的补集是不包含集合A的所有元素组成的集合，表示为<span class="math inline">\(A^c=\{w|w\notin A\}\)</span></li>
+<li>集合A和B的差表示为A-B， 定义为<span class="math inline">\(A-B=\{w|w\in A,w\notin B\}=A\cap B^c\)</span></li>
+</ol></li>
+<li><span style="color:red"><strong><em>图像空间操作</em></strong></span>：
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>单像素操作</em></strong></span>：数字图像中执行的最简单的操作就是以灰度为基础改变单个像素的值。</li>
+<li><span style="color:red"><strong><em>邻域操作</em></strong></span>：令<span class="math inline">\(S_{xy}\)</span>代表图像<span class="math inline">\(f\)</span>中以任意一点<span class="math inline">\((x,y)\)</span>为中心的一个领域的坐标集，该像素的值由输入图像中坐标在<span class="math inline">\(S_{xy}\)</span>内的像素经指定操作决定。</li>
+<li><span style="color:red"><strong><em>几何空间变换和图像配准</em></strong></span>：几何变换改进图像中像素间的空间关系。几何变换由2个基本操作组成。坐标空间变换和灰度内插。 <span style="color:red"><strong><em>a) 坐标变换</em></strong></span>：这些变换可根据矩阵T中元素所选择的值，对一组坐标点做尺度、旋转、平移或偏移。 |变换名称|仿射矩阵T|坐标公式| |---|---|---| |恒等变换|<span class="math inline">\(\begin{bmatrix}1&amp;0&amp;0\\0&amp;1&amp;0\\0&amp;0&amp;1\end{bmatrix}\)</span>|<span class="math inline">\(\begin{cases}x=v\\y=w\end{cases}\)</span>| |尺度变换|<span class="math inline">\(\begin{bmatrix}c_x&amp;0&amp;0\\0&amp;c_y&amp;0\\0&amp;0&amp;1\end{bmatrix}\)</span>|<span class="math inline">\(\begin{cases}x=c_xv\\y=c_yw\end{cases}\)</span>| |旋转变换|<span class="math inline">\(\begin{bmatrix}cos\theta&amp;sin\theta&amp;0\\-sin\theta&amp;cos\theta&amp;0\\0&amp;0&amp;1\end{bmatrix}\)</span>|<span class="math inline">\(\begin{cases}x=vcos\theta -wsin\theta\\y=vsin\theta+wcos\theta\end{cases}\)</span>| |平移变换|<span class="math inline">\(\begin{bmatrix}1&amp;0&amp;0\\0&amp;1&amp;0\\t_x&amp;t_y&amp;1\end{bmatrix}\)</span>|<span class="math inline">\(\begin{cases}x=v+t_x\\y=w+t_y\end{cases}\)</span>| |（垂直）偏移变换|<span class="math inline">\(\begin{bmatrix}1&amp;0&amp;0\\s_v&amp;1&amp;0\\0&amp;0&amp;1\end{bmatrix}\)</span>|<span class="math inline">\(\begin{cases}x=vs_v+w\\y=w\end{cases}\)</span>| |（水平）偏移变换|<span class="math inline">\(\begin{bmatrix}1&amp;s_h&amp;0\\0&amp;1&amp;0\\0&amp;0&amp;1\end{bmatrix}\)</span>|<span class="math inline">\(\begin{cases}x=v\\y=s_hv+w\end{cases}\)</span>|</li>
+</ol></li>
+<li><p><span style="color:red"><strong><em>图像变换</em></strong></span> 图像变换的通用形式：<span class="math inline">\(\begin{cases}T(u,v)=\sum\sum f(x,y)r(x,y,u,v)\\ f(x,y)=\sum\sum T(u,v)s(x,y,u,v)\end{cases}\)</span> ,<span class="math inline">\(r(.)\)</span>正变换核，<span class="math inline">\(s(.)\)</span>反变换核．</p></li>
+</ol>
+<h3 id="matrix">Matrix</h3>
+<p><span style="color:red"><strong>Reference:</strong></span> <a href="http://blog.csdn.net/u012162613/article/details/42214205">奇异值分解(SVD)</a> / <a href="http://hujiaweibujidao.github.io/blog/2014/04/29/linearalgebra-summary-3/">EigenVectors and Eigenvalues</a> / <a href="http://blog.csdn.net/ksearch/article/details/19398119">特征值、奇异值以及奇异值分解</a> / <a href="http://blog.csdn.net/lsldd/article/details/41520953">用Python开始机器学习（5：文本特征抽取与向量化）</a> / <a href="http://www.cnblogs.com/begtostudy/archive/2010/09/05/1818572.html">矩阵的QR分解</a> / <a href="http://dataunion.org/14926.html">常用的机器学习&amp;数据挖掘知识(点）总结</a> / <a href="http://huangjian.logdown.com/posts/18826-python-scientific-compute">用Python实现最小二乘法</a> / <a href="http://simple-is-better.com/news/391">用 Python 做科学计算之最小二乘</a> / <a href="http://sebug.net/paper/books/scipydoc/scipy_intro.html">SciPy-数值计算库</a> / <a href="http://www.cnblogs.com/draem0507/archive/2012/11/29/2794875.html">python之变量操作</a> / <a href="http://blog.sina.com.cn/s/blog_881535bf0101ghwa.html">共轭梯度法的python实现</a> / <a href="http://www.cnblogs.com/huxi/archive/2011/07/01/2095931.html">Python函数式编程指南（三）：迭代器</a> / <a href="http://m.blog.csdn.net/blog/gshengod/38817621">最大似然估计(Maximum Likelihood)</a> / <a href="http://www.kuqin.com/shuoit/20141213/343855.html">Logistic回归（LR）分类器</a> / <a href="http://blog.chinaunix.net/uid-20761674-id-75037.html">最大似然估计法</a> / <a href="http://blog.csdn.net/zimohuakai/article/details/6918551">梯度下降法-python代码</a> / <a href="http://en.wikipedia.org/wiki/Gradient_descent">Gradient descent</a> / <a href="http://blog.csdn.net/littlethunder/article/details/26575417">01背包问题（动态规划）python实现</a> / <a href="http://blog.chinaunix.net/uid-28311809-id-4251024.html">几个字符串问题(LCS、LIS、CSD)的动态规划解法，及python实现</a> / <a href="http://www.open-open.com/lib/view/open1400201295473.html">动态规划用于解决重叠子问题的示例(Python版)</a> / <a href="http://blog.csdn.net/zouxy09/article/details/17589329">机器学习算法与Python实践之（五）k均值聚类（k-means）</a> / <a href="http://blog.csdn.net/lsldd/article/details/41551797">用Python开始机器学习（7：逻辑回归分类）</a></p>
+<h2 id="opencv">OpenCV</h2>
+<p><span style="color:red"><strong>Reference:</strong></span> <a href="http://superuser.com/questions/286675/how-to-install-ffmpeg-on-debian">How to install FFmpeg on Debian?</a> / <a href="http://forums.debian.net/viewtopic.php?f=6&amp;t=83998">Updating multimedia</a> / <a href="http://siggiorn.com/wp-content/uploads/libraries/opencv-java/docs/sj/opencv/Constants.CaptureProperty.html">Enum Constants.CaptureProperty</a> / <a href="http://www.uco.es/investiga/grupos/ava/node/40">RaspiCam: C++ API for using Raspberry camera with/without OpenCv</a> / <a href="http://blogs.wcode.org/2014/10/howto-install-build-and-use-opencv-macosx-10-10/">HOWTO: Install, Build and Use openCV (MacOSX 10.10)</a> / <a href="http://www.pyimagesearch.com/2015/02/23/install-opencv-and-python-on-your-raspberry-pi-2-and-b/">Install OpenCV and Python on your Raspberry Pi 2 and B+</a> / <a href="http://opencv-users.1802565.n2.nabble.com/Direct-from-buffer-to-IplImage-td5654441.html">Direct from buffer to IplImage*</a> / <a href="http://answers.opencv.org/question/6655/convert-rgba-byte-buffer-to-opencv-image/">Convert RGBA byte buffer to OpenCV image?</a> / <a href="http://stackoverflow.com/questions/1568377/convert-rgb-iplimage-to-3-arrays">Convert RGB IplImage to 3 arrays</a> / <a href="http://news.ccidnet.com/art/32855/20100713/2114167_1.html">OpenCV中unsigned char <em>转换成IplImage </em></a> / <a href="http://blog.sina.com.cn/s/blog_8c38b8b70101b4kl.html">OpenCV: OpenCV中IplImage图像格式</a> / <a href="http://rodrigoberriel.com/2014/10/installing-opencv-3-0-0-on-ubuntu-14-04/">Installing OpenCV 3.0.0 on Ubuntu 14.04</a></p>
+</body>
+</html>

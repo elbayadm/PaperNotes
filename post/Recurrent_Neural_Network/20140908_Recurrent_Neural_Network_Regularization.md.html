@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="recurrent-neural-network-regularization"><a href="http://arxiv.org/abs/1409.2329">Recurrent Neural Network Regularization</a></h2>
+<p>TLDR; The authors show that applying dropout to only the <strong>non-recurrent</strong> connections (between layers of the same timestep) in an LSTM works well, improving the scores on various sequence tasks.</p>
+<h4 id="data-sets-and-model-performance">Data Sets and model performance</h4>
+<ul>
+<li>PTB Language Modeling Perplexity: 78.4</li>
+<li>Google Icelandic Speech Dataset WER Accuracy: 70.5</li>
+<li>WMT'14 English to French Machine Translation BLEU: 29.03</li>
+<li>MS COCO Image Caption Generation BLEU: 24.3</li>
+</ul>
+</body>
+</html>

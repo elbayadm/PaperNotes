@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+</head>
+<body>
+<h2 id="flappy-bird-hack-using-deep-reinforcement-learning-deep-q-learning."><a href="https://github.com/yenchenlin1994/DeepLearningFlappyBird">Flappy Bird hack using Deep Reinforcement Learning (Deep Q-learning).</a></h2>
+<h2 id="基础知识">基础知识</h2>
+<p><a href="http://www.nervanasys.com/demystifying-deep-reinforcement-learning/">Demystifying Deep Reinforcement Learning</a></p>
+<h2 id="准备步骤">准备步骤</h2>
+<pre class="git"><code>git clone https://github.com/yenchenlin1994/DeepLearningFlappyBird.git
+cd DeepLearningFlappyBird
+python deep_q_network.py</code></pre>
+<h3 id="deep-q-network算法">Deep Q-Network算法</h3>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co"># The pseudo-code for the Deep Q Learning algorithm, as given in [1], can be found below:</span>
+Initialize replay memory D to size N
+Initialize action<span class="op">-</span>value function Q <span class="cf">with</span> random weights
+<span class="cf">for</span> episode <span class="op">=</span> <span class="dv">1</span>, M do
+    Initialize state s_1
+    <span class="cf">for</span> t <span class="op">=</span> <span class="dv">1</span>, T do
+        With probability ϵ select random action a_t
+        otherwise select a_t<span class="op">=</span>max_a  Q(s_t,a<span class="op">;</span> θ_i)
+        Execute action a_t <span class="op">in</span> emulator <span class="op">and</span> observe r_t <span class="op">and</span> s_(t<span class="dv">+1</span>)
+        Store transition (s_t,a_t,r_t,s_(t<span class="dv">+1</span>)) <span class="op">in</span> D
+        Sample a minibatch of transitions (s_j,a_j,r_j,s_(j<span class="dv">+1</span>)) <span class="im">from</span> D
+        Set y_j:<span class="op">=</span>
+            r_j <span class="cf">for</span> terminal s_(j<span class="dv">+1</span>)
+            r_j<span class="op">+</span>γ<span class="op">*</span>max_(a<span class="op">^</span><span class="st">&#39; )  Q(s_(j+1),a&#39;</span><span class="op">;</span> θ_i) <span class="cf">for</span> non<span class="op">-</span>terminal s_(j<span class="dv">+1</span>)
+        Perform a gradient step on (y_j<span class="op">-</span>Q(s_j,a_j<span class="op">;</span> θ_i))<span class="op">^</span><span class="dv">2</span> <span class="cf">with</span> respect to θ
+    end <span class="cf">for</span>
+end <span class="cf">for</span></code></pre></div>
+<h2 id="实验">实验</h2>
+<h3 id="实验环境">实验环境</h3>
+<p>Since deep Q-network is trained on the raw pixel values observed from the game screen at each time step, [3] finds that remove the background appeared in the original game can make it converge faster. This process can be visualized as the following figure:</p>
+<p align="center">
+<img src="https://github.com/yenchenlin1994/DeepLearningFlappyBird/raw/master/images/preprocess.png" width="500" >
+</p>
+<h3 id="网络结构">网络结构</h3>
+<p>According to [1], I first preprocessed the game screens with following steps: 1. Convert image to grayscale 2. Resize image to 80x80 3. Stack last 4 frames to produce an 80x80x4 input array for network</p>
+<p>The architecture of the network is shown in the figure below. The first layer convolves the input image with an 8x8x4x32 kernel at a stride size of 4. The output is then put through a 2x2 max pooling layer. The second layer convolves with a 4x4x32x64 kernel at a stride of 2. We then max pool again. The third layer convolves with a 3x3x64x64 kernel at a stride of 1. We then max pool one more time. The last hidden layer consists of 256 fully connected ReLU nodes.</p>
+<p align="center">
+<img src="https://github.com/yenchenlin1994/DeepLearningFlappyBird/raw/master/images/network.png" width="500" >
+</p>
+<p>The final output layer has the same dimensionality as the number of valid actions which can be performed in the game, where the 0th index always corresponds to doing nothing. The values at this output layer represent the Q function given the input state for each valid action. At each time step, the network performs whichever action corresponds to the highest Q value using a ϵ greedy policy.</p>
+<h3 id="训练">训练</h3>
+<p>At first, I initialize all weight matrices randomly using a normal distribution with a standard deviation of 0.01, then set the replay memory with a max size of 500,00 experiences.</p>
+<p>I start training by choosing actions uniformly at random for the first 10,000 time steps, without updating the network weights. This allows the system to populate the replay memory before training begins.</p>
+<p>Note that unlike [1], which initialize ϵ = 1, I linearly anneal ϵ from 0.1 to 0.0001 over the course of the next 3000,000 frames. The reason why I set it this way is that agent can choose an action every 0.03s (FPS=30) in our game, high ϵ will make it flap too much and thus keeps itself at the top of the game screen and finally bump the pipe in a clumsy way. This condition will make Q function converge relatively slow since it only start to look other conditions when ϵ is low. However, in other games, initialize ϵ to 1 is more reasonable.</p>
+<p>During training time, at each time step, the network samples minibatches of size 32 from the replay memory to train on, and performs a gradient step on the loss function described above using the Adam optimization algorithm with a learning rate of 0.000001. After annealing finishes, the network continues to train indefinitely, with ϵ fixed at 0.001.</p>
+<p align="center">
+<img src="https://dl.dropboxusercontent.com/s/v7rsr99tj2dbjuk/Screenshot%20from%202016-05-19%2023%3A27%3A10.png" width="500" >
+</p>
+<h2 id="references">References</h2>
+<ul>
+<li>[1] Mnih Volodymyr, Koray Kavukcuoglu, David Silver, Andrei A. Rusu, Joel Veness, Marc G. Bellemare, Alex Graves, Martin Riedmiller, Andreas K. Fidjeland, Georg Ostrovski, Stig Petersen, Charles Beattie, Amir Sadik, Ioannis Antonoglou, Helen King, Dharshan Kumaran, Daan Wierstra, Shane Legg, and Demis Hassabis. Human-level Control through Deep Reinforcement Learning. Nature, 529-33, 2015.</li>
+<li>[2] Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Alex Graves, Ioannis Antonoglou, Daan Wierstra, and Martin Riedmiller. Playing Atari with Deep Reinforcement Learning. NIPS, Deep Learning workshop</li>
+<li>[3] Kevin Chen. Deep Reinforcement Learning for Flappy Bird <a href="http://cs229.stanford.edu/proj2015/362_report.pdf">Report</a> | <a href="https://youtu.be/9WKBzTUsPKc">Youtube result</a></li>
+</ul>
+<h1 id="disclaimer">Disclaimer</h1>
+<p>This work is highly based on the following repos:</p>
+<ol style="list-style-type: decimal">
+<li><a href="https://github.com/sourabhv/FlapPyBird">sourabhv/FlapPyBird</a></li>
+<li><a href="https://github.com/asrivat1/DeepLearningVideoGames">asrivat1/DeepLearningVideoGames</a></li>
+</ol>
+</body>
+</html>

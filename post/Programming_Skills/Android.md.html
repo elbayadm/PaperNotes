@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Android Development</title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Android Development</h1>
+</div>
+<!-- MarkdownTOC -->
+<ul>
+<li><a href="#basic">Basic</a></li>
+<li><a href="#communication">Communication</a></li>
+<li><a href="#status">Status</a></li>
+<li><a href="#qr-code">QR code</a></li>
+<li><a href="#control">Control</a></li>
+</ul>
+<!-- /MarkdownTOC -->
+<h2 id="basic">Basic</h2>
+<ol style="list-style-type: decimal">
+<li><p>Service<br/> <span style="color:red"><strong>Reference:</strong></span> <a href="http://liangruijun.blog.51cto.com/3061169/647804/">Android开发学习笔记：Service的简介和启动方式</a> / <a href="http://stackoverflow.com/questions/6909727/how-to-start-service-on-click-of-widget-button">How to start Service on click of Widget Button?</a></p></li>
+<li><p>获取路径<br/> <span style="color:red"><strong>Reference:</strong></span> <a href="http://blog.sina.com.cn/s/blog_681929ae0101735n.html">android 获取当前程序路径</a> / <a href="http://blog.csdn.net/dinglin_87/article/details/7433541">android中对/data/data/<package name>/files下文件的读写操作</a> / <a href="http://www.cnblogs.com/bluestorm/p/3688937.html">Android获取程序路径 （/data/data/appname）</a></p></li>
+</ol>
+<h2 id="communication">Communication</h2>
+<ol style="list-style-type: decimal">
+<li><p>Socket<br/> <span style="color:red"><strong>Reference:</strong></span> <a href="http://blog.csdn.net/dalongyes/article/details/42609539">Android开发socket通信——手机做server端C/S架构实现</a> / <a href="http://www.cnblogs.com/zealotrouge/archive/2013/06/24/3152941.html">Android利用LocalSocket实现Java端进程与C端进程之间的IPC</a> / <a href="http://blog.csdn.net/htttw/article/details/7574372">android socket通信（上）</a> / <a href="http://blog.csdn.net/htttw/article/details/7574409">android socket通信（下）</a> / <a href="http://download.csdn.net/detail/htttw/4307606">android socket通信实例程序</a> / <a href="http://download.csdn.net/detail/htttw/4307666">android socket通信实例程序（下）</a> / <a href="http://blog.csdn.net/ccjjnn19890720/article/details/6716316">linux与windows之间的socket编程</a> / <a href="http://stackoverflow.com/questions/5113914/large-file-transfer-with-sockets">Large file transfer with sockets</a> / <a href="http://stackoverflow.com/questions/9520911/java-sending-and-receiving-file-byte-over-sockets">Java sending and receiving file (bytes) over sockets</a> / <a href="http://blog.csdn.net/wjs1033/article/details/20217695">linux下用socket传送xml格式的文件方法</a> / <a href="http://blog.csdn.net/keyoflov/article/details/6884897">Linux 下C使用XML传递消息（字符串）</a> / <a href="http://www.cprogramdevelop.com/1794072/">Linux, C to use XML to deliver the message (string)</a> / <a href="http://stackoverflow.com/questions/12730477/close-is-not-closing-socket-properly">close() is not closing socket properly</a></p></li>
+<li><p>获得本机的IP<br/> <span style="color:red"><strong>Reference:</strong></span> <a href="http://www.java2s.com/Code/Android/Network/getLocalIpAddress.htm">get Local Ip Address : IP « Network « Android</a> / <a href="http://stackoverflow.com/questions/24506317/get-ip-address-of-connected-wi-fi-in-android-application">Get IP Address of connected Wi fi in Android application</a> / <a href="http://stackoverflow.com/questions/2241229/going-from-127-0-0-1-to-2130706433-and-back-again">Going from 127.0.0.1 to 2130706433, and back again</a> / <a href="http://www.javased.com/?api=java.net.InetAddress">Java Code Examples: java.net.InetAddress</a> / <a href="http://stackoverflow.com/questions/7508002/program-closed-unexpected-when-i-try-getconnectioninfo">program closed unexpected when i try getConnectionInfo</a></p></li>
+</ol>
+<h2 id="status">Status</h2>
+<ol style="list-style-type: decimal">
+<li><p>ProgressBar<br/> <span style="color:red"><strong>Reference:</strong></span> <a href="http://developer.android.com/reference/android/app/ProgressDialog.html">ProgressDialog</a> / <a href="http://byandby.iteye.com/blog/816494">android 进度条(ProgressBar)</a> / <a href="http://stackoverflow.com/questions/4348032/android-progressbar-does-not-update-progress-view-drawable">android progressBar does not update progress view/drawable</a> / <a href="http://www.crifan.com/android_progressbar_not_update_or_in_end_suddenly_update_to_100_percent/">Android中的进度条</a> / <a href="http://www.2cto.com/kf/201112/113420.html">Android帧布局实现霓虹灯的效果</a> / <a href="http://www.cnblogs.com/salam/archive/2010/10/06/1844703.html">Android 控件之ProgressBar进度条</a> / <a href="http://blog.csdn.net/sjf0115/article/details/7214294">Android学习笔记之progressBar(进度条)</a></p></li>
+<li><p>RatingBar<br/> <span style="color:red"><strong>Reference:</strong></span> <a href="http://stackoverflow.com/questions/6153587/how-can-i-decrease-the-size-of-ratingbar">How can I decrease the size of Ratingbar?</a> / <a href="http://www.codota.com/android/scenarios/52c5d47eda0a69210f550880/android.widget.RatingBar?tag=coyote">Code example for RatingBar</a> / <a href="http://stackoverflow.com/questions/27503768/how-to-change-the-color-ratingbar-depending-on-the-number-of-stars">how to change the color RatingBar depending on the number of stars?</a></p></li>
+<li><p>背景设置<br/> <span style="color:red"><strong>Reference:</strong></span> <a href="http://www.cnblogs.com/winxiang/archive/2012/02/27/2370257.html">android在学习——Menu背景图片，背景色的设置</a> / <a href="http://stackoverflow.com/questions/19659637/how-to-change-the-background-color-of-action-bars-option-menu-in-android-4-2">How to change the background color of Action Bar's Option Menu in Android 4.2</a></p></li>
+<li><p>按键改变颜色<br/> <span style="color:red"><strong>Reference:</strong></span> <a href="http://stackoverflow.com/questions/9335279/change-button-text-color-when-pressed">change button text color when pressed</a> / <a href="http://my.oschina.net/cuitongliang/blog/340169">android 按钮按下效果（文字颜色和按钮同时变化）</a> / <a href="http://segmentfault.com/q/1010000000396717">如何改变Android标准键的颜色？</a></p></li>
+</ol>
+<h2 id="qr-code">QR code</h2>
+<ol style="list-style-type: decimal">
+<li><p>二维码生成<br/> <span style="color:red"><strong>Reference:</strong></span> <a href="http://code.tutsplus.com/tutorials/android-sdk-create-a-barcode-reader--mobile-17162">Android SDK: Create a Barcode Reader</a></p></li>
+<li><p>二维码读取<br/> <span style="color:red"><strong>Reference:</strong></span> <a href="http://stackoverflow.com/questions/4443891/how-to-read-barcodes-with-the-camera-on-android/4714083#4714083">How to read barcodes with the camera on Android?</a></p></li>
+</ol>
+<h2 id="control">Control</h2>
+<ol style="list-style-type: decimal">
+<li><p>调用第三方APP<br/> <span style="color:red"><strong>Reference:</strong></span> <a href="https://code.google.com/p/xml-apk-parser/downloads/detail?name=APKParser.jar&amp;can=2&amp;q=">xml-apk-parser</a> / <a href="http://www.eoeandroid.com/thread-322581-1-1.html">调用第三方APP</a> / <a href="http://blog.csdn.net/aaa111/article/details/41833189">Android app中调用启动其他应用（系统应用和第三方应用）</a> / <a href="http://blog.csdn.net/twlkyao/article/details/17891857" class="uri">http://blog.csdn.net/twlkyao/article/details/17891857</a></p></li>
+<li><p>退出程序<br/> <span style="color:red"><strong>Reference:</strong></span> <a href="http://www.cnblogs.com/jxgxy/archive/2012/08/23/2653404.html">Android中的“再按一次返回键退出程序”实现</a></p></li>
+<li><p>错误处理<br/> <span style="color:red"><strong>Reference:</strong></span> <a href="http://www.codeitive.com/0xHqkqeWPg/android-app-force-closes-on-connection-refuse.html">Android App force closes on connection refuse</a></p></li>
+</ol>
+</body>
+</html>

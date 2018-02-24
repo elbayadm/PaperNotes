@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="draw-a-recurrent-neural-network-for-image-generation"><a href="https://arxiv.org/pdf/1502.04623v2.pdf">DRAW: A Recurrent Neural Network For Image Generation</a></h1>
+<!-- ![](https://www.dropbox.com/s/uka203ih85c2kn8/draw.png?dl=1) -->
+<h2 id="model-define">model define</h2>
+<ol style="list-style-type: decimal">
+<li>reader</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">x <span class="ot">=</span> nn<span class="ot">.</span>Identity<span class="ot">()()</span>
+x_error_prev <span class="ot">=</span> nn<span class="ot">.</span>Identity<span class="ot">()()</span>
+read_module <span class="ot">=</span> READ<span class="ot">.</span>create<span class="ot">(</span>x<span class="ot">,</span> x_error_prev<span class="ot">,</span> opt<span class="ot">.</span>rnnSize<span class="ot">,</span> opt<span class="ot">.</span>sizeImage<span class="ot">,</span> opt<span class="ot">.</span>attenReadSize<span class="ot">,</span> opt<span class="ot">.</span>batchSize<span class="ot">)</span></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>reader-lstm</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">input <span class="ot">=</span> nn<span class="ot">.</span>Identity<span class="ot">()()</span>
+lstm_enc <span class="ot">=</span> LSTM<span class="ot">.</span>create<span class="ot">(</span>input<span class="ot">,</span> <span class="dv">2</span> <span class="ot">*</span> opt<span class="ot">.</span>attenReadSize <span class="ot">*</span> opt<span class="ot">.</span>attenReadSize<span class="ot">,</span> opt<span class="ot">.</span>rnnSize<span class="ot">)</span></code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>QSampler</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">next_h <span class="ot">=</span> nn<span class="ot">.</span>Identity<span class="ot">()()</span>
+qsampler <span class="ot">=</span> QSampler<span class="ot">.</span>create<span class="ot">(</span>opt<span class="ot">.</span>rnnSize<span class="ot">,</span> next_h<span class="ot">,</span> opt<span class="ot">.</span>sizeLayerZ<span class="ot">)</span>
+<span class="co">--</span>
+encoder <span class="ot">=</span> <span class="ot">{</span>read_module<span class="ot">,</span> lstm_enc<span class="ot">,</span> qsampler<span class="ot">}</span></code></pre></div>
+<ol start="4" style="list-style-type: decimal">
+<li>decoder</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">input <span class="ot">=</span> nn<span class="ot">.</span>Identity<span class="ot">()()</span>
+lstn_dec <span class="ot">=</span> LSTM<span class="ot">.</span>create<span class="ot">(</span>input<span class="ot">,</span> opt<span class="ot">.</span>sizeLayerZ<span class="ot">,</span> opt<span class="ot">.</span>rnnSize<span class="ot">)</span></code></pre></div>
+<ol start="5" style="list-style-type: decimal">
+<li>writer</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">next_h <span class="ot">=</span> nn<span class="ot">.</span>Identity<span class="ot">()()</span>
+prev_canvas <span class="ot">=</span> nn<span class="ot">.</span>Identity<span class="ot">()()</span>
+write_module <span class="ot">=</span> WRITE<span class="ot">.</span>create<span class="ot">(</span>next_h<span class="ot">,</span> prev_canvas<span class="ot">,</span> opt<span class="ot">.</span>rnnSize<span class="ot">,</span> opt<span class="ot">.</span>sizeImage<span class="ot">,</span> opt<span class="ot">.</span>attenWriteSize<span class="ot">,</span> opt<span class="ot">.</span>batchSize<span class="ot">)</span></code></pre></div>
+<ol start="6" style="list-style-type: decimal">
+<li><p>loss</p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">x <span class="ot">=</span> nn<span class="ot">.</span>Identity<span class="ot">()()</span>
+next_canvas <span class="ot">=</span> nn<span class="ot">.</span>Identity<span class="ot">()()</span>
+loss_x <span class="ot">=</span> LOSS_X<span class="ot">.</span>create<span class="ot">(</span>x<span class="ot">,</span>next_canvas<span class="ot">)</span>
+<span class="co">--</span>
+decoder <span class="ot">=</span> <span class="ot">{</span>lstn_dec<span class="ot">,</span> write_module<span class="ot">,</span> loss_x<span class="ot">}</span></code></pre></div></li>
+</ol>
+<h2 id="dataset">dataset</h2>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">trainset <span class="ot">=</span> mnist<span class="ot">.</span>traindataset<span class="ot">()</span></code></pre></div>
+<h2 id="train">train</h2>
+<ol style="list-style-type: decimal">
+<li><p>get parameters(parameters and gradient parameters)</p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">params<span class="ot">,</span> grad_params <span class="ot">=</span> model_utils<span class="ot">.</span>combine_all_parameters<span class="ot">(</span>encoder<span class="ot">[</span><span class="dv">1</span><span class="ot">],</span> encoder<span class="ot">[</span><span class="dv">2</span><span class="ot">],</span> encoder<span class="ot">[</span><span class="dv">3</span><span class="ot">],</span> decoder<span class="ot">[</span><span class="dv">1</span><span class="ot">],</span> decoder<span class="ot">[</span><span class="dv">2</span><span class="ot">],</span> decoder<span class="ot">[</span><span class="dv">3</span><span class="ot">])</span></code></pre></div></li>
+<li><p>training loop(forward)</p></li>
+</ol>
+<ul>
+<li>get inputs and targets</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">inputs <span class="ot">=</span> torch<span class="ot">.</span>zeros<span class="ot">(</span>opt<span class="ot">.</span>batchSize<span class="ot">,</span> opt<span class="ot">.</span>sizeImage<span class="ot">,</span> opt<span class="ot">.</span>sizeImage<span class="ot">)</span>
+<span class="kw">for</span> i <span class="ot">=</span> <span class="dv">1</span><span class="ot">,</span> v:size<span class="ot">(</span><span class="dv">1</span><span class="ot">)</span> <span class="kw">do</span>
+    inputs<span class="ot">[{{</span>i<span class="ot">},</span> <span class="ot">{},</span> <span class="ot">{}}]</span> <span class="ot">=</span> trainset<span class="ot">[</span>v<span class="ot">[</span>i<span class="ot">]].</span>x:gt<span class="ot">(</span><span class="dv">125</span><span class="ot">)</span>:cuda<span class="ot">()</span> <span class="co">-- input training data</span>
+    targets<span class="ot">[</span>i<span class="ot">]</span> <span class="ot">=</span>  trainset<span class="ot">[</span>v<span class="ot">[</span>i<span class="ot">]].</span>y
+<span class="kw">end</span></code></pre></div>
+<ul>
+<li>forward the model</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="kw">for</span> t <span class="ot">=</span> <span class="dv">1</span><span class="ot">,</span> opt<span class="ot">.</span>seqSize <span class="kw">do</span>
+    <span class="ot">...</span>
+    loss <span class="ot">=</span> loss <span class="ot">+</span> combine_loss
+<span class="kw">end</span>
+loss <span class="ot">=</span> loss <span class="ot">/</span> opt<span class="ot">.</span>seqSize</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">e<span class="ot">[</span>t<span class="ot">]</span> <span class="ot">=</span> torch<span class="ot">.</span>randn<span class="ot">(</span>opt<span class="ot">.</span>batchSize<span class="ot">,</span> opt<span class="ot">.</span>sizeLayerZ<span class="ot">)</span>
+x<span class="ot">[</span>t<span class="ot">]</span> <span class="ot">=</span> inputs</code></pre></div>
+<p><span class="math display">\[
+\begin{cases}
+x\\
+\hat{x}_t=x-\sigma(c_{t-1})\\
+r_t=\text{read}(x_t,\hat{x}_{t-1},h_{t-1}^{dec})
+\end{cases}
+\]</span></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="co">--encoder</span>
+patch<span class="ot">[</span>t<span class="ot">],</span> read_input<span class="ot">[</span>t<span class="ot">]</span>         <span class="ot">=</span> <span class="fu">unpack</span><span class="ot">(</span>encoder_clones<span class="ot">[</span>t<span class="ot">][</span><span class="dv">1</span><span class="ot">]</span>:forward<span class="ot">({</span>x<span class="ot">[</span>t<span class="ot">],</span> x_error<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">],</span> lstm_h_dec<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">],</span> ascending<span class="ot">}))</span></code></pre></div>
+<p><span class="math display">\[
+h_t^{enc}=\text{RNN}^{enc}(h_{t-1}^{enc},[r_t,h_{t-1}^{dec}])
+\]</span></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">lstm_c_enc<span class="ot">[</span>t<span class="ot">],</span> lstm_h_enc<span class="ot">[</span>t<span class="ot">]</span>    <span class="ot">=</span> <span class="fu">unpack</span><span class="ot">(</span>encoder_clones<span class="ot">[</span>t<span class="ot">][</span><span class="dv">2</span><span class="ot">]</span>:forward<span class="ot">({</span>read_input<span class="ot">[</span>t<span class="ot">],</span>lstm_c_enc<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">],</span> lstm_h_enc<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">]}))</span></code></pre></div>
+<p><span class="math display">\[\begin{cases}
+z_t\sim Q(Z_t|h_t^{enc})\\
+\mathcal{L}_z
+\end{cases}
+\]</span></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">z<span class="ot">[</span>t<span class="ot">],</span> loss_z<span class="ot">[</span>t<span class="ot">]</span>                 <span class="ot">=</span> <span class="fu">unpack</span><span class="ot">(</span>encoder_clones<span class="ot">[</span>t<span class="ot">][</span><span class="dv">3</span><span class="ot">]</span>:forward<span class="ot">({</span>lstm_h_enc<span class="ot">[</span>t<span class="ot">],</span> e<span class="ot">[</span>t<span class="ot">]}))</span></code></pre></div>
+<p><b>loss_z is the first loss output.</b></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="co">--decoder</span>
+lstm_c_dec<span class="ot">[</span>t<span class="ot">],</span> lstm_h_dec<span class="ot">[</span>t<span class="ot">]</span>          <span class="ot">=</span> <span class="fu">unpack</span><span class="ot">(</span>decoder_clones<span class="ot">[</span>t<span class="ot">][</span><span class="dv">1</span><span class="ot">]</span>:forward<span class="ot">({</span>z<span class="ot">[</span>t<span class="ot">],</span>lstm_c_dec<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">],</span> lstm_h_dec<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">]}))</span>
+canvas<span class="ot">[</span>t<span class="ot">]</span>                             <span class="ot">=</span> decoder_clones<span class="ot">[</span>t<span class="ot">][</span><span class="dv">2</span><span class="ot">]</span>:forward<span class="ot">({</span>lstm_h_dec<span class="ot">[</span>t<span class="ot">],</span>ascending<span class="ot">,</span>canvas<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">]})</span>
+loss_x<span class="ot">[</span>t<span class="ot">],</span>x_prediction<span class="ot">[</span>t<span class="ot">],</span>x_error<span class="ot">[</span>t<span class="ot">]</span>  <span class="ot">=</span> <span class="fu">unpack</span><span class="ot">(</span>decoder_clones<span class="ot">[</span>t<span class="ot">][</span><span class="dv">3</span><span class="ot">]</span>:forward<span class="ot">({</span>canvas<span class="ot">[</span>t<span class="ot">],</span>x<span class="ot">[</span>t<span class="ot">]}))</span></code></pre></div>
+<p><b>loss_x is the final output</b></p>
+<p><span class="math display">\[
+\mathcal{L}=\mathcal{L}_x+\mathcal{L}_z
+\]</span></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">loss <span class="ot">=</span> loss <span class="ot">+</span> torch<span class="ot">.</span>mean<span class="ot">(</span>loss_z<span class="ot">[</span>t<span class="ot">])</span> <span class="ot">+</span> torch<span class="ot">.</span>mean<span class="ot">(</span>loss_x<span class="ot">[</span>t<span class="ot">])</span></code></pre></div>
+<p><b>loss is the combine loss </b></p>
+<ol start="3" style="list-style-type: decimal">
+<li>training loop(backward)</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">dlstm_c_enc <span class="ot">=</span> <span class="ot">{[</span>opt<span class="ot">.</span>seqSize<span class="ot">]</span> <span class="ot">=</span> torch<span class="ot">.</span>zeros<span class="ot">(</span>opt<span class="ot">.</span>batchSize<span class="ot">,</span> opt<span class="ot">.</span>rnnSize<span class="ot">)}</span>
+dlstm_h_enc <span class="ot">=</span> <span class="ot">{[</span>opt<span class="ot">.</span>seqSize<span class="ot">]</span> <span class="ot">=</span> torch<span class="ot">.</span>zeros<span class="ot">(</span>opt<span class="ot">.</span>batchSize<span class="ot">,</span> opt<span class="ot">.</span>rnnSize<span class="ot">)}</span>
+dlstm_c_dec <span class="ot">=</span> <span class="ot">{[</span>opt<span class="ot">.</span>seqSize<span class="ot">]</span> <span class="ot">=</span> torch<span class="ot">.</span>zeros<span class="ot">(</span>opt<span class="ot">.</span>batchSize<span class="ot">,</span> opt<span class="ot">.</span>rnnSize<span class="ot">)}</span>
+dlstm_h_dec <span class="ot">=</span> <span class="ot">{[</span>opt<span class="ot">.</span>seqSize<span class="ot">]</span> <span class="ot">=</span> torch<span class="ot">.</span>zeros<span class="ot">(</span>opt<span class="ot">.</span>batchSize<span class="ot">,</span> opt<span class="ot">.</span>rnnSize<span class="ot">)}</span>
+dlstm_h_dec2 <span class="ot">=</span> <span class="ot">{[</span>opt<span class="ot">.</span>seqSize<span class="ot">]</span> <span class="ot">=</span> torch<span class="ot">.</span>zeros<span class="ot">(</span>opt<span class="ot">.</span>batchSize<span class="ot">,</span> opt<span class="ot">.</span>rnnSize<span class="ot">)}</span>
+dloss_z <span class="ot">=</span> <span class="ot">{}</span></code></pre></div>
+<ul>
+<li>backward Decoder</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="co">--decoder:backward(inputs, outputs)</span>
+<span class="ot">(</span><span class="dv">1</span><span class="ot">)</span> zero the accumulation of the gradients
+dcanvas2 <span class="ot">=</span> <span class="ot">{[</span>opt<span class="ot">.</span>seqSize<span class="ot">]</span> <span class="ot">=</span> torch<span class="ot">.</span>zeros<span class="ot">(</span>opt<span class="ot">.</span>batchSize<span class="ot">,</span> opt<span class="ot">.</span>sizeImage<span class="ot">,</span> opt<span class="ot">.</span>sizeImage<span class="ot">)}</span>
+dx_error <span class="ot">=</span> <span class="ot">{[</span>opt<span class="ot">.</span>seqSize<span class="ot">]</span> <span class="ot">=</span> torch<span class="ot">.</span>zeros<span class="ot">(</span>opt<span class="ot">.</span>batchSize<span class="ot">,</span> opt<span class="ot">.</span>sizeImage<span class="ot">,</span> opt<span class="ot">.</span>sizeImage<span class="ot">)}</span>
+dloss_x <span class="ot">=</span> <span class="ot">{}</span>
+dloss_x<span class="ot">[</span>t<span class="ot">]</span> <span class="ot">=</span> torch<span class="ot">.</span>ones<span class="ot">(</span>opt<span class="ot">.</span>batchSize<span class="ot">,</span> <span class="dv">1</span><span class="ot">)</span>
+dx_prediction<span class="ot">[</span>t<span class="ot">]</span> <span class="ot">=</span> torch<span class="ot">.</span>zeros<span class="ot">(</span>opt<span class="ot">.</span>batchSize<span class="ot">,</span> opt<span class="ot">.</span>sizeImage<span class="ot">,</span> opt<span class="ot">.</span>sizeImage<span class="ot">)</span>
+dx_error <span class="ot">=</span> <span class="ot">{[</span>opt<span class="ot">.</span>seqSize<span class="ot">]</span> <span class="ot">=</span> torch<span class="ot">.</span>zeros<span class="ot">(</span>opt<span class="ot">.</span>batchSize<span class="ot">,</span> opt<span class="ot">.</span>sizeImage<span class="ot">,</span> opt<span class="ot">.</span>sizeImage<span class="ot">)}</span></code></pre></div>
+<p><span class="math display">\[
+\mathcal{L}_x=-\log D(x|c_T)\rightarrow \begin{cases}
+\Delta_w \mathcal{L}_x(W,n;x,c_T)=\frac{\partial \mathcal{L}_x}{\partial w}=\frac{\partial \mathcal{L}_x}{\partial z}\frac{\partial z}{\partial w}\\
+\Delta_b \mathcal{L}_x(W,n;x,c_T)=\frac{\partial \mathcal{L}_x}{\partial b}
+\end{cases}
+\]</span></p>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="ot">(</span><span class="dv">2</span><span class="ot">)</span> accumulate gradients
+dcanvas2<span class="ot">[</span>t<span class="ot">],</span>dx1<span class="ot">[</span>t<span class="ot">]</span> <span class="ot">=</span> <span class="fu">unpack</span><span class="ot">(</span>decoder_clones<span class="ot">[</span>t<span class="ot">][</span><span class="dv">3</span><span class="ot">]</span>:backward<span class="ot">({</span>canvas<span class="ot">[</span>t<span class="ot">],</span>x<span class="ot">[</span>t<span class="ot">]},{</span>dloss_x<span class="ot">[</span>t<span class="ot">],</span>dx_prediction<span class="ot">[</span>t<span class="ot">],</span>dx_error<span class="ot">[</span>t<span class="ot">]}))</span>
+<span class="co">-- can not use single criterion:backward(mlp.output, output), because it has many error</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="ot">(</span><span class="dv">1</span><span class="ot">)</span> zero the accumulation of the gradients
+dcanvas1 <span class="ot">=</span> <span class="ot">{[</span>opt<span class="ot">.</span>seqSize<span class="ot">]</span> <span class="ot">=</span> torch<span class="ot">.</span>zeros<span class="ot">(</span>opt<span class="ot">.</span>batchSize<span class="ot">,</span> opt<span class="ot">.</span>sizeImage<span class="ot">,</span> opt<span class="ot">.</span>sizeImage<span class="ot">)}</span>
+dcanvas1<span class="ot">[</span>t<span class="ot">]</span> <span class="ot">=</span> dcanvas1<span class="ot">[</span>t<span class="ot">]</span> <span class="ot">+</span> dcanvas2<span class="ot">[</span>t<span class="ot">]</span>
+<span class="ot">(</span><span class="dv">2</span><span class="ot">))</span>merge gradient from canvas
+dlstm_h_dec3 <span class="ot">=</span> <span class="ot">{[</span>opt<span class="ot">.</span>seqSize<span class="ot">]</span> <span class="ot">=</span> torch<span class="ot">.</span>zeros<span class="ot">(</span>opt<span class="ot">.</span>batchSize<span class="ot">,</span> opt<span class="ot">.</span>rnnSize<span class="ot">)}</span>
+<span class="ot">(</span><span class="dv">3</span><span class="ot">)</span> accumulate gradients
+dlstm_h_dec3<span class="ot">[</span>t<span class="ot">],</span>dascending1<span class="ot">,</span>dcanvas1<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">]</span> <span class="ot">=</span> <span class="fu">unpack</span><span class="ot">(</span>decoder_clones<span class="ot">[</span>t<span class="ot">][</span><span class="dv">2</span><span class="ot">]</span>:backward<span class="ot">({</span>lstm_h_dec<span class="ot">[</span>t<span class="ot">],</span>ascending<span class="ot">,</span>canvas<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">]},</span>dcanvas1<span class="ot">[</span>t<span class="ot">]))</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="ot">(</span><span class="dv">1</span><span class="ot">)</span> zero the accumulation of the gradients
+dlstm_h_dec1 <span class="ot">=</span> <span class="ot">{[</span>opt<span class="ot">.</span>seqSize<span class="ot">]</span> <span class="ot">=</span> torch<span class="ot">.</span>zeros<span class="ot">(</span>opt<span class="ot">.</span>batchSize<span class="ot">,</span> opt<span class="ot">.</span>rnnSize<span class="ot">)}</span>
+<span class="ot">(</span><span class="dv">2</span><span class="ot">))</span>merge gradient from lstm_h_dec1
+dlstm_h_dec1<span class="ot">[</span>t<span class="ot">]</span> <span class="ot">=</span> <span class="ot">(</span>dlstm_h_dec1<span class="ot">[</span>t<span class="ot">]</span> <span class="ot">+</span> dlstm_h_dec3<span class="ot">[</span>t<span class="ot">])</span>
+<span class="ot">(</span><span class="dv">3</span><span class="ot">)</span> accumulate gradients
+dz<span class="ot">[</span>t<span class="ot">],</span> dlstm_c_dec<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">],</span> dlstm_h_dec1<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">]</span>  <span class="ot">=</span> <span class="fu">unpack</span><span class="ot">(</span>decoder_clones<span class="ot">[</span>t<span class="ot">][</span><span class="dv">1</span><span class="ot">]</span>:backward<span class="ot">({</span>z<span class="ot">[</span>t<span class="ot">],</span>lstm_c_dec<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">],</span> lstm_h_dec<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">]},{</span>dlstm_c_dec<span class="ot">[</span>t<span class="ot">],</span>dlstm_h_dec1<span class="ot">[</span>t<span class="ot">]</span> <span class="ot">}))</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="ot">-</span>encoder
+dlstm_h_enc<span class="ot">[</span>t<span class="ot">],</span> de<span class="ot">[</span>t<span class="ot">]</span> <span class="ot">=</span> <span class="fu">unpack</span><span class="ot">(</span>encoder_clones<span class="ot">[</span>t<span class="ot">][</span><span class="dv">3</span><span class="ot">]</span>:backward<span class="ot">({</span>lstm_h_enc<span class="ot">[</span>t<span class="ot">],</span> e<span class="ot">[</span>t<span class="ot">]},{</span>dz<span class="ot">[</span>t<span class="ot">],</span>dloss_z<span class="ot">[</span>t<span class="ot">]}))</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">dread_input<span class="ot">[</span>t<span class="ot">],</span> dlstm_c_enc<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">],</span> dlstm_h_enc<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">]</span> <span class="ot">=</span> <span class="fu">unpack</span><span class="ot">(</span>encoder_clones<span class="ot">[</span>t<span class="ot">][</span><span class="dv">2</span><span class="ot">]</span>:backward<span class="ot">({</span>read_input<span class="ot">[</span>t<span class="ot">],</span>lstm_c_enc<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">],</span> lstm_h_enc<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">]},{</span>dlstm_c_enc<span class="ot">[</span>t<span class="ot">],</span> dlstm_h_enc<span class="ot">[</span>t<span class="ot">]}))</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua">dx2<span class="ot">[</span>t<span class="ot">],</span> dx_error<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">],</span> dlstm_h_dec2<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">],</span> dascending2 <span class="ot">=</span> <span class="fu">unpack</span><span class="ot">(</span>encoder_clones<span class="ot">[</span>t<span class="ot">][</span><span class="dv">1</span><span class="ot">]</span>:backward<span class="ot">({</span>x<span class="ot">[</span>t<span class="ot">],</span> x_error<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">],</span> lstm_h_dec<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">],</span> ascending<span class="ot">},{</span>dpatch<span class="ot">[</span>t<span class="ot">],</span>dread_input<span class="ot">[</span>t<span class="ot">]}))</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode lua"><code class="sourceCode lua"><span class="co">--merge gradient from lstm_h_dec</span>
+dlstm_h_dec<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">]</span> <span class="ot">=</span> dlstm_h_dec1<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">]</span> <span class="ot">+</span> dlstm_h_dec2<span class="ot">[</span>t<span class="ot">-</span><span class="dv">1</span><span class="ot">]</span></code></pre></div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="an-actor-critic-algorithm-for-sequence-prediction"><a href="An%20Actor-Critic%20Algorithm%20for%20Sequence%20Prediction">An Actor-Critic Algorithm for Sequence Prediction</a></h2>
+<p>The authors propose to use the Actor Critic framework from Reinforcement Learning for Sequence prediction. They train an actor (policy) network to generate a sequence together with a critic (value) network that estimates the q-value function. Crucially, the actor network does not see the ground-truth output, but the critic does. This is different from LL (log likelihood) where errors are likely to cascade. The authors evaluate their framework on an artificial spelling correction and a real-world German-English Machine Translation tasks, beating baselines and competing approaches in both cases.</p>
+<h2 id="key-points">Key Points</h2>
+<ul>
+<li>In LL training, the model is conditioned on its own guesses during search, leading to error compounding.</li>
+<li>The critic is allowed to see the ground truth, but the actor isn't</li>
+<li>The reward is a task-specific score, e.g. BLEU</li>
+<li>Use bidirectional RNN for both actor and critic. Actor uses a soft attention mechanism.</li>
+<li>The reward is partially receives at each intermediate step, not just at the end</li>
+<li>Framework is analogous to TD-Learning in RL</li>
+<li>Trick: Use additional target network to compute <span class="math display">\[q_t\]</span> (see Deep-Q paper) for stability</li>
+<li>Trick: Use delayed actor (as in Deep Q paper) for stability</li>
+<li>Trick: Put constraint on critic to deal with large action spaces (is this analogous to advantage functions?)</li>
+<li>Pre-train actor and critic to encourage exploration of the right space</li>
+<li>Task 1: Correct corrupt character sequence. AC outperforms LL training. Longer sequences lead to stronger lift.</li>
+<li>Task 2: GER-ENG Machine Translation: Beats LL and Reinforce models</li>
+<li>Qualitatively, critic assigns high values to words that make sense</li>
+<li>BLUE scores during training are lower than those of LL model - Why? Strong regularization? Can't overfit the training data.</li>
+</ul>
+<h2 id="notes">Notes</h2>
+<p>Why does the sequence length for spelling prediction only go up to 30? This seems very short to me and something that an LSTM should be able to handle quite easily. Would've like to see much longer sequences.</p>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="deep-residual-learning-for-image-recognition"><a href="http://arxiv.org/abs/1512.03385">Deep Residual Learning for Image Recognition</a></h2>
+<p>Deep Residual Learning 是解决<span style="color:red"><strong><em>超深度CNN网络训练问题，152层及尝试了1000层</em></strong></span>。</p>
+<h2 id="identity-mappings-in-deep-residual-networks">Identity Mappings in Deep Residual Networks</h2>
+<p>Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun, ArXiv, 2016</p>
+<h3 id="summary">Summary</h3>
+<p>This is follow-up work to the ResNets paper. It studies the propagation formulations behind the connections of deep residual networks and performs ablation experiments. A residual block can be represented with the equations <span class="math inline">\(y_l = h(x_l) + F(x_l, W_l); x_{l+1} = f(y_l)\)</span>. <span class="math inline">\(x_l\)</span> is the input to the <span class="math inline">\(l\)</span>-th unit and <span class="math inline">\(x_{l+1}\)</span> is the output of the <span class="math inline">\(l\)</span>-th unit. In the original ResNets paper, <span class="math inline">\(h(x_l) = x_l\)</span>, <span class="math inline">\(f\)</span> is ReLu, and <span class="math inline">\(F\)</span> consists of 2-3 convolutional layers (bottleneck architecture) with BN and ReLU in between. In this paper, they propose a residual block with both <span class="math inline">\(h(x)\)</span> and <span class="math inline">\(f(x)\)</span> as identity mappings, which trains faster and performs better than their earlier baseline. Main contributions:</p>
+<ul>
+<li>Identity skip connections work much better than other multiplicative interactions that they experiment with:
+<ul>
+<li>Scaling (<span class="math inline">\(h(x) = \lambda x\)</span>): Gradients can explode or vanish depending on whether modulating scalar <span class="math inline">\(\lambda &gt; 1\)</span> or <span class="math inline">\(&lt; 1\)</span>.</li>
+<li>Gating (<span class="math inline">\(1-g(x)\)</span> for skip connection and <span class="math inline">\(g(x)\)</span> for function <span class="math inline">\(F\)</span>): For gradients to propagate freely, <span class="math inline">\(g(x)\)</span> should approach 1, but F gets suppressed, hence suboptimal. This is similar to highway networks. g(x) is a 1x1 convolutional layer.</li>
+<li>Gating (shortcut-only): Setting high biases pushes initial g(x) towards identity mapping, and test error is much closer to baseline.</li>
+<li>1x1 convolutional shortcut: These work well for shallower networks (~34 layers), but training error becomes high for deeper networks, probably because they impede gradient propagation.</li>
+</ul></li>
+<li>Experiments on activations.
+<ul>
+<li>BN after addition messes up information flow, and performs considerably worse.</li>
+<li>ReLU before addition forces the signal to be non-negative, so the signal is monotonically increasing, while ideally a residual function should be free to take values in (-inf, inf).</li>
+<li>BN + ReLU pre-activation works best. This also prevents overfitting, due to BN's regularizing effect. Input signals to all weight layers are normalized.</li>
+</ul></li>
+</ul>
+<h3 id="strengths">Strengths</h3>
+<ul>
+<li><p>Thorough set of experiments to show that identity shortcut connections are easiest for the network to learn. Activation of any deeper unit can be written as the sum of the activation of a shallower unit and a residual function. This also implies that gradients can be directly propagated to shallower units. This is in contrast to usual feedforward networks, where gradients are essentially a series of matrix-vector products, that may vanish, as networks grow deeper.</p></li>
+<li><p>Improved accuracies than their previous ResNets paper.</p></li>
+</ul>
+<h3 id="weaknesses-notes">Weaknesses / Notes</h3>
+<ul>
+<li><p>Residual units are useful and share the same core idea that worked in LSTM units. Even though stacked non-linear layers are capable of asymptotically approximating any arbitrary function, it is clear from recent work that residual functions are much easier to approximate than the complete function. The <a href="http://arxiv.org/abs/1602.07261">latest Inception paper</a> also reports that training is accelerated and performance is improved by using identity skip connections across Inception modules.</p></li>
+<li><p>It seems like the degradation problem, which serves as motivation for residual units, exists in the first place for non-idempotent activation functions such as sigmoid, hyperbolic tan. This merits further investigation, especially with recent work on function-preserving transformations such as <a href="http://arxiv.org/abs/1603.01670">Network Morphism</a>, which expands the Net2Net idea to sigmoid, tanh, by using parameterized activations, initialized to identity mappings.</p></li>
+</ul>
+<p>TLDR; The authors present Residual Nets, which achieve 3.57% error on the ImageNet test set and won the 1st place on the ILSVRC 2015 challenge. ResNets work by introducing &quot;shortcut&quot; connections across stacks of layers, allowing the optimizer to learn an easier residual function instead of the original mapping. This allows for efficient training of very deep nets without the introduction of additional parameters or training complexity. The authors present results on ImageNet and CIFAR-100 with nets as deep as 152 layers (and one ~1000 layer deep net).</p>
+<h4 id="key-points">Key Points</h4>
+<ul>
+<li><span style="color:red"><strong><em>Problem</em></strong></span>: Deeper networks experience a <em>degradation</em> problem. They don't overfit but nonetheless perform worse than shallower networks on both training and test data due to being more difficult to optimize.</li>
+<li><span style="color:red"><strong><em>Because Deep Nets can in theory learn an identity mapping for their additional layers they should strict outperform shallower nets</em></strong></span>. In practice however, optimizers have problems learning identity (or near-identity) mappings. Learning residual mappings is easier, mitigating this problem.</li>
+<li><span style="color:red"><strong><em>Residual Mapping</em></strong></span>: If the desired mapping is H(x), let the layers learn F(x) = H(x) - x and add x back through a shortcut connection H(x) = F(x) + x. An identity mapping can then be learned easily by driving the learned mapping F(x) to 0.</li>
+<li><span style="color:red"><strong><em>No additional parameters or computational complexity are introduced by residuals nets</em></strong></span>.</li>
+<li><span style="color:red"><strong><em>Similar to Highway Networks, but gates are not data-dependent (no extra parameters) and are always open</em></strong></span>.</li>
+<li>Due the the nature of the residual formula, input and output must be of same size (just like Highway Networks). We can do size transformation by zero-padding or projections. Projections introduce additional parameters. Authors found that projections perform slightly better, but are &quot;not worth&quot; the large number of extra parameters.</li>
+<li>18 and 34-layer VGG-like plain net gets 27.94 and 28.54 error respectively, not that higher error for deeper net. ResNet gets 27.88 and 25.03 respectively. Error greatly reduces for deeper net.</li>
+<li>Use Bottleneck architecture with 1x1 convolutions to change dimensions.</li>
+<li>Single ResNet outperforms previous start of the art ensembles. ResNet ensemble even better.</li>
+</ul>
+<h2 id="notesquestions">Notes/Questions</h2>
+<ul>
+<li>Love the simplicity of this.</li>
+<li>I wonder how performance depends on the number of layers skipped by the shortcut connections. The authors only present results with 2 or 3 layers.</li>
+<li>&quot;Stacked&quot; or recursive residuals?</li>
+<li>In principle Highway Networks should be able to learn the same mappings quite easily. Is this an optimization problem? Do we just not have enough data. What if we made the gates less fine-grained and substituted sigmoid with something else?</li>
+<li>Can we apply this to RNNs, similar to LSTM/GRU? Seems good for learning long-range dependencies.</li>
+</ul>
+<h3 id="basic-idea">Basic Idea</h3>
+<p>随着CNN网络的发展，尤其的VGG网络的提出，大家发现网络的层数是一个关键因素，貌似越深的网络效果越好。但是随着网络层数的增加，问题也随之而来。</p>
+<p>首先一个问题是 <span style="color:red"><strong><em>vanishing/exploding gradients</em></strong></span>，即梯度的消失或发散。这就导致训练难以收敛。</p>
+<ul>
+<li><a href="http://www.dsi.unifi.it/~paolo/ps/tnn-94-gradient.pdf">Learning long-term dependencies with gradient descent is difficult</a>.</li>
+<li><a href="http://jmlr.org/proceedings/papers/v9/glorot10a/glorot10a.pdf">Understanding the difficulty of training deep feedforward neural networks</a>.</li>
+</ul>
+<p>但是随着: 1. <span style="color:red"><strong><em>Normalized initialization</em></strong></span> - <a href="http://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf">Efficient backprop</a> - <a href="http://arxiv.org/abs/1312.6120">Exact solutions to the nonlinear dynamics of learning in deep linear neural networks</a> - <a href="http://arxiv.org/abs/1504.06066">Object Detection Networks on Convolutional Feature Maps</a> 2. <span style="color:red"><strong><em>Intermediate normalization layers</em></strong></span> - <a href="http://arxiv.org/abs/1502.03167">Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift</a></p>
+<p>的提出，解决了这个问题。</p>
+<p>当收敛问题解决后，又一个问题暴露出来： <span style="color:red"><strong><em>随着网络深度的增加，系统精度得到饱和之后，迅速的下滑</em></strong></span>。让人意外的是这个性能下降<span style="color:red"><strong><em>不是过拟合导致的</em></strong></span>。</p>
+<p>按理说我们有一个shallow net，在不过拟合的情况下再往深加几层怎么说也不会比shallow的结果差，所以degradation说明不是所有网络都那么容易优化，这篇文章的motivation就是通过“deep residual network“解决degradation问题。</p>
+<p align="center">
+<img src="http://img.blog.csdn.net/20160114000613328" width="500" >
+</p>
+<p>文章： 1. <a href="http://arxiv.org/abs/1412.1710">Convolutional Neural Networks at Constrained Time Cost</a> 2. <a href="https://arxiv.org/abs/1505.00387">Highway Networks</a></p>
+<p>指出，对一个合适深度的模型加入额外的层数导致训练误差变大。</p>
+<p>如果我们加入额外的 层只是一个<span style="color:red">*** identity mapping***</span>，那么随着深度的增加，训练误差并没有随之增加。所以我们认为可能存在另一种构建方法，随着深度的增加，训练误差不会增加，只是我们没有找到该方法而已。</p>
+<p>这里我们提出一个 deep residual learning 框架来解决这种因为深度增加而导致性能下降问题。 假设<span style="color:red"><strong><em>我们期望的网络层关系映射为<span class="math inline">\(H(x)\)</span></em></strong></span>, 我们让 the stacked nonlinear layers 拟合另一个映射， <span class="math display">\[F(x):=H(x)-x\]</span></p>
+<p>那么原先的映射就是 <span class="math inline">\(F(x)+x\)</span>。 这里我们假设优化残差映射<span class="math inline">\(F(x)\)</span> 比优化原来的映射 <span class="math inline">\(H(x)\)</span>容易。</p>
+<p><span class="math inline">\(F(x)+x\)</span> 可以通过<span style="color:red"><strong><em>shortcut connections</em></strong></span> 来实现，如下图所示：</p>
+<p align="center">
+<img src="http://img.blog.csdn.net/20151216160852064" width="300" >
+</p>
+<h3 id="related-work">Related Work</h3>
+<ol style="list-style-type: decimal">
+<li>Residual Representations</li>
+</ol>
+<p>以前关于残差表示的文献表明，问题的重新表示或预处理会简化问题的优化。</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Shortcut Connections</li>
+</ol>
+<p>CNN网络以前对shortcut connections 也有所应用。</p>
+<p>其实本文想法和Highway networks（Jurgen Schmidhuber的文章）非常相似， 就连要解决的问题（degradation）都一样。<span style="color:red"><strong><em>Highway networks一文借用LSTM中gate的概念</em></strong></span>，除了正常的非线性映射<span class="math inline">\(H(\mathbf{x}, \mathbf{W}h)\)</span>外，还设置了一条从<span class="math inline">\(x\)</span>直接到<span class="math inline">\(y\)</span>的通路，<span style="color:red"><strong><em>以<span class="math inline">\(T(\mathbf{x}, \mathbf{W}t)\)</span>作为<span class="math inline">\(gate\)</span>来把握两者之间的权重</em></strong></span>，如下公式所示：</p>
+<p><span class="math display">\[
+y=H(x,WH).T(x,WT)+x.(1-T(x,WT))
+\]</span></p>
+<p>shortcut原意指<span style="color:red"><strong><em>捷径，在这里就表示越层连接，就比如上面Highway networks里从x直接到y的连接</em></strong></span>。其实早在googleNet的inception层中就有这种表示：</p>
+<p align="center">
+<img src="http://img.blog.csdn.net/20160114003438140" width="300" >
+</p>
+<p>Residual Networks一文中，作者将Highway network中的含参加权连接变为固定加权连接，即 : <span class="math display">\[
+y=H(x,WH).WT+x
+\]</span></p>
+<h2 id="deep-residual-learning">Deep Residual Learning</h2>
+<ol style="list-style-type: decimal">
+<li>Residual Learning</li>
+</ol>
+<p>至此，我们一直没有提及residual networks中residual的含义。那这个“残差“指什么呢？我们想： 如果能用几层网络去逼近一个复杂的非线性映射<span class="math inline">\(H(x)\)</span>，那么同样可以用这几层网络去逼近它的residual function：<span class="math inline">\(F(x)=H(x)-x\)</span>，但我们“猜想“优化residual mapping要比直接优化<span class="math inline">\(H(x)\)</span>简单。</p>
+<p>正如前言所说，如果<span style="color:red"><strong><em>增加的层数可以构建为一个 identity mappings</em></strong></span>，那么增加层数后的网络训练误差应该不会增加，与没增加之前相比较。性能退化问题暗示多个非线性网络层用于近似identity mappings 可能有困难。<span style="color:red"><strong><em>使用残差学习改写问题之后，如果identity mappings 是最优的，那么优化问题变得很简单，直接将多层非线性网络参数趋0</em></strong></span>。</p>
+<p>实际中，identity mappings 不太可能是最优的，但是上述改写问题可能能帮助预处理问题。<span style="color:red"><strong><em>如果最优函数接近identity mappings，那么优化将会变得容易些</em></strong></span>。 实验证明该思路是对的。</p>
+<p>推荐读者们还是看一下本文最后列出的这篇reference paper，本文中作者说与Highway network相比的优势在于： |x|Highway Network|Residual Network|评论| |---|---|---|---| |gate参数|有参数变量<span class="math inline">\(WT\)</span>|没参数，定死的, 方便和没有residual的网络比较|不上优势，参数少又data-independent，结果肯定不会是最优的，文章实验部分也对比了效果，确实是带参数的error更小，<span style="color:red"><strong><em>但是<span class="math inline">\(WT\)</span>这个变量与解决degradation问题无关</em></strong></span>| |关门？|有可能关门<span class="math inline">\((T(x,WT)=0)\)</span>|不会关门|<span class="math inline">\(T(x,WT)\in[0,1\)</span>], 但一般不会为0|</p>
+<p>所以说这个比较还是比较牵强。。anyway，人家讲个故事也是不容易了。</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Identity Mapping by Shortcuts</li>
+</ol>
+<p><span class="math display">\[\mathbf{y}=F(\mathbf{x},\{W_i\})+\mathbf{x}\]</span> 这里假定输入输出维数一致，如果不一样，可以通过 linear projection 转成一样的。</p>
+<ol start="3" style="list-style-type: decimal">
+<li>Network Architectures</li>
+</ol>
+<p align="center">
+<img src="http://img.blog.csdn.net/20151216164510071" width="300" >
+</p>
+<p>Plain Network 主要是受 VGG 网络启发，主要采用3*3滤波器，遵循两个设计原则： 1) <span style="color:red"><strong><em>对于相同输出特征图尺寸，卷积层有相同个数的滤波器，</em></strong></span> 2) <span style="color:red"><strong><em>如果特征图尺寸缩小一半，滤波器个数加倍以保持每个层的计算复杂度。通过步长为2的卷积来进行降采样。一共34个权重层。</em></strong></span></p>
+<p>需要指出，我们这个网络与VGG相比，<span style="color:red"><strong><em>滤波器要少，复杂度要小。</em></strong></span> <span style="color:red"><strong><em>Residual Network 主要是在 上述的 plain network上加入 shortcut connections</em></strong></span></p>
+<ol start="3" style="list-style-type: decimal">
+<li>34层 residual network</li>
+</ol>
+<p>网络构建思路：基本<span style="color:red"><strong><em>保持各层complexity不变，也就是哪层down－sampling了，就把filter数＊2</em></strong></span>， 网络太大，此处不贴了，大家看paper去吧， <span style="color:red"><strong><em>paper中画了一个34层全卷积网络， 没有了后面的几层fc，难怪说152层的网络比16-19层VGG的计算量还低</em></strong></span>。</p>
+<p><span style="color:red"><strong><em>这里再讲下文章中讲实现部分的 tricks</em></strong></span>： - 图片resize：短边长random.randint(256,480) - 裁剪：224＊224随机采样，含水平翻转 - 减均值 - 标准颜色扩充[2] - conv和activation间加batch normalization[3] - 帮助解决vanishing/exploding问题 - minibatch-size:256 - learning-rate: 初始0.1, error平了lr就除以10 - weight decay：0.0001 - momentum：0.9 - 没用dropout[3]</p>
+<ol start="4" style="list-style-type: decimal">
+<li>实验结果</li>
+</ol>
+<p><span style="color:red"><strong><em>34层与18层网络比较</em></strong></span>：训练过程中， 34层plain net（不带residual function）比18层plain net的error大 34层residual net（不带residual function）比18层residual net的error小，更比34层plain net小了3.5%(top1) 18层residual net比18层plain net收敛快</p>
+<p>Residual function的设置： A）在H(x)与x维度不同时， 用0充填补足 B） 在H(x)与x维度不同时， 带WT C）任何shortcut都带WT loss效果： A&gt;B&gt;C</p>
+<h2 id="comparing-highway-networks-gradnets">Comparing Highway Networks &amp; GradNets'</h2>
+<h3 id="tldr">tl;dr</h3>
+<p>Highway Networks and GradNets both allow interpolation of network architecture. GradNets rely on a heuristic for global interpolation, while Highway Networks employ learnable weights for neuron-specific gating. The latter turned out to be easier to train due to the flexibility and self-optimization.</p>
+<h3 id="intro">Intro</h3>
+<p>As part of a deep learning study group, I implemented both Highway Networks and GradNets to compare results under similar conditions. The Highway Network implementation is based on Jim Fleming's <a href="https://medium.com/jim-fleming/highway-networks-with-tensorflow-1e6dfa667daa#.7z1d6allb">blog post</a> with small modifications and the GradNet implementation is derivative of that. Both demos are in Jupyter Notebooks, run Tensorflow, and do not require GPUs to finish quickly. To keep formulations simple, I only compare fully-connected networks.</p>
+<h3 id="highway-networks">Highway Networks</h3>
+<p>Highway Networks are an architectural feature that allows the network to adaptively &quot;flatten&quot; itself by passing certain neurons through without any transformation. The network typically starts with initial biases towards passing the data through, behaving like a shallow neural network. After some training, the weights that control the &quot;gates&quot; of the network start to adjust and close down the highway in the early layers. Certain &quot;lanes&quot; of the highway will selectively activate.</p>
+<p>These networks in fact learn not just the weights for the underlying affine transformations that are then run through the nonlinearn activation kernels (sigmoid, ReLU, tanh, etc), but also a companion set of weights for the gate that determines how much of that activation to use. This gate is controlled by a sigmoid activation applied to an affine transform, parameterized by the companion weights.</p>
+<p>The paper describes these more formally as the Hypothesis <span class="math inline">\(H\)</span>, the Transform Gate <span class="math inline">\(T\)</span>, and the Carry Gate <span class="math inline">\(C\)</span>. The value of the Carry Gate is simply 1 minus the value of the Transform Gate. The Hypothesis is the underlying transformation being performed at the layer.</p>
+<p>A standard fully connected layer looks like</p>
+<p><span class="math display">\[
+y = H(x, W_H) = activation(W_H^Tx + b_H)
+\]</span></p>
+<p>A Highway Layer looks like</p>
+<p><span class="math display">\[
+y = H(x, W_H) \cdot T(x, W_T) + x \cdot C(x, W_C)
+\]</span></p>
+<p><span class="math inline">\(\cdot\)</span> denotes elementwise multiplication. Note that all W matrices match in dimension.</p>
+<p>Since <span class="math inline">\(T(x, W_T) = 1 - C(x, W_C)\)</span>, the last term in the equation above becomes <span class="math inline">\(1 - T(x, W_T)\)</span>, so we don't need <span class="math inline">\(W_C\)</span> anymore.</p>
+<p><span class="math inline">\(T(x, W_T) = sigmoid(W_H^Tx + b_T)\)</span> produces element-wise &quot;gates&quot; between 0 and 1.</p>
+<p>A critical point of initialization is <span class="math inline">\(b_T\)</span>. It should be set to a fairly negative value so that the network initially passes the <span class="math inline">\(x\)</span> through.</p>
+<p>In code:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> highway_layer(x, size, activation, carry_bias<span class="op">=-</span><span class="fl">1.0</span>):
+    W <span class="op">=</span> tf.Variable(tf.truncated_normal([size, size], stddev<span class="op">=</span><span class="fl">0.1</span>), name<span class="op">=</span><span class="st">&#39;weight&#39;</span>)
+    b <span class="op">=</span> tf.Variable(tf.constant(<span class="fl">0.1</span>, shape<span class="op">=</span>[size]), name<span class="op">=</span><span class="st">&#39;bias&#39;</span>)
+
+    W_T <span class="op">=</span> tf.Variable(tf.truncated_normal([size, size], stddev<span class="op">=</span><span class="fl">0.1</span>), name<span class="op">=</span><span class="st">&#39;weight_transform&#39;</span>)
+    b_T <span class="op">=</span> tf.Variable(tf.constant(carry_bias, shape<span class="op">=</span>[size]), name<span class="op">=</span><span class="st">&#39;bias_transform&#39;</span>)
+
+    H <span class="op">=</span> activation(tf.matmul(x, W) <span class="op">+</span> b, name<span class="op">=</span><span class="st">&#39;activation&#39;</span>)
+    T <span class="op">=</span> tf.sigmoid(tf.matmul(x, W_T) <span class="op">+</span> b_T, name<span class="op">=</span><span class="st">&#39;transform_gate&#39;</span>)
+    C <span class="op">=</span> tf.sub(<span class="fl">1.0</span>, T, name<span class="op">=</span><span class="st">&quot;carry_gate&quot;</span>)
+
+    y <span class="op">=</span> tf.add(tf.mul(H, T), tf.mul(x, C), <span class="st">&#39;y&#39;</span>)
+    <span class="cf">return</span> y</code></pre></div>
+<p>More about highway networks on this <a href="http://people.idsia.ch/~rupesh/very_deep_learning/">page</a> and the papers listed there.</p>
+<h3 id="gradnets">GradNets</h3>
+<p><a href="http://arxiv.org/abs/1511.06827">GradNets</a> offer a simplified alternative to gradual interpolation between model architectures. The inspiration is similar to that of Highway Networks; early in training, prefer simpler architecture, whereas later in training, transition to complex.</p>
+<p>The variable <span class="math inline">\(g\)</span> anneals over a <span class="math inline">\(\tau\)</span> epochs (full passes through shuffled data), controlling the amount of interpolation between the simple activation and the nonlinear one. Using similar notation as before:</p>
+<p><span class="math display">\[
+g = \min(t / \tau, 1)
+\]</span></p>
+<p><span class="math display">\[
+H(x, W) = ReLU(W^Tx + b)
+\]</span></p>
+<p><span class="math display">\[
+J(x, W) = I(W^Tx + b)
+\]</span></p>
+<p><span class="math display">\[
+y = g \cdot H(x, W) + (1 - g) \cdot J(x, W)
+\]</span></p>
+<p><span class="math inline">\(t\)</span> is the continuous or stepwise epoch number</p>
+<p>In code:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> grelu_layer(x, input_size, output_size, g):
+    W <span class="op">=</span> tf.Variable(tf.truncated_normal([input_size, output_size], stddev<span class="op">=</span><span class="fl">0.1</span>), name<span class="op">=</span><span class="st">&#39;weight&#39;</span>)
+    b <span class="op">=</span> tf.Variable(tf.constant(<span class="fl">0.1</span>, shape<span class="op">=</span>[output_size]), name<span class="op">=</span><span class="st">&#39;bias&#39;</span>)
+    u <span class="op">=</span> tf.matmul(x, W) <span class="op">+</span> b
+    y <span class="op">=</span> g <span class="op">*</span> tf.nn.relu(u) <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> g) <span class="op">*</span> u
+    <span class="cf">return</span> y
+...
+<span class="cf">for</span> i <span class="op">in</span> <span class="bu">range</span>(num_iter):
+  batch_xs, batch_ys <span class="op">=</span> mnist.train.next_batch(mini_batch_size)
+
+  epoch <span class="op">=</span> i <span class="op">/</span> iter_per_epoch
+  gs <span class="op">=</span> <span class="bu">min</span>(epoch <span class="op">/</span> tau, <span class="fl">1.0</span>)
+...</code></pre></div>
+<p>I used <code>__future__.division</code> to default to floating point division with a single <code>/</code>, whereas integer floor division would be <code>//</code>. The former corresponds to a continuous <span class="math inline">\(t\)</span>, and the latter a stepwise <span class="math inline">\(t\)</span>. The paper was not explicit about which one to use, but it made sense to be as gradual as possible in GradNets.</p>
+<h3 id="experiment">Experiment</h3>
+<h3 id="highway-network">Highway Network</h3>
+<p>I was able to reproduce results on Highway Networks quite easily. Using the following parameters:</p>
+<ul>
+<li>50 hidden layers of size 50 each</li>
+<li>Minibatch size of 50</li>
+<li>SGD optimizer</li>
+<li><span class="math inline">\(10^{-2}\)</span> starting learning rate</li>
+<li>No weight decay</li>
+<li>Initial carry bias of -1</li>
+</ul>
+<p>I got to ~92% test accuracy within 2 epochs and hit the best test accuracy of ~96% around epoch 13. The network started to overfit after that, which is expected because I did not apply learning rate decay or any form of regularization.</p>
+<p>I tried a few other configuration and referred to Jim's post (linked above) in order to confirm that the model converged under a variety of conditions.</p>
+<h3 id="gradnets---linear-grelu">GradNets - Linear GReLU</h3>
+<p>I tried to reproduce the first example from GradNets, interpolating between a simple linear (Identity) activation and a ReLU activation. The underlying weights are still the same under each path, so the output is weighted mix of 2 different activations on the same affine transformation.</p>
+<p>Using the same optimizer (SGD), the same learning rate, and otherwise the same architecture as Highway Networks, I was not able to get the network to converge. The norm of the gradients moved toward 0 as <code>g</code> annealed to 1, and when g hit 1, the gradients all hit 0.</p>
+<h3 id="gradnets-v2---identity-grelu">GradNets v2 - Identity GReLU</h3>
+<p>As an alternative approach, I tried to obtain an interpolation closer to what Highway Networks achieved. Following the same constraint as Highway Networks, I modified the GReLU layer to interpolate between the full transformation and an identity function directly on <span class="math inline">\(x\)</span> rather than on the affine transform <span class="math inline">\(W^Tx + b\)</span>. Here is the revised output:</p>
+<p><span class="math display">\[
+g \cdot ReLU(W^Tx + b) + (1 - g) \cdot I(x)
+\]</span></p>
+<p>The GReLU layer now looks like:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> grelu_layer(x, input_size, output_size, g):
+    W <span class="op">=</span> tf.Variable(tf.truncated_normal([input_size, output_size], stddev<span class="op">=</span><span class="fl">0.1</span>), name<span class="op">=</span><span class="st">&#39;weight&#39;</span>)
+    b <span class="op">=</span> tf.Variable(tf.constant(<span class="fl">0.1</span>, shape<span class="op">=</span>[output_size]), name<span class="op">=</span><span class="st">&#39;bias&#39;</span>)
+    y <span class="op">=</span> g <span class="op">*</span> tf.nn.relu(tf.matmul(x, W) <span class="op">+</span> b) <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> g) <span class="op">*</span> x
+    <span class="cf">return</span> y</code></pre></div>
+<p>Because of the multiplicative nature of backpropogation, I ended up with situations where I had exploding gradients and weights. I added a bit of monitoring to keep track of the L1 norm of both.</p>
+<p>To understand how this happens, here's an example. Suppose <code>y_</code> is non-zero and <code>y</code> is very close to zero. <code>log(y)</code> is a very big negative number, and gets multiplied by a non-zero <code>- y_</code>. When gradients flow more freely as <code>g</code> increases, this large number is multipled and summed across many nodes in many layers.</p>
+<p>The value of gradient <span class="math inline">\(dW\)</span> at a given layer is <span class="math inline">\(dx \times dy\)</span>. <span class="math inline">\(dy\)</span> is that big number that came from the next layer, and <span class="math inline">\(dx\)</span> is the activation from previous layer. Repeating the process down all layers through backprop can lead to exponential growth under the wrong conditions.</p>
+<p>A good proxy for big activations is big weights, so I collected those as well. I noticed some weight explosion, so I applied the <code>relu6</code> activation, which clips the output of the unit. It prevented gradient explosion, but at saturation in hidden layers, the network quickly diverges without means to recover.</p>
+<h3 id="kitchen-sink-fix">Kitchen Sink Fix</h3>
+<p>Without making the network any shallower, I tried:</p>
+<ul>
+<li>Regularization: dropout, L1, L2</li>
+<li>Optimizer: Adam, AdaGrad, RMSProp</li>
+<li>Learning Rate: start rate, exponential and constant decay</li>
+<li>Gradient clipping and normalization</li>
+</ul>
+<p>Nothing seemed to help the 50-layer Linear GReLU train. As for the Identity GReLU (the one that more resembles Highway Networks), it took a combination of:</p>
+<ul>
+<li>L1 regularization - very carefully chosen to stabilize weights</li>
+<li>Lower starting learning rate of <span class="math inline">\(10^{-3}\)</span></li>
+<li>Aggressive exponential decay of the learning rate</li>
+<li>Using the Adam optimizer</li>
+<li>Mild dropout (5%)</li>
+</ul>
+<p>...in order to keep the Identity GReLU from diverging, but it would still hit a random <code>NaN</code> spike that didn't seem to follow a climb in the L1 norm of weights &amp; gradients. I could have considered checkpointing + early-stopping, but I would prefer that the network demonstrate stability without outside help. It certainly would've saved a lot of time.</p>
+<p>Eventually, I figured out from reading forum posts that the Identity GReLU spikes when <span class="math inline">\(y \to 0\)</span> and <span class="math inline">\(log(y) \to -\infty\)</span>. Doh! Lesson learned: read the forums!</p>
+<p>The simple fix is to add a small number to <code>y</code>:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">cross_entropy <span class="op">=</span> <span class="op">-</span>tf.reduce_sum(y_ <span class="op">*</span> tf.log(y <span class="op">+</span> <span class="fl">1e-9</span>))</code></pre></div>
+<p>I ended up hitting 94% accuracy around epoch 15 and staying there until the end of training. I was pretty happy with the graphs for weights and gradients - they remained in a pretty small range throughout. It should be emphasized that the convergence property was sensitive to ALL of the hyperparameters above. Significant changes in any of them led to divergence or no learning.</p>
+<p>Here are some graphs of a run:</p>
+<p>[[Training Accuracy][1]][1] [1]: https://lh3.googleusercontent.com/yx6TJ-IduYF0OCScLU9pT0zbQOmKtwn7wqCJiBFOHL1p9i2SLhOtc1CqH2TUpmPZYJkgwWnRhgvNqw=w1515-h422-no</p>
+<p>[[Weight Norm][2]][2] [2]: https://lh3.googleusercontent.com/8D90Lv9eIKuuzr_OMIOLAR7jsQYki16TOpBm03oyGkI3KwiydCkZczhe48QS5wKtBps0r_XH0giGOg=w1510-h414-no</p>
+<p>[[Gradient Norm][3]][3] [3]: https://lh3.googleusercontent.com/baOtgb3xTS4fSp4r7l0ABw5JC3ePC91wdotvfy2OdlL73k8otEVPajE8RbGiVk8vS9HnX7RWUUMeMA=w1509-h415-no</p>
+<h3 id="sanity-check">Sanity Check</h3>
+<p>For my own sanity check, I left the hyperparameters in their tuned state and removed the GradNet portion to see how well the network would do. As expected, the network failed to bounce out of its initial state.</p>
+<h2 id="final-thoughts">Final Thoughts</h2>
+<p>While Highway Networks effectively double the number of parameters per layer, they converge quickly and stably with naive hyperparameters.</p>
+<p>In contrast, GradNets work best when interpolating between &quot;Highway Mode&quot; (Identity) and ReLU, with the caveat that one must tune hyperparameters very carefully (perhaps through systematic Grid/Randomized search). They certainly make training the net easier in comparison to no interpolation.</p>
+<p>The winning characteristic of Highway Networks is ability to learn good gating parameters for every neuron as part of end-to-end training, whereas GradNets must apply a single multiplier <span class="math inline">\(g\)</span> for the entire network.</p>
+<p>However, gradual interpolation of other aspects of the architecture, such as dropout, batch normalization, convolutions, are available and have been tested in GradNets, but have no counterpart in Highway Networks. Further investigation into using Highway Networks for these components could be interesting.</p>
+<p>Demo runs with inline implementation can be found <a href="https://github.com/ZhangBanger/highway-vs-gradnet">here</a></p>
+</body>
+</html>

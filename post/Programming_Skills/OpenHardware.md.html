@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Open Hardware Development</title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Open Hardware Development</h1>
+</div>
+<h2 id="raspberry-pi">Raspberry PI</h2>
+<h3 id="auto-login">Auto Login</h3>
+<p>Reference</p>
+<ul>
+<li><a href="http://www.opentechguides.com/how-to/article/raspberry-pi/5/raspberry-pi-auto-start.html">Auto Login and Auto Start in Raspberry Pi</a></li>
+<li><a href="http://raspberrypi.stackexchange.com/questions/11752/issue-with-rc-local-on-boot">Issue with rc.local on boot</a></li>
+</ul>
+<h3 id="network">Network</h3>
+<ol style="list-style-type: decimal">
+<li>Network setup</li>
+</ol>
+<pre><code>auto lo
+iface lo inet loopback
+iface eth0 inet dhcp
+allow-hotplug wlan0
+iface wlan0 inet manual
+wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
+iface default inet dhcp</code></pre>
+<pre><code>ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+network={
+    ssid=&quot;NTUSECURE&quot;
+    proto=RSN
+    key_mgmt=WPA-EAP
+    pairwise=CCMP
+    auth_alg=OPEN
+    eap=PEAP
+    identity=&quot;STAFF\xx&quot;
+    password=&quot;xxx!&quot;
+}</code></pre>
+<h3 id="gpio">GPIO</h3>
+<div class="figure">
+<img src="http://pi4j.com/images/j8header-2b-large.png" alt="Pinouts for all Pi models" />
+<p class="caption">Pinouts for all Pi models</p>
+</div>
+<p>Reference</p>
+<ul>
+<li><a href="http://raspi.tv/download/RPi.GPIO-Cheat-Sheet.pdf">RPi.GPIO-Cheat-Sheet</a></li>
+<li><a href="http://wiringpi.com/download-and-install/">Wiring Pi GPIO Interface library for the Raspberry Pi</a></li>
+<li><a href="http://razzpisampler.oreilly.com/ch05.html">Controlling Servo Motors</a></li>
+</ul>
+<h3 id="lcd-and-touchscreen">LCD and touchscreen</h3>
+<p>Reference</p>
+<ul>
+<li><a href="http://www.waveshare.com/wiki/3.2inch_RPi_LCD_(B)">3.2inch RPi LCD (B)</a></li>
+<li><a href="http://www.circuitbasics.com/raspberry-pi-touchscreen-calibration-screen-rotation/">Raspberry Pi Touchscreen Calibration and Screen Rotation</a></li>
+<li><a href="http://diyhacking.com/raspberry-pi-touchscreen-lcd-tutorial/">RASPBERRY PI TOUCHSCREEN LCD: THE BEST LCD TUTORIAL</a></li>
+<li><a href="https://github.com/notro/fbtft/issues/181">Waveshare 3.2inch RPi LCD (B) V3</a></li>
+</ul>
+<h3 id="cameraov5647">Camera(ov5647)</h3>
+<p>没有使用树莓派自带的库，在使用自带库的时候有一个问题：如果在最高分辨率下录制视频的话，video只有中间的那部分，貌似放大了处理。而用opencv会避免这个问题，但是fps下降了。</p>
+<p><strong><a href="https://github.com/gujiuxiang/Raspberry-Pi-Camera.git">Github 源码</a></strong></p>
+<h3 id="spi">SPI</h3>
+<p>Reference</p>
+<ul>
+<li><a href="http://www.eeboard.com/bbs/thread-4499-1-1.html">树莓派的SPI接口怎样驱动才能冲上35MBit/s?</a></li>
+</ul>
+<h3 id="interconnect-with-arduino">Interconnect with Arduino</h3>
+<p>Reference</p>
+<ul>
+<li><a href="http://playground.arduino.cc/Linux/Debian">Install Arduino on RaspberryPi Debian</a></li>
+</ul>
+<h3 id="wifi">Wifi</h3>
+<ol style="list-style-type: decimal">
+<li><p>Download usb wifi driver and unzip it</p>
+<pre><code>tar xjvf DPO_MT7601U_LinuxSTA_3.0.0.4_20130913.tar.bz2
+cd DPO_MT7601U_LinuxSTA_3.0.0.4_20130913/
+nano common/rtusb_dev_id.c</code></pre></li>
+<li><p>在 {USB_DEVICE(0x148f,0×7601)}, /* MT 6370 */ 下面加入以下内容</p>
+<pre><code>{USB_DEVICE(0x148f,0x760b)}, /* 360 Wifi */
+{USB_DEVICE(0x2955,0x1001)}, /* baidu Wifi */
+{USB_DEVICE(0x2a5f,0x1000)}, /* Tencent WIFI */
+{USB_DEVICE(0×2955,0×0001)}, /* XiaoDu Wifi */
+{USB_DEVICE(0x2717,0x4106)}, /* Xiaomi Wifi */</code></pre></li>
+<li><p>Upgrade kernel and recompile</p>
+<pre><code>sudo su
+rpi-update
+reboot
+uname -r
+3.12.28+
+wget https://github.com/raspberrypi/linux/archive/rpi-3.12.y.tar.gz
+tar xvfz rpi-3.12.y.tar.gz
+sudo su
+mv linux-rpi-3.12.y /usr/src
+ln -s /usr/src/linux-rpi-3.12.y /lib/modules/3.12.28+/build
+cd /lib/modules/3.12.28+/build
+make mrproper</code></pre></li>
+</ol>
+<ul>
+<li>Reference
+<ul>
+<li><a href="http://shumeipai.nxez.com/2014/12/07/raspberry-pi-use-360wifi.html">在树莓派上使用360WIFI(也适用于小米、百度、腾讯WIFI)</a></li>
+<li>make mrproper可以看作更加强劲的 make clean 命令，用来清除环境变量，即清除配置文件，一般编译内核前都要运行;</li>
+<li>将当前正在使用的系统的内核配置生成内核配置信息: gzip -dc /proc/config.gz &gt; .config</li>
+<li>生成编译内核所需要的东西: make modules_prepare</li>
+<li>获取内核编译时生成的内核模块导出符号文件,因为不是从头编译内核，所以没有，但是编译内核模块需要这个: wget https://github.com/raspberrypi/firmware/raw/master/extra/Module.symvers</li>
+<li>再到网卡驱动目录中编译驱动（进入到DPO_MT7601U_）: sudo make; sudo make install; sudo modprobe mt7601Usta</li>
+<li>设置使用无线网卡 <sub>~</sub> vi /etc/network/interfacing auto lo iface lo inet loopback iface eth0 inet dhcp auto ra0 allow-hotplug ra0 iface ra0 inet dhcp wpa-ssid 无线SSID wpa-psk 无线密码 <sub>~</sub></li>
+<li>这样总算完成了(这样只有360wifi2 的无线网卡功能，只能连接无线网，不能使用AP功能)；重启 reboot。</li>
+</ul></li>
+</ul>
+<h3 id="uav-opensource">UAV: Opensource</h3>
+<p>Reference</p>
+<ul>
+<li><a href="http://www.wired.com/2015/03/open-source-drone-camera-can-modify-apps/">An Open Source Drone Camera You Can Modify With Apps</a></li>
+<li><a href="https://www.indiegogo.com/projects/percepto-computer-vision-apps-for-drones#/story">Percepto Plug &amp; Play Computer Vision Add-On Brings Endless App Potential To Drones</a></li>
+<li><a href="http://blog.arduino.cc/2015/06/08/building-a-quadcopter-running-on-arduino-yun/">BUILDING A QUADCOPTER RUNNING ON ARDUINO</a></li>
+</ul>
+<h2 id="banana-pi">Banana Pi</h2>
+<p>Reference</p>
+<ul>
+<li><a href="https://www.bananian.org/start">Bananian Linux</a></li>
+<li><a href="http://www.lemaker.org">Banana Pro</a></li>
+<li><a href="http://www.bananapi.com">bananapi</a></li>
+<li><a href="http://wiki.lemaker.org/WiFi">Banana Pro, onboard AP6181 WiFi module</a></li>
+</ul>
+<h2 id="rock-chip">Rock-chip</h2>
+<h3 id="kernel">Kernel</h3>
+<p>https://github.com/gujiuxiang/Radxa-rock-Pro-Kernel.git</p>
+<p>Reference</p>
+<ul>
+<li><a href="http://radxa.com/Rock/U-Boot">SD/NAND uboot</a></li>
+<li><a href="https://github.com/radxa/linux-rockchip.git">Radxa Offical stable kernel</a></li>
+<li><a href="https://github.com/mmind/linux-rockchip">mmind/linux-rockchip</a></li>
+</ul>
+<h3 id="firmware">Firmware</h3>
+<p>Reference</p>
+<ul>
+<li><a href="http://build.radxa.com/rabian/nightly/rock_pro/150423/">rock_pro_rabian_rock_pro_05e6b63_150423_608b818_nand.img.xz</a></li>
+<li><a href="http://build.radxa.com/rabian/nightly/rock_lite/150425/">rabian_rock_lite_15-04-25_sdcard.img.xz</a></li>
+<li><a href="http://build.radxa.com/rabian/nightly/">rabian</a></li>
+<li><a href="http://radxa.com/Rock/SD_images">Writing SD image to SD card</a></li>
+</ul>
+<h3 id="gpio-1">GPIO</h3>
+<p>Reference</p>
+<ul>
+<li><a href="http://radxa.com/Rock/LED">LED control</a></li>
+<li><a href="http://radxa.com/Rock/extension_header">Extension header</a></li>
+<li><a href="http://radxa.com/Rock/GPIO">GPIO</a></li>
+</ul>
+<h3 id="camera">Camera</h3>
+<p><strong>开发环境</strong>: radxa rock pro; debian; camera(c170, c210, c270). 最近打算使用C270在radxa rock pro下，瑞芯微内核简直fuck a mess! Everything you need to do it yourself!!! <strong><a href="https://github.com/gujiuxiang/Radxa-rock-pro-USB-camera-v4l2-driver.git">附上GitHub code</a></strong></p>
+<p>Reference</p>
+<ul>
+<li>https://gist.github.com/jayrambhia/5866483</li>
+<li><a href="http://www.jayrambhia.com/blog/capture-v4l2/">Capture images using V4L2 on Linux</a></li>
+<li><a href="http://talk.radxa.com/topic/496/">rr读取摄像头数据程序</a></li>
+<li><a href="http://talk.radxa.com/topic/489/">利用ap变无线路由方法hostapd-dhcp-华丽变身智能路由</a></li>
+<li><a href="https://groups.google.com/forum/#!topic/pandaboard/jFIzZIjhDCo">Driver for omnivision sensor OV5650 - Google Groups</a></li>
+<li><a href="http://boundarydevices.com/omnivision-ov5642-camera-driver-for-linux/">omnivision-ov5642-camera-driver-for-linux</a></li>
+<li><a href="https://github.com/boundarydevices/linux-imx6/blob/boundary-imx_3.10.17_1.0.0_ga/drivers/media/platform/mxc/capture/ov5642.c">ov5642.c imx6</a></li>
+<li><a href="https://github.com/boundarydevices/linux-imx6/blob/boundary-imx_3.10.17_1.0.0_ga/drivers/media/platform/mxc/capture/ov5640_mipi.c">ov5640_mipi.c imx6</a></li>
+<li><a href="https://android.googlesource.com/kernel/msm/+/e8cd8ba448c7f010908b9a9c61ee6457359a1f03/drivers/media/video/msm/ov5640.c">ov5640.c</a></li>
+<li><a href="http://193.87.95.148/openwrt/a13/linux/linux-sunxi/drivers/media/video/sun4i_csi/device/ov5640.c">ov5640.c allwinner linux sunxi</a></li>
+<li><a href="https://github.com/Pivosgroup/buildroot-linux-kernel-m3/blob/master/drivers/amlogic/camera/ov5640.c">ov5640.c kernel</a></li>
+<li><a href="http://boundarydevices.com/omnivision-ov5642-camera-driver-for-linux/">ov5642 for linux</a></li>
+<li><a href="http://en.pudn.com/downloads542/sourcecode/unix_linux/driver/detail2240383_en.html">ov5640</a></li>
+<li><a href="https://www.codeaurora.org/git/projects/froyo-gb-dsds-7227/repository/revisions/39141d7a9dbdd2e9acf006430a7e7557ffd1efce/entry/kernel/drivers/media/video/msm/ov5640.c">ov5640.c</a></li>
+<li><a href="http://www.codeforge.com/s/0/OV5640-camera-drivers-for-linux">OV5640-camera-drivers-for-linux</a></li>
+<li><a href="http://wiki.lemaker.org/Kernel_drivers_porting_and_configuration">kernel drivers porting andconfiguration</a></li>
+<li><a href="http://wenku.baidu.com/view/d2392a00763231126edb11fa.html">03_Camera驱动详细分析--1Linux 设备模型介绍</a></li>
+<li><a href="http://zybzyb1.blog.163.com/blog/static/10323909720122415251553/">v4l: Add support for ov5640 sensor</a></li>
+<li><a href="http://www.programering.com/a/MDN4kDMwATI.html">Camera driver&amp;V4L2 Driver Architecture</a></li>
+<li><a href="http://pandaboard.org/content/omap4-v4l2-camera">pandaboard omap4 v4l2</a></li>
+<li><a href="http://www.cnblogs.com/AdiSky/archive/2012/09/05/2671963.html">Camera driver&amp;V4L2驱动架构介绍</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/video4linux/omap4_camera.txt">omap4_camera</a></li>
+<li><a href="http://t25642.embedded-pandaboard.embeddedtalk.us/driver-for-omnivision-sensor-ov5650-t25642.html">driver for ov5650-t25642</a></li>
+<li><a href="http://blog.csdn.net/longhui173/article/details/40401383">BananaPi上ov5640摄像头自动对焦功能的实现</a></li>
+<li><a href="http://readsourcecode.com/read516/sourcecode/unix_linux/driver/detail2143570.html">ov5640_camera</a></li>
+</ul>
+</body>
+</html>

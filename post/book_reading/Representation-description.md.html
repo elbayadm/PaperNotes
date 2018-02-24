@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="数字图像处理--表示和描述"><span style="color:red"><strong><em>数字图像处理--表示和描述</em></strong></span></h2>
+<p>将图像分割成多个区域后，分割后的像素集合通常以一种合适于计算机进一步处理的形式来表示和描述．基本，表示一个区域涉及２中选择： 1. 根据其外部特征（其边界）来表示区域 2. 根据其内部特征（如组成该区域的像素）表示．</p>
+<p>当我们关注的重点是形状特征时，可以选择一种外部表示；而当关注的重点是内部属性如颜色和纹理时，可以选择一种内部表示．有时，需要同时使用２种表示．</p>
+<h3 id="表示"><span style="color:red"><strong><em>表示</em></strong></span></h3>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>边界追踪</em></strong></span> 给定一个二值区域<span class="math inline">\(R\)</span>或其边界，追踪Ｒ的边界或给定边界的算法由如下步骤组成：
+<ol style="list-style-type: decimal">
+<li>令起始点<span class="math inline">\(b_0\)</span>为图像中左上角标记为1的点。使用<span class="math inline">\(c_0\)</span>表示<span class="math inline">\(b_0\)</span>西侧的亮点。很显然，<span class="math inline">\(c_0\)</span>总是背景点。从<span class="math inline">\(c_0\)</span>开始按顺时针方向考察<span class="math inline">\(b_0\)</span>的8个邻点。令<span class="math inline">\(b_1\)</span>表示所遇到的值为1的第一个邻点，并直接令<span class="math inline">\(c_1\)</span>（背景）是序列中<span class="math inline">\(b_1\)</span>之前的点，存储<span class="math inline">\(b_0\)</span>和<span class="math inline">\(b_1\)</span>的位置，以便在步骤5使用</li>
+<li>令<span class="math inline">\(b=b_1\)</span>和<span class="math inline">\(c=c_1\)</span></li>
+<li>从c开始按顺时针方向进行，令<span class="math inline">\(b\)</span>的8歌邻点为<span class="math inline">\(n_1,n_2,...,n_8\)</span>.找到标为1的第一个<span class="math inline">\(n_k\)</span></li>
+<li>令<span class="math inline">\(b=n_k\)</span>和<span class="math inline">\(c=n_{k-1}\)</span></li>
+<li>重复步骤3和4，直到<span class="math inline">\(b=b_0\)</span>且找到的下一个边界点为<span class="math inline">\(b_1\)</span>. 当算法停止时，所找到的b点的序列就构成了排列后的边界点的集合。 然后是外边界跟踪： 第一种方法和求内边界第一种方法类似。先对原图像进行膨胀，然后用膨胀后的图像减去原图像即可。 第二种也不算跟踪方法，只是标记算法而已。就是将图像中前景像素周围的非前景像素标记一下就行了。</li>
+</ol></li>
+<li><span style="color:red"><strong><em>链码</em></strong></span> 链码用于有顺序链接的具有指定长度和方向的直线段组成的边界。典型的，这种表示基于这些线段的4连接和8连接。每个线段的方向使用一种数字编号方案编码。以这种方向性数字序列表示的编码称为弗雷曼链码。
+<ol style="list-style-type: decimal">
+<li>链码定义： 1）链码是一种边界的编码表示法。 2）用边界的方向作为编码依据，简化边界的描述。一般描述的是边界点集。 问题1： 1）链码相当长。 2）噪声会产生不必要的链码。 改进1： 1）加大网格空间。 2）依据原始边界与格点的接近程度，来确定新点的位置。 问题2： 1）由于起点的不同，造成编码的不同。 2）由于旋转角度的不同，造成编码的不同。 改进2： 1）通过使用链码的循环一阶差分代替链码本身，解决旋转问题。 2）对起点重新定义，使得到的循环差分链码对应的整数值最小。这样得到的最小循环差分链码称为形状数</li>
+</ol></li>
+<li><span style="color:red"><strong><em>使用最小周长多边形的多边形近似</em></strong></span> 数字边界可以用多边形以任意精度来近似，对于一条闭合边界，当多边形的边数等于边界上的点数时，这种近似会变得精确。多边形近似的目的是使用尽可能少的线段数来获取给定边界的基本形状。在这类近似技术中，最有力的技术是使用最小周长多边形(MPP)来表示边界。</li>
+<li><span style="color:red"><strong><em>其他多边形近似法</em></strong></span>
+<ol style="list-style-type: decimal">
+<li>聚合技术</li>
+<li>分裂技术</li>
+</ol></li>
+<li><span style="color:red"><strong><em>标记图</em></strong></span> 标记图是边界的一维函数表示，它可以使用各种方式来生成。一种最简单的方式是以角度的函数的形式画出质心到边界的距离。然而，不管如何生成标记图，基本概念都是将边界表示简化为描述起来可能比原始二维边界更简单的一维函数。</li>
+<li><span style="color:red"><strong><em>边界线段</em></strong></span> 将边界分解为线段通常是很有用的。分解降低了边界的复杂性，从而简化了描述过程。当边界线包含一个或多个携带形状信息的明显凹度时，这种方法求其具有吸引力。
+<ol style="list-style-type: decimal">
+<li>基本概念： 一个任意集合S（区域）的凸壳H是：包含S的最小凸集。 H-S的差的集合被称为集合S的凸起补集（凸形缺陷）D。</li>
+<li>分段算法： 给进入和离开凸起补集D的变换点打标记来划分边界段。 优点：不依赖于方向和比例的变化。</li>
+</ol></li>
+<li><span style="color:red"><strong><em>骨架</em></strong></span> 表示一个平面区域的结构形状的一种重要方法是将它简化为图形，这种简化可以通过一种细化（也称为骨架化）算法得到该区域的骨架来实现。 基本思想:表示一个平面区域结构形状的重要方法是把它削减成图形。这种削减可以通过细化（也称为抽骨架）算法，获取区域的骨架来实现。 用Blum的中轴变换方法（MAT, medial axis transform）来定义骨架。 设:R是一个区域，B为R的边界点，对于R中的点p，找p在B上“最近”的邻居。如果p有多于一个的这样的邻居，称它属于R的中轴（骨架）。 ### <span style="color:red"><strong><em>边界描绘子</em></strong></span></li>
+<li><span style="color:red"><strong><em>一些简单的描绘子</em></strong></span></li>
+<li><span style="color:red"><strong><em>形状数</em></strong></span> 最小量级的一次差分。</li>
+<li><span style="color:red"><strong><em>傅立叶描绘子</em></strong></span> 即将坐标序列点表示为复数形式，再做傅里叶变换。</li>
+<li><span style="color:red"><strong><em>统计矩</em></strong></span> 如均值，方差，高阶矩 ### <span style="color:red"><strong><em>区域描绘子</em></strong></span></li>
+<li><span style="color:red"><strong><em>简单的描绘子</em></strong></span> 如面积，周长， 圆度率，该区域面积与相同周长的圆的比值。 致密性：周长^2/面积。 其他如灰度中值，最大值，最小值，以及在均值上下的像素数</li>
+<li><span style="color:red"><strong><em>拓扑描绘子</em></strong></span> 欧拉数：E = C - H;</li>
+<li><span style="color:red"><strong><em>纹理</em></strong></span> 描绘图像局部纹理内容的方法，例如图像平滑度、粗糙度和规律性等特性，主要有三种方法：统计方法、结构方法和频谱方法。</li>
+<li><span style="color:red"><strong><em>不变矩</em></strong></span></li>
+</ol>
+<h3 id="使用主分量进行描绘"><span style="color:red"><strong><em>使用主分量进行描绘</em></strong></span></h3>
+<p>霍特林变化又称主分量变换，利用主分量可以做传送中的图像压缩和重建。 区域中不同像素点作为向量的分量，对该区域进行佛特林变换，对图像归一化。</p>
+<h3 id="关系描绘子"><span style="color:red"><strong><em>关系描绘子</em></strong></span></h3>
+<p>利用重写规则的概念，规则的形式来获取边界或区域中的基本重复模式： 用有向线段来描述 另一种更通用的方法：按照定义的规则，用抽象的基元定义典型的操作，来描述完整的图形结构。 用树形结构来描述 用树形结构描述图形信息：节点代表子图，节点之间的关系表示子图之间的关系。﻿﻿ ﻿﻿ <span style="color:red"><strong>Reference:</strong></span> <a href="http://blog.csdn.net/liulina603/article/details/8291093">目标检测的图像特征提取之（一）HOG特征</a> / <a href="http://blog.sina.com.cn/s/blog_60e6e3d50101bkpn.html">方向梯度直方图（HOG,Histogram of Gradient）学习笔记二 HOG正篇</a> / <a href="http://www.douapp.com/post/109433">OPENCV HOG特征+SVM分类器行人识别（从训练到识别）</a> / <a href="http://blog.csdn.net/chlele0105/article/details/41281081">计算机视觉 代码+数据库 汇总</a> / <a href="http://www.csee.wvu.edu/~xinl/source.html">CV代码汇总</a> / <a href="https://github.com/pdollar/toolbox.git">Piotr's Image &amp; Video Matlab Toolbox</a> / http://vision.ucsd.edu/~pdollar/toolbox/doc/ / <a href="http://pages.ucsd.edu/~ztu/publication/dollarBMVC09ChnFtrs_0.pdf">P. Dollár, Z. Tu, P. Perona and S. Belongie. &quot;Integral Channel Features&quot;, BMVC 2009.</a> / <a href="https://www.robots.ox.ac.uk/~vgg/rg/papers/DollarBMVC10FPDW.pdf">P. Dollár, S. Belongie and P. Perona. &quot;The Fastest Pedestrian Detector in the West,&quot; BMVC 2010.</a> / <a href="http://research.microsoft.com/pubs/183825/DollarECCV12crosstalkCascades.pdf">P. Dollár, R. Appel and W. Kienzle. &quot;Crosstalk Cascades for Frame-Rate Pedestrian Detection,&quot; ECCV 2012.</a> / <a href="/http://vision.cornell.edu/se3/wp-content/uploads/2014/09/DollarPAMI14pyramids_0.pdf">P. Dollár, R. Appel, S. Belongie and P. Perona. &quot;Fast Feature Pyramids for Object Detection&quot;, PAMI 2014.</a> / <a href="http://blog.sciencenet.cn/blog-261330-781213.html">OpenCV2.4.4中调用SIFT特征检测器进行图像匹配</a> / <a href="http://blog.csdn.net/xiaowei_cqu/article/details/8652096">特征检测器 FeatureDetector</a> / <a href="http://www.pudn.com/downloads231/sourcecode/graph/opencv/detail1089309.html">基于opencv的SIFT图像特征跟踪程序</a> / <a href="http://www.cnblogs.com/ronny/p/opencv_road_9.html">OpenCV成长之路(9)：特征点检测与图像匹配</a> / <a href="https://tutorialsplay.com/opencv/2015/01/07/opencv-keypoint-detector/">OpenCV Keypoint Detector</a> / <a href="http://www.cnblogs.com/ronny/p/4078710.html">Features From Accelerated Segment Test</a> / <a href="http://blog.csdn.net/dreamd1987/article/details/7607383">图像颜色特征提取</a> / <a href="http://blog.sina.com.cn/s/blog_a5fdbf010101cp96.html">如何用matlab提取图像的颜色空间直方图</a></p>
+</body>
+</html>

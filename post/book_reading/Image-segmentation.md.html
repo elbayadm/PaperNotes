@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="数字图像处理--图像分割"><span style="color:red"><strong><em>数字图像处理--图像分割</em></strong></span></h2>
+<h3 id="点线和边缘检测"><span style="color:red"><strong><em>点，线和边缘检测</em></strong></span></h3>
+<p>令<span class="math inline">\(R\)</span>是一幅图像占据的整个空间区域，我们可以将图像分割视为把Ｒ分为n个子区域<span class="math inline">\(R_1,R_2,...,R_n\)</span>的过程，满足： - <span class="math inline">\(\bigcup_{i=1}^n R_i=R\)</span> - <span class="math inline">\(R_i\)</span>是一个连通集，<span class="math inline">\(i=1,2,3...,n\)</span> - $R_iR_j=<span class="math inline">\(, 对于所有的i和j，\)</span>ij$ - <span class="math inline">\(Q(R_i)=TRUE\)</span>, <span class="math inline">\(i=1,2,3...,n\)</span> - <span class="math inline">\(Q(R_i \cap R_j)=FALSE\)</span>, 对于任何<span class="math inline">\(R_i,R_j\)</span>的邻接区域．</p>
+<p>一般有3种分割思路：基于点线、边缘的分割；基于阈值的分割（二值化）；基于区域的分割</p>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>背景知识</em></strong></span> 基本结论：
+<ol style="list-style-type: decimal">
+<li>一阶导数通常在图像中产生较粗的边缘</li>
+<li>二阶导数对精细细节，如细线，孤立点和噪声有较强的相应</li>
+<li>二阶导数在灰度斜坡和灰度台阶过渡处会产生双边缘响应</li>
+<li>二阶导数的符号可用于确定边缘的过渡是从亮到暗还是暗到亮．</li>
+</ol></li>
+<li><span style="color:red"><strong><em>孤立点的检测</em></strong></span> 这种分割的目的是把图像中灰度变化剧烈的区域找出来，这也是大部分机器视觉应用的必要步骤。 无论是点、线还是边缘的分割，都是基于图像微分． 对高斯一阶和二阶微分的讨论，可以知道：
+<ol style="list-style-type: decimal">
+<li>一阶导数得到的边缘比二阶要粗</li>
+<li>二阶导数对细线、噪声更敏感</li>
+<li>二阶导数在灰度过渡处会产生双边缘，此外通过二阶导数的符号可以推断边缘的过渡是从暗到亮还是相反</li>
+<li>基于以上讨论，孤立点的检测一般用二阶导数（laplace），如Harris角点检测，除此之外还有很多别的角点检测算法，如SUSAN，SIFT，SURF 推导： 以二阶倒数为基础，使用拉普拉斯：<span class="math inline">\(\nabla ^2 f(x,y)=\frac{\partial ^f}{\partial x^2}+\frac{\partial ^f}{\partial y^2}\)</span> 其中：<span class="math inline">\(\begin{cases}\frac{\partial ^2f(x,y)}{\partial x^2}=f(x+1,y)+f(x-1,y)-2f(x,y)\\\frac{\partial ^2f(x,y)}{\partial y^2}=f(x,y+1)+f(x,y-1)-2f(x,y)\end{cases}\)</span> 所以拉普拉斯为：<span class="math inline">\(\nabla ^2 f(x,y)=f(x+1,y)+f(x-1,y)+f(x,y+1)+f(x,y-1)-4f(x,y)\)</span></li>
+</ol></li>
+<li><span style="color:red"><strong><em>线检测</em></strong></span> 线的检测主要针对空间上连续的线段，一般使用对方向敏感的模板对线做方向筛选
+<p align="center">
+<img src="http://img.blog.csdn.net/20160321224643641?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" width="400" >
+</p></li>
+<li><span style="color:red"><strong><em>边缘检测</em></strong></span> 边缘检测比点线检测要复杂，因为边缘一般是弯曲的，因此需要首先检测点或小线段，然后做拟合，其<span style="color:red"><strong><em>大致步骤是</em></strong></span>：
+<ol style="list-style-type: decimal">
+<li>平滑图像以过滤噪声</li>
+<li>使用微分获得边缘点</li>
+<li>基于一定规则对边缘点进行筛选并连接 简单的方法一般有Roberts、Prewitt、Sobel等线检测算子，之后做点膨胀连接下断点也就可以了.更有效的方法是Canny算法，效果很好 然后再补充下边缘连接的方法吧，虽然觉得canny已经足够了，而这些方法往往会增加很多计算量：</li>
+<li><span style="color:red"><strong><em>局部处理方式</em></strong></span>：对每个边缘点A，考虑其邻域的点B，如果两个点无论梯度幅值还是梯度角度都在误差范围内，那么认为B在A代表的边缘上</li>
+<li><span style="color:red"><strong><em>多边形拟合</em></strong></span>：找到一个多边形，尽可能的反映当前离散点的分布</li>
+<li><span style="color:red"><strong><em>全局处理方式</em></strong></span>：比较有针对性的场合，比如需要找直线，找圆，用Hough</li>
+</ol></li>
+<li><span style="color:red"><strong><em>边缘连接和边界检测</em></strong></span> 在理想情况下，边缘检测应该仅产生位于边缘上的像素集合．实际上，由于噪声，不均匀照明引起的边缘间断，以及其他引入灰度值虚假的不连续的影响，这些像素并不能完全描述边缘特性．下面是３种基本的边缘连接方法．
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>局部处理</em></strong></span> 连接边缘点最简单的方法之一是在每个点<span class="math inline">\((x,y)\)</span>处的一个小邻域内分析像素的特点，根据预定的准则，将所有的相似点连接起来，以形成根据指定准则满足相同特性像素中的一条边缘． 用于确定边缘像素相似性的２个主要性质是：
+<ol style="list-style-type: decimal">
+<li>梯度向量的强度:<span class="math inline">\(|M(s,t)-M(x,y)|\le E\)</span>,　其中E是一个正阈值．</li>
+<li>梯度向量的方向:<span class="math inline">\(|\alpha(s,t)-\alpha(x,y)|\le A\)</span>，其中Ａ是一个正角度阈值． 如果幅度和相角准则都满足，则<span class="math inline">\(S_{xy}\)</span>中，坐标为<span class="math inline">\((s,t)\)</span>的像素被连接到坐标为<span class="math inline">\((x,y)\)</span>的像素．在图像中每个位置重复这一处理，当邻域的中心从一个像素移动到另一个像素时，必须将已连接的点记录下来．</li>
+</ol>
+一种特别适合实时应用的简化由如下步骤组成：
+<ol style="list-style-type: decimal">
+<li>计算输入图像<span class="math inline">\(f(x,y)\)</span>的梯度幅度阵列<span class="math inline">\(M(x,y)\)</span>和梯度角度阵列<span class="math inline">\(\alpha(x,y)\)</span></li>
+<li>形成一幅二值图像<span class="math inline">\(g\)</span>,任何坐标对<span class="math inline">\((x,y)\)</span>处的值由下式给出： <span class="math display">\[g(x,y)=\begin{cases}1, M(x,y)&gt;T_m \text{ and } \alpha(x,y)=A\pm T_A\\0,\text{ others }\end{cases}\]</span> 其中，<span class="math inline">\(T_M\)</span>是一个阈值，Ａ是一个指定的角度方向，<span class="math inline">\(pm T_A\)</span>定义了一个关于Ａ的可接受方向＂带宽＂</li>
+<li>扫描g的行，并在不超过指定长度Ｋ的每一行中填充(置１)所有缝隙(０的集合)．</li>
+<li>为了在任何其他方向<span class="math inline">\(\theta\)</span>上检测缝隙，以该角度旋转<span class="math inline">\(g\)</span>,并应用步骤３中的水平扫描过程，然后，将结果以<span class="math inline">\(-\theta\)</span>旋转回来．</li>
+</ol></li>
+<li><span style="color:red"><strong><em>区域处理</em></strong></span> 通常，图像中感兴趣的位置已经已知或者确定，意味着在相应区域的边缘图像中关于像素的区域成员的知识是可用的．可以使用区域的基础上连接像素的技术．所期望的结果是该区域边界的近似．</li>
+<li><span style="color:red"><strong><em>基于霍夫变换的全局处理</em></strong></span> 霍夫变换是一种全局检测直线的方法，<span style="color:red"><strong><em>速度慢，会将一些不连续的线段判定为连续的线段</em></strong></span>。 理论： 1.　在图像中检测直线的问题，其实质是找到构成直线的所有的像素点。那么问题就是从找到直线，变成找到符合y=mx+c的所有(x,y)的点的问题。
+<ol start="2" style="list-style-type: decimal">
+<li>进行坐标系变化y=mx+c，变成c=-xm+y。这样表示为过点（m,c）的直线束。
+<p align="center">
+<img src="http://images.cnblogs.com/cnblogs_com/smartvessel/hough1.JPG" width="600" >
+</p></li>
+<li>xy空间的直线上每一个点在MC坐标系中都表现为经过(m,c)的直线。找到所有点的问题，转变为寻找直线的问题。</li>
+<li>对于图像中的每一个点，在MC坐标系中对应着很多的直线。找到直线的交点，就对应着找到图像中的直线。实际在使用这一原理的时候，不是采用直线的斜率和截距公式，而是用:
+<p align="center">
+<img src="http://images.cnblogs.com/cnblogs_com/smartvessel/hough3.JPG" width="400" >
+</p>
+如何实现：
+<ol style="list-style-type: decimal">
+<li>将θ角在-90度到90度的范围里，划分为很多区间，对所有的像素点(x,y)在所有θ角的时候，求出ρ.从而累加ρ值出现的次数。高于某个阈值的ρ就是一个直线。</li>
+<li>这个过程就类似于如下一个二维的表格，横坐标就是θ角，ρ就是到直线的最短距离。
+<p align="center">
+<img src="http://images.cnblogs.com/cnblogs_com/smartvessel/hough4.JPG" width="400" >
+</p>
+横坐标θ不断变换，对于所有的不为0的像素点，计算出ρ，找到ρ在坐标(θ,ρ)的位置累加1.</li>
+<li>上图中局部最大的就是找到的直线的θ和ρ的值。</li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol>
+<h3 id="阈值处理"><span style="color:red"><strong><em>阈值处理</em></strong></span></h3>
+<p>由于实现的直观性和简单性，图像阈值处理在图象分割应用中占有重要的地位。本节将讨论自动选择阈值的方法，此外还要介绍一种依照局部图像邻域的性质来改变阈值的方法。</p>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>基础知识</em></strong></span> 假设如图所示的直方图对应于图像f(x, y)，采用这种方法，目标和背景象素会具有两种主要模式的灰度级。一种从背景上提取对象的明显方法是选取一个阈值T来分离这两种模式。任何满足<span class="math inline">\((f(x, y)\ge T)\)</span>的点<span class="math inline">\((x, y)\)</span>称为对象点，其他点则称为背景点。
+<p align="center">
+&lt;img src=&quot;http://s6.sinaimg.cn/middle/84024a4a4d8faac16aa35&amp;690&quot; width=&quot;400&quot; &gt;
+</p>
+<span class="math display">\[g(x, y) = \begin{cases} &amp;1, f(x, y) \ge T \\ &amp;0 f(x, y)\le T\end{cases}\]</span> T为常数时，称为全局阈值处理。T可变时，称为局部阈值处理。</li>
+<li><span style="color:red"><strong><em>基本的全局阈值处理</em></strong></span> 选取阈值的一种方法是目视检查直方图。另一种选择T的方法是反复试验，挑选不同的阈值，知道观察者觉得产生了较好的结果时为止。这在交互环境下特别有效，例如，这种方法允许用户使用一个图形控件（如滑动条）来改变阈值并可立即看到结果。 自动确定阈值的迭代步骤如下：
+<ol style="list-style-type: decimal">
+<li>为T选取一个阈值估计值（建议阈值估计值为图像中最大亮度值和最小亮度值的中间值）</li>
+<li>使用T分割图像。这会产生两组象素：亮度值大于等于T的所有象素组成的G1，亮度值小于T的G2。</li>
+<li>计算G1和G2范围呢你的象素的平均亮度值<span class="math inline">\((\mu_1, \mu_2)\)</span></li>
+<li>计算一个新阈值：<span class="math inline">\(T = \frac{1}{2}(\mu_1 + \mu_2)\)</span></li>
+<li>重复步骤2到步骤4，直到连续迭代中T的差比预先指定的参数T0小为止</li>
+</ol></li>
+<li><span style="color:red"><strong><em>用Otsu方法的最佳全局阈值处理</em></strong></span> 阈值处理可实为一种统计决策理论问题，尤其是把像素分配给２个或多个组（也叫分类）的过程中引入的平均误差最小．这一问题有一个精致的闭合形式的解，称为贝叶斯决策规则． Otsu法是1979年由日本大津提出的。该方法在类间方差最大的情况下是最佳的，即统计鉴别分析中所用的度量。Otsu方法有一个重要的特性，就是它完全以在一幅图像的直方图上执行计算为基础，而直方图是很容易得到的一维阵列。 <span style="color:red"><strong><em>给出具体步骤如下</em></strong></span>：
+<ol style="list-style-type: decimal">
+<li>计算输入图像的直方图，并归一化。</li>
+<li>计算累积均值mu，以及全局灰度均值。</li>
+<li>计算被分到类1的概率q1，和被分到类2的概率q2。</li>
+<li>用公式计算类间方差，<span class="math inline">\(\sigma = q1*q2*(\mu_1 - \mu_2)*(\mu_1 - \mu_2)\)</span></li>
+<li>循环寻找类间方差最大值，并记下此时的阈值，即为最佳阈值。</li>
+<li>利用最佳阈值进行图像阈值化。</li>
+</ol></li>
+<li><span style="color:red"><strong><em>利用边缘改进全局阈值处理</em></strong></span> 对于边界明显的图像，但是整体灰度值相近，不易用otsu直接找出正确的阈值，可以使用边缘改进的阈值处理。具体算法过程如下：
+<ol style="list-style-type: decimal">
+<li>用一种边缘查找方式计算图像的模版值。</li>
+<li>通过百分比指定阈值。由于计算的边缘模板值中有很多噪声。所以可以将计算值排序，并选择百分比相对高的值(大于百分下的值的阈值)作为阈值。</li>
+<li>根据指定的阈值，对第一步的图像边缘值进行选择。使高于阈值的像素点值为1，反之为零。由此选择出部分边缘点的二值图像(模板)。</li>
+<li>用刚才计算出来的模板与原图像相乘，获得一幅新的图像。</li>
+<li>对新的图像使用otsu进行分割。</li>
+</ol></li>
+<li><span style="color:red"><strong><em>多阈值处理</em></strong></span> 很显然，如果图像中含有占据不同灰度级区域的几个目标，则需要使用多个阈值才能将它们分开。其实多域值分割，可以看作单阈值分割的推广，前面讨论的大部分阈值化技术，诸如Otsu的最大类间方差法， Kapur的最大熵方法、矩量保持法和最小误差法等等都可以推广到多阈值的情形。以下介绍另外几种多阈值方法。
+<ol style="list-style-type: decimal">
+<li>基于小波的多域值方法。 小波变换的多分辨率分析能力也可以用于直方图分析，一种基于直方图分析的多阈值选取方法思路如下：首先在粗分辨率下，根据直方图中独立峰的个数确定分割区域的类数，这里要求独立峰应该满足三个条件：（1）具有一定的灰度范围；（2）具有一定的峰下面积；（3）具有一定的峰谷差。然后，在相邻峰之间确定最佳阈值，这一步可以利用多分辨的层次结构进行。首先在最低分辨率一层进行，然后逐渐向高层推进，直到最高分辨率。可以基于最小距离判据对在最低层选取的所有阈值逐层跟踪，最后以最高分辨率层的阈值为最佳阈值。</li>
+<li>基于边界点的递归多域值方法。 这是一种递归的多阈值方法。首先，将象素点分为边界点和非边界点两类，边界点再根据它们的邻域的亮度分为较亮的边界点和较暗的边界点两类，然后用这两类边界点分别作直方图，取两个直方图中的最高峰多对应的灰度级作为阈值。接下去，再分别对灰度级高于和低于此阈值的像素点递归的使用这一方法，直至得到预定的阈值数。</li>
+<li>均衡对比度递归多域值方法。 首先，对每一个可能阈值计算它对应于它的平均对比度. 其中， 是阈值为时图像总的对比度， 是阈值 检测到的边界点的数目。然后，选择 的直方图上的峰值所对应的灰度级为最佳阈值。对于多阈值情形，首先用这种方法确定一个初始阈值，接着，去掉初始阈值检测到的边界点的贡献再做一次 的直方图，并依据新的直方图选择下一个阈值。这一过程可以这样一直进行下去，直到任何阈值的最大平均对比度小于某个给定的限制为止。</li>
+</ol></li>
+<li><span style="color:red"><strong><em>可变阈值处理</em></strong></span> 可变阈值处理（可叫做自适应阈值处理），主要有两种。基于局部图像特性的可变阈值处理，和使用移动平均的可变阈值处理。
+<ol style="list-style-type: decimal">
+<li>基于局部图像特性的可变阈值处理, 就是考虑每个像素点的邻域像素来确定每个像素点相应的阈值，而标准差和均值可以局部确定邻域内像素阈值，计算公式为： <span class="math display">\[g(x,y)=\begin{cases}1,f(x,y)&gt;T_{xy}\\0,f(x,y)\le T_{xy}\end{cases}, T_{xy}=a\delta_{xy}+bm_{xy}\]</span></li>
+<li>使用移动平均的可变阈值处理，基本思想是以一幅图像的扫描行计算移动平均为基础的。计算公式如下： <span class="math display">\[m(k+1)=\frac{1}{n}\sum_{i=1k+2-n}^{k+1}z_i=m(k)+\frac{1}{n}(z_{k+1}-z_{k-n})\]</span></li>
+</ol></li>
+<li><span style="color:red"><strong><em>多变量阈值处理</em></strong></span> 我们已经涉及基于单个变量（灰度）的阈值处理．在某些情况下，传感器可以产生多个可利用的变量来表征图像中的每个像素，这样，就允许进行多变量阈值处理．显著的例子就是彩色成像，其中Ｒ，Ｇ，Ｂ分量用于形成一幅合成彩色图像． ### <span style="color:red"><strong><em>基于区域的分割</em></strong></span></li>
+<li><span style="color:red"><strong><em>区域生长</em></strong></span> 区域增长方法是根据同一物体区域内象素的相似性质来聚集象素点的方法，从初始区域（如小邻域或甚至于每个象素）开始，将相邻的具有同样性质的象素或其它区域归并到目前的区域中从而逐步增长区域，直至没有可以归并的点或其它小区域为止。区域内象素的相似性度量可以包括平均灰度值、纹理、颜色等信息。 区域增长方法是一种比较普遍的方法，在没有先验知识可以利用时，可以取得最佳的性能，可以用来分割比较复杂的图象，如自然景物。<span style="color:red"><strong><em>但是，区域增长方法是一种迭代的方法，空间和时间开销都比较大。</em></strong></span> 区域生长是一种串行区域分割的图像分割方法。区域生长是指从某个像素出发，按照一定的准则，逐步加入邻近像素，当满足一定的条件时，区域生长终止。区域生长的好坏决定于1.初始点（种子点）的选取。2.生长准则。3.终止条件。区域生长是从某个或者某些像素点出发，最后得到整个区域，进而实现目标的提取。
+<ol style="list-style-type: decimal">
+<li>区域生长的原理 <span style="color:red"><strong><em>区域生长的基本思想是将具有相似性质的像素集合起来构成区域</em></strong></span>。具体先对每个需要分割的区域找一个种子像素作为生长起点，然后将种子像素和周围邻域中与种子像素有相同或相似性质的像素（<span style="color:red"><strong><em>根据某种事先确定的生长或相似准则来判定</em></strong></span>）合并到种子像素所在的区域中。<span style="color:red"><strong><em>将这些新像素当作新的种子继续上面的过程</em></strong></span>，直到没有满足条件的像素可被包括进来。这样一个区域就生长成了。
+<p align="center">
+<img src="http://hi.csdn.net/attachment/201006/12/0_1276313490CT5f.gif" width="400" >
+</p>
+图1给出已知种子点进行区域生长的一个示例。图1（a）给出需要分割的图像，设已知两个种子像素（标为深浅不同的灰色方块），现要进行区域生长。设这里采用的判定准则是：如果考虑的像素与种子像素灰度值差的绝对值小于某个门限T，则将该像素包括进种子像素所在的区域。图1（b）给出了T=3时的区域生长结果，整幅图被较好地分成2个区域；图1（c）给出了T=1时的区域生长结果，有些像素无法判定；图1（c）给出了T=6时的区域生长的结果，整幅图都被分在一个区域中了。<span style="color:red"><strong><em>由此可见门限的选择是很重要的</em></strong></span>。 区域生长是一种古老的图像分割方法，最早的区域生长图像分割方法是由Levine等人提出的。该方法一般有两种方式，一种是先给定图像中要分割的目标物体内的一个小块或者说种子区域(seed point)，再在种子区域基础上不断将其周围的像素点以一定的规则加入其中，达到最终将代表该物体的所有像素点结合成一个区域的目的；另一种是先将图像分割成很多的一致性较强，如区域内像素灰度值相同的小区域，再按一定的规则将小区域融合成大区域，达到分割图像的目的，<span style="color:red"><strong><em>典型的区域生长法如T. C. Pong等人提出的基于小面（facet）模型的区域生长法，区域生长法固有的缺点是往往会造成过度分割，即将图像分割成过多的区域</em></strong></span> <span style="color:red"><strong><em>区域生长实现的步骤如下:</em></strong></span>
+<ol style="list-style-type: decimal">
+<li>对图像顺序扫描!找到第1个还没有归属的像素, 设该像素为(x0, y0);</li>
+<li>以(x0, y0)为中心, 考虑(x0, y0)的4邻域像素(x, y)如果(x0, y0)满足生长准则, 将(x, y)与(x0, y0)合并(在同一区域内), 同时将(x, y)压入堆栈;</li>
+<li>从堆栈中取出一个像素, 把它当作(x0, y0)返回到步骤2;</li>
+<li>当堆栈为空时!返回到步骤1;</li>
+<li>重复步骤1 - 4直到图像中的每个点都有归属时。生长结束。</li>
+</ol></li>
+</ol></li>
+<li><span style="color:red"><strong><em>区域分裂与聚合</em></strong></span> 区域分裂合并算法的基本思想是先确定一个分裂合并的准则,即区域特征一致性的测度,当图像中某个区域的特征不一致时就将该区域分裂成4 个相等的子区域,当相邻的子区域满足一致性特征时则将它们合成一个大区域,直至所有区域不再满足分裂合并的条件为止. 　　 当分裂到不能再分的情况时，分裂结束，然后它将查找相邻区域有没有相似的特征，如果有就将相似区域进行合并，最后达到分割的作用。 　　 在一定程度上区域生长和区域分裂合并算法有异曲同工之妙，互相促进相辅相成的，区域分裂到极致就是分割成单一像素点，然后按照一定的测量准则进行合并，在一定程度上可以认为是单一像素点的区域生长方法。 　　 区域生长比区域分裂合并的方法节省了分裂的过程，而区域分裂合并的方法可以在较大的一个相似区域基础上再进行相似合并，而区域生长只能从单一像素点出发进行生长（合并）。 ### <span style="color:red"><strong><em>用形态学分水岭的分割</em></strong></span> 分水岭概念是以对图像进行三维可视化处理为基础的：其中两个是坐标，另一个是灰度级。对于这样：一种“地形学”的解释，我们考虑三类点：(a)属于局部性最小值的点；(b)当一滴水放在某点的位置上的时候，水一定会下落到一个单一的最小值点；(c)当水处在某个点的位置上时，，水会等概率地流向不止一个这样的最小值点。对一个特定的区域最小值，满足条件(b)的点的集合称为这个最小值的“汇水盆地”或“分水岭”。满足条件(c)的点的集合组成地形表面的峰线，术语称做“分割线”或“分水线”。 基于这些概念的分割算法的主要目标是找出分水线。基本思想很简单：<span style="color:red"><strong><em>假设在每个区域最小值的位置上打一个洞并且让水以均匀的上升速率从洞中涌出，从低到高淹没整个地形。当处在不同的汇聚盆地中的水将要聚合在一起时，修建的大坝将阻止聚合。水将只能到达大坝的顶部处于水线之上的程度。这些大坝的边界对应于分水岭的分割线。所以，它们是由分水岭算法提取出来的(连续的)边界线。</em></strong></span></li>
+<li><span style="color:red"><strong><em>背景</em></strong></span>
+<p align="center">
+<img src="http://image.sciencenet.cn/album/201206/04/16585992a6asp2o7p6asz9.jpg" width="800" >
+</p>
+<p>这些思想可以用图10.44作为辅助做进一步的解释。图10.44(a)显示了一个简单的灰度级图像。图10.44(b)是地形图。其中“山峰”的高度与输入图像的灰度级值成比例。为了易于解释，这个结构的后方被遮蔽起来。这是为了不与灰度级值相混淆；三维表达对一般地形学是很重要的。为了阻止上升的水从这些结构的边缘溢出，我们想像将整幅地形图的周围用比最高山峰还高的大坝包围起来。最高山峰的值是由输入图像灰度级可能具有的最大值决定的。 假设在每个区域最小值中打一个洞[如图10.44(b)中的深色区域]，并且让水以均匀的上升速率从洞中涌出，从低到高淹没整个地形。图10.44(c)说明被水淹没的第一个阶段，这里水用浅灰色表示，覆盖了对应于图中深色背景的区域。在图10.44(d)和(e)中，我们看到水分别在第一和第二汇水盆地中上升。由于水持续上升，最终水将从一个汇水盆地中溢出到另一个之中。图10.44(f)中显示了溢出的第一个征兆。这里，水确实从左边的盆地溢出到右边的盆地，并且两者之间有一个短“坝”(由单像素构成)阻止这一水位的水聚合在一起(在接下来的章节中将讨论坝的构筑)。由于水位不断上升，实际的效果要超出我们所说的。如图10.44(g)所显示的那样。这幅图中在两个汇水盆地之间显示了一条更长的坝，另一条水坝在右上角。这条水坝阻止了盆地中的水和对应于背景的水的聚合。这个过程不断延续直到到达水位的最大值(对应于图像中灰度级的最大值)。水坝最后剩下的部分对应于分水线，这条线就是要得到的分割结果。 对于这个例子，在图l0.44(h)中显示为叠加到原图上的一个像素宽的深色路径。注意一条重要的性质就是分水线组成一条连通的路径，由此给出了区域之间的连续的边界。 分水岭分割法的主要应用是从背景中提取近乎一致(类似水滴的)的对象。那些在灰度级上变化较小的区域的梯度值也较小。因此，实际上，我们经常可以见到分水岭分割方法与图像的梯度有更大的关系，而不是图像本身。有了这样的表示方法，汇水盆地的局部最小值就可以与对应于所关注的对象的小的梯度值联系起来了。</p></li>
+<li><span style="color:red"><strong><em>水坝构建</em></strong></span> 在进行讨论之前，让我们考虑一下如何构造分水岭分割方法所需的水坝或分水线。水坝的构造是以二值图像为基础的，这种图像属于二维整数空间Z2(见2.4.2节)。构造水坝分离二元点集的最简单的方法是使用形态膨胀(见9.2.1节)。 图l0.45说明了如何使用形态膨胀构造水坝的基本点。图l0.45(a)显示了两个汇水盆地的部分区域在淹没步骤的第n-1步时的图像。图10.45(b)显示了淹没的下一步(第n步)的结果。水已经从一个盆地溢出到另一个盆地，所以，必须建造水坝阻止这种情况的发生。为了与紧接着要介绍的符号相一致，令M1和M2表示在两个区域极小值中包含的点的坐标集合。然后，将处于汇水盆地中的点的坐标集合与这两个在溢出的第n-1个阶段的最小值联系起来，并用Cn-1(M1)和Cn-1(M2)表示。这就是图10.45(a)中的两个黑色区域。
+<p align="center">
+<img src="http://image.sciencenet.cn/album/201206/04/16585946vpsj5szes9vzda.jpg" width="500" >
+</p>
+令这两个集合的联合用C[n—1]表示。图l0.45(a)中有两个连通分量(见2.5.2节关于连通分量的部分)，而图10.45(b)中只有一个连通分量。这个连通分量包含着前面的两个分量，用虚线表示。两个连通分量变成一个连通分量的事实说明两个汇水盆地中的水在淹没的第n步聚合了。用q表示此时的连通分量。注意，第n-1步中的两个连通分量可以通过使用“与”操作(q∩C[n-1])从q中提取出来。我们也注意到，属于独立的汇水盆地的所有点构成了一个单一的连通分量。 假设图10.45(a)中的每个连通分量通过使用图l0.45(e)中显示的结构元膨胀，在两个条件下：(1)膨胀受到q的约束(这意味着在膨胀的过程中结构化元素的中心只能定位于q中)并且(2)在引起集合聚合的那些点上不能执行膨胀(成为单一的连通分量)。图l0.45(d)显示首轮膨胀(浅灰色表示)使用了每个初始连通分量的边界。注意，在膨胀过程中每个点都满足条件(1)。条件(2)在膨胀处理中没有应用于任何的点；因此，每个区域的边界都进行了均匀的扩展。 在第二轮膨胀中(中等灰度表示)，几个不满足条件(1)的点符合条件(2)时，得到图中显示的断开周界。很明显，只有满足上述两个条件的属于q中的点描绘了图10.45(d)中交叉阴影线表示的一个像素宽度的连通路径。这条路径组成在淹没的第n个阶段我们希望得到的水坝。在这个淹没水平上，水坝的构造是由置所有刚好在这条路径上的点的值为比图像中灰度级的最大值还大的值完成的。所有水坝的高度通常设定为1加上图像中灰度级最大允许值。这样设定可以阻止在水位不断升高的情况下水越过部分水坝。应该特别注意到的是通过这一过程建立的水坝是连通分量，就是我们希望得到的分割边界。就是说，这种方法消除了分割线产生间断的问题。 尽管刚刚讨论的过程是用一个简单的例子说明的，但是处理更为复杂情况的方法是完全相同的，包括图10.45(c)中显示的3×3对称结构元素的使用也是相同的。</li>
+<li><span style="color:red"><strong><em>分水岭分割算法</em></strong></span> 令M1，M2，…，MR为表示图像g(x,y)的局部最小值点的坐标的集合。如同在10.5.1节结尾说明的那样，这是一幅典型的梯度图像。令G(Mi)为一个点的坐标的集合，这些点位于与局部最小值Mi (回想无论哪一个汇水盆地内的点都组成一个连通分量)相联系的汇水盆地内。符号min和max代表g(x,y)的最小值和最大值。最后，令T[n]表示坐标(s,t)的集合，其中g(s,t)&lt;n,即 <span class="math display">\[T[n]=\{(s,t)|g(s,t)&lt;n\}\]</span> 在几何上，<span class="math inline">\(T[n]\)</span>是<span class="math inline">\(g(x,y)\)</span>中的点的坐标集合，集合中的点均位于平面<span class="math inline">\(g(x，y)=n\)</span>的下方。 随着水位以整数量从<span class="math inline">\(n=min+1\)</span>到<span class="math inline">\(n=max+1\)</span>不断增加，图像中的地形会被水漫过。在水位漫过地形的过程中的每一阶段，算法都需要知道处在水位之下的点的数目。从概念上来说，假设T[n]中的坐标处在g(x,y)=n平面之下，并被“标记”为黑色，所有其他的坐标被标记为白色。然后，当我们在水位以任意增量n增加的时候，从上向下观察xy平面，会看到一幅二值图像。在图像中黑色点对应于函数中低于平面g(x,y)=n的点。这种解释对于理解下面的讨论很有帮助。 令Cn(Mi)表示汇水盆地中点的坐标的集合。这个盆地与在第n阶段被淹没的最小值有关。参考前一段的讨论，Cn(Mi)也可以被看做由下式给出的二值图像： <span class="math display">\[C-n(M_i)=C(M_i)\cap T[n]\]</span> 换句话说，如果(x，y)∈Cn(Mi)且(x，y)∈T[n]，则在位置(x，y)有Cn(Mi)=1。否则Cn(Mi)=0.对于这个结果几何上的解释是很简单的。我们只需在水溢出的第n个阶段使用“与(AND)”算子将T[n]中的二直图像分离出来即可。T[n]是与局部最小值Mi相联系的集合。 接下来，我们令C[n]表示在第n个阶段汇水盆地被水淹没的部分的合集： <span class="math display">\[C[n]=\bigcup_{i=1}^R C_n(M_i)\]</span> 然后令C[max+1]为所有汇水盆地的合集： <span class="math display">\[C[max+1]=\bigcup_{i=1}^RC(M_i)\]</span> 可以看出处于Cn( Mi)和T[n]中的元素在算法执行期间是不会被替换的，而且这两个集合中的元素的数目与n保持同步增长。因此，C[n-1]是集合C[n]的子集。根据式(10.5.2)和式(10.5.3)，C[n]是T[n]的子集，所以，C[n-1]是T[n]的子集。从这个结论我们得 出重要的结果：C[n-1]中的每个连通分量都恰好是T[n]的一个连通分量。 找寻分水线的算法开始时设定C[min+1]=T[min+1]。然后算法进入递归调用，假设在第n步时，已经构造了C[n-1]。根据C[n-1]求得C[n]的过程如下：令Q代表T[n]中连通分量的集合。然后，对于每个连通分量q∈Q[n]，有下列3种可能性：
+<ol style="list-style-type: lower-alpha">
+<li>q∩C[n-1]为空。</li>
+<li>q∩C[n-1]包含C[n-1]中的一个连通分量。</li>
+<li>q∩C[n-1]包含C[n-1]多于一个的连通分量。 根据C[n-1]构造C[n]取决于这3个条件。当遇到一个新的最小值时符合条件(a)，则将q并人C[n-1]构成C[n]。当q位于某些局部最小值构成的汇水盆地中时，符合条件(b)，此时将q合并入C[n-1]构成C[n]。当遇到全部或部分分离两个或更多汇水盆地的山脊线的时候，符合条件(c)。进一步的注水会导致不同盆地的水聚合在一起，从而使水位趋于一致。因此，必须在q内建立一座水坝(如果涉及多个盆地就要建立多座水坝)以阻止盆地内的水溢出。正如前一节中的解释，当用3×3个1的结构元素膨胀q∩C[n-1]并且需要将这种膨胀限制在q内时，一条一个像素宽度的水坝是能够构造出来的。 通过使用与g(x,y)中存在的灰度级值相对应的n值，可以改善算法效率；根据g(x，y)的直方图，可以确定这些值及其最小值和最大值。 例10.18 分水岭分割算法的说明 分别考虑图10.46(a)和(b)中显示的图像和它的梯度。应用刚才讨论的分水岭算法得到图10.46(c)中显示的梯度图像的分水线(白色路径)。这些分割的边界叠加在原图上示于图10.46(d)。如在本节中开始时所注意到的，分割边界具有那些被连接起来的路径的重要性质。
+<p align="center">
+<img src="http://image.sciencenet.cn/album/201206/04/165900ijopjdjpy153ppd2.jpg" width="500" >
+</p></li>
+</ol></li>
+<li><span style="color:red"><strong><em>标记的使用</em></strong></span> 直接以前一节中讨论的形式使用分水岭分割算法通常会由于噪声和其他诸如梯度的局部不规则性的影响造成过度分割。如图10.47所示，过度分割足以令应用算法得到的结果变得毫无用处。此时，过度分割意味着分割区域过多。一个较实际的解决方案是通过合并预处理步骤来限制允许存在的区域的数目，这些预处理步骤是为将附加知识应用于分割过程而设置的。 用于控制过度分割的方法是以标记的概念为基础的。一个标记是属于一幅图像的连通分量。我们有与重要对象相联系的内部标记，还有同背景相联系的外部标记。选择标记的典型过程包括两个主要步骤：(1)预处理；(2)定义一个所有标记必须满足的准则集合。为了对此进行说明，再次考虑图10.47(a)。导致图10.47(b)中过度分割结果的一部分原因是大量隐含的最小值。由于这些区域的尺寸很小，所以这些最小值中有很多是不相关的细节。在前面的讨论中，已经不止一次地提到，将很小的细节对于图像的影响降至最低的有效 方法是用一个平滑滤渡器对图像进行过滤。在这种特殊情况下，这是一种合适的预处理方案。
+<p align="center">
+<img src="http://image.sciencenet.cn/album/201206/04/165900ntndaptccn46s6cn.jpg" width="500" >
+</p>
+假设在此时将内部标记定义为(1)被更高“海拔”点包围起来的区域；(2)区域中的点组成一个连通分量；并且(3)所有属于这个连通分量的点具有相同的灰度级值。在图像经过平滑处理之后，满足这些定义的内部标记以图10.48(a)中浅灰色、斑点状区域表示。下一步，对平滑处理后的图像使用分水岭算法，并限制这些内部标记只能是允许的局部最小值。图l0.48(a)显示了得到的分水线。将这些分水线定义为外部标记。注意，沿着分水线的点是很好的背景候选点。因为它们经过相邻的标记之间的最高点。
+<p align="center">
+<img src="http://image.sciencenet.cn/album/201206/04/165900k43rb9mkbmrt53ot.jpg" width="500" >
+</p>
+图10.48(a)中显示的外部标记有效地将图像分割成不同区域。每个区域包含一个惟一的内部标记和部分背景。问题是因此变为将每个这样的区域一分为二：单一的对象和它的背景。我们对这个简单的问题能够应用多种在本章前面讨论过的分割技术。另一种简单的方法是对每个单独的区域使用分水岭分割算法。就是说，我们只求得平滑后的图像的梯度[如图10.46(b)]，然后约束算法只对包含特定区域中标记的分水岭进行操作。使用这种方法得到的结果显示于图10.48(b)中。相对于图10.47(b)的改善之处是显而易见的。 标记的选择可以用基于灰度级值和连通性的简单的过程分类，如刚才所说明的那样，更复杂的描述涉及尺寸、形状、位置、相对距离、纹理内容等等(见第11章关于描绘子的部分)。关键是标记的使用给我们带来关于分割问题的某种带有先验性质的知识。应该提醒读者注意的是：人类经常以先验知识用日常的视觉辅助，进行各种分割和更高级的工作，最熟悉的例子就是在阅读上下文时所用到的方法。因此，分水岭分割方法提出了一种能有效使用这类知识的机制。这是这种方法的一个突出优点。 ### <span style="color:red"><strong><em>分割中运动的应用</em></strong></span></li>
+<li><span style="color:red"><strong><em>空间域技术</em></strong></span></li>
+<li><p><span style="color:red"><strong><em>频率域技术</em></strong></span></p></li>
+</ol>
+<p><span style="color:red"><strong>Reference:</strong></span> / <a href="http://blog.csdn.net/wangyaninglm/article/details/44151213">基于GraphCuts图割算法的图像分割----OpenCV代码与实现</a> / <a href="http://blog.sina.com.cn/s/blog_627e716701016h6e.html">第9章--图像局部与分割----opencv平均背景法</a> / <a href="http://www.cnblogs.com/tornadomeet/archive/2012/06/06/2538695.html">图像分割学习笔记_1(opencv自带meanshift分割例子)</a> / <a href="http://westice.iteye.com/blog/652787">OpenCV人脸跟踪canny边缘检测</a> / <a href="http://www.cnblogs.com/ronny/p/4001910.html">边缘检测</a> / <a href="http://blog.csdn.net/xiaowei_cqu/article/details/7829481">边缘检测：Sobel、拉普拉斯算子</a> / <a href="http://blog.csdn.net/morewindows/article/details/8239625">Canny边缘检测</a> / <a href="http://www.opencv.org.cn/forum.php?mod=viewthread&amp;tid=11847">Canny边缘连接</a> / <a href="http://blog.csdn.net/gujiuxiang/article/details/46294031">Edge detect</a> / <a href="http://blog.csdn.net/poem_qianmo/article/details/26977557">OpenCV霍夫变换：霍夫线变换，霍夫圆变换合辑</a> / <a href="http://blog.csdn.net/crzy_sparrow/article/details/7358084">Opencv学习笔记（四）霍夫变换</a> / <a href="http://blog.csdn.net/stellar0/article/details/8754802">Temple大学 Haibin Ling 汇总的一些数据和程序</a> / <a href="http://download.csdn.net/detail/peterlee1983/2052247">opencv使用snake活动轮廓，人机交互的</a> / <a href="http://www.61ic.com/code/viewthread.php?tid=611232">该程序利用opencv实现了活动轮廓的检测，检测效果很精确</a> / <a href="http://blog.csdn.net/superdont/article/details/6661450">OpenCV学习笔记-图像分割</a> / <a href="http://blog.sina.com.cn/s/blog_4bdbec750100t6u8.html">金子塔分割图像及cvPyrSegmentation</a> / <a href="http://www.code06.com/other/u012269327/85331.html">opencv2对读书笔记——使用均值漂移算法查找物体</a> / <a href="http://blog.csdn.net/celerychen2009/article/details/8839096">数字图像偏色检测及其校正快速实现</a></p>
+</body>
+</html>

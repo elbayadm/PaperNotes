@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="learning-simpler-language-models-with-the-delta-recurrent-neural-network-framework"><a href="https://128.84.21.199/pdf/1703.08864.pdf">Learning Simpler Language Models with the Delta Recurrent Neural Network Framework</a></h1>
+<p>The Delta-RNN models maintain longer-term memory by learning to interpolate between a fast-changing data-driven representation and a slowly changing, implicitly stable state.</p>
+<div>
+<!-- htmlmin:ignore -->
+<div class="mermaid">
+graph LR;
+    style H_t_perv fill:#f9f,stroke:#333,stroke-width:4px;
+    style IN_word fill:#f9f,stroke:#333,stroke-width:4px;
+    style H_t_out fill:#f9f,stroke:#333,stroke-width:4px;
+    style Next_wp fill:#f9f,stroke:#333,stroke-width:4px;
+
+    H_t_perv[hidden t-1]==&gt;Gate_a[Gate gamma];
+    IN_word[Current input word]==&gt;G_theta
+    H_t_perv==&gt;G_theta
+    G_theta==&gt;Gate_b[Gate beta];G_theta-.-&gt;Gate_b;G_theta-.-&gt;Gate_a
+    Gate_a==&gt;H_t_out[Hidden t];
+    Gate_b==&gt;H_t_out;H_t_out==&gt;Next_wp[Next word]
+</div>
+<!-- htmlmin:ignore -->
+</div>
+<ul>
+<li><span class="math inline">\(g_{\theta}\)</span> function maps the previous hidden state and the currently encountered data point (e.g. a word, subword, or character token) to a real-valued vector of fixed dimensions using parameters;</li>
+</ul>
+</body>
+</html>

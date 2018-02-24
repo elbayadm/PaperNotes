@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h1 id="delving-deeper-into-convolutional-networks-for-learning-video-representations"><a href="https://arxiv.org/abs/1511.06432">Delving Deeper into Convolutional Networks for Learning Video Representations</a></h1>
+<h2 id="motivation">Motivation</h2>
+<p>Previous works on Recurrent CNNs has tended to focus on high-level features extracted from the 2D CNN top-layers. High-level features contain highly discriminative information, they tend to have a low-spatial resolution. Thus, we argue that current RCN architectures are not well suited for capturing fine motion information. Instead, they are more likely focus on global appearance changes.</p>
+<p>Low-level features, on the other hand, preserve a higher spatial resolution from which we can model finer motion patterns. However, applying an RNN directly on intermediate convolutional maps, inevitably results in a drastic number of parameters characterizing the input-to-hidden transformation due to the convolutional maps size. On the other hand, convolutional maps preserve the frame spatial topology. To leverage these, we extend the GRU model and replace the fc RNN linear product operation with a convolution. Our GRU extension therefore encodes the locality and temporal smoothness prior of videos directly in the model structure. Thus, all neurons in the CNN are recurrent.</p>
+<h2 id="architecture">Architecture</h2>
+<p>See Fig. 19.10. The inputs are RGB and flow representations of videos. Networks are pre-trained on ImageNet. We apply average pooling on the hidden-representations of the last time-step to reduce their spatial dimension to 1 × 1, and feed the representations to 5 classifiers, composed by a linear layer with a softmax nonlineary. The classifier outputs are then averaged to get the final decision.</p>
+</body>
+</html>

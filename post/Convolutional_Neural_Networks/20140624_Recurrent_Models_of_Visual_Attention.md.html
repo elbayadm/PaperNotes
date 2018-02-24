@@ -1,0 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="recurrent-models-of-visual-attention"><a href="http://arxiv.org/abs/1406.6247">Recurrent Models of Visual Attention</a></h2>
+<p>TLDR; The authors train a RNN that takes as input a glimpse (<strong><em>part of the image subsamples to same size</em></strong>) and outputs a <strong><em>new glimpse and action (prediction, agent move) at each step</em></strong>. Thus, the model adaptively selects <strong><em>which part of an image</em></strong> to &quot;<strong><em>attend</em></strong>&quot; to. By defining the number of glimpses and their reoslutions we can control the complexity of the model independently of image size, which is not true for CNNs. The model is <strong><em>not differentiable</em></strong>, but can be trained using <strong><em>Reinforcement Learning techniques</em></strong>. The authors evaluate the model on the MNIST dataset, a cluttered version of MNIST, and a dynamic video game environment.</p>
+<h4 id="questions-notes"><strong><em>Questions / Notes</em></strong></h4>
+<ul>
+<li>I think the the author's claim that the model works independently of image size is only partly true, as larger images are likely to require more glimpses or bigger regions.</li>
+<li>Would be nice to see some large-scale benchmarks as MNIST is very simple tasks. However, the authors clearly identify this as future work.</li>
+<li>No mentions about training time. Is it even feasible to train this for large images (which probably require more glimpses)?</li>
+</ul>
+</body>
+</html>

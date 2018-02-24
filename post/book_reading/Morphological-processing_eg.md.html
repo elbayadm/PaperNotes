@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="形态学操作例子"><span style="color:red"><strong><em>形态学操作例子</em></strong></span></h2>
+<h3 id="联合union"><span style="color:red"><strong><em>联合(Union)</em></strong></span></h3>
+<p><span class="math inline">\(C=A\cup B\)</span></p>
+<h3 id="交集intersection"><span style="color:red"><strong><em>交集(Intersection)</em></strong></span></h3>
+<p><span class="math inline">\(D=A\cap B\)</span></p>
+<h3 id="补集complement"><span style="color:red"><strong><em>补集(Complement)</em></strong></span></h3>
+<p><span class="math inline">\(A^c=\{w|w\notin A\}\)</span> 例子：设有一幅图象X，所有X<span style="color:red"><strong><em>区域以外的点构成的集合称为X的补集</em></strong></span>，记作<span class="math inline">\(X^c\)</span>，如图所示。显然，如果<span class="math inline">\(B\cap X=\emptyset\)</span>，则B在X的补集内，即<span class="math inline">\(B= X^c\)</span>.</p>
+<p align="center">
+<img src="http://hi.csdn.net/attachment/201105/3/0_130441307955O5.gif" width="300" >
+</p>
+<h3 id="平移complement"><span style="color:red"><strong><em>平移(Complement)</em></strong></span></h3>
+<p>设有一幅图象<span class="math inline">\(B\)</span>，有一个点<span class="math inline">\(a(x_0,y_0)\)</span>，将<span class="math inline">\(B\)</span>平移<span class="math inline">\(a\)</span>后的结果是，把<span class="math inline">\(B\)</span>中所有元素的横坐标加<span class="math inline">\(x_0\)</span>，纵坐标加<span class="math inline">\(y_0\)</span>，即令<span class="math inline">\((x,y)\)</span>变成<span class="math inline">\((x+x_0,y+y_0)\)</span>，所有这些点构成的新的集合称为<span class="math inline">\(B\)</span>的平移，记作<span class="math inline">\(B+a\)</span>.</p>
+一般的，<span style="color:red"><strong><em>平移操作表示为：<span class="math inline">\((A)_z=\{c|c=a+z,a\in A\}\)</span></em></strong></span>
+<p align="center">
+<img src="http://hi.csdn.net/attachment/201105/3/0_1304413147EH82.gif" width="300" >
+</p>
+<h3 id="对称refelction"><span style="color:red"><strong><em>对称(Refelction)</em></strong></span></h3>
+<p><span class="math inline">\(\hat{B}=\{w|w=-b,b\in B\}\)</span> 设有一幅图象B，将B中所有元素的坐标取反，即令<span class="math inline">\((x,y)\)</span>变成<span class="math inline">\((-x,-y)\)</span>，所有这些点构成的新的集合称为B的对称集，记作<span class="math inline">\(\hat{B}\)</span>.</p>
+<h3 id="膨胀dilaton"><span style="color:red"><strong><em>膨胀(Dilaton)</em></strong></span></h3>
+<p>膨胀是将<span style="color:red"><strong><em>与物体接触的所有背景点合并到该物体中，使边界向外部扩张的过程</em></strong></span>。可以用来填补物体中的空洞。一般意义的膨胀概念定义为:</p>
+<p><span class="math inline">\(A\oplus B=\begin{cases}\{z|[(\hat{B})_z \cap A] \ne \emptyset \}\\ \{z|[(\hat{B})_z \cap A] \subseteq A\} \end{cases}\)</span></p>
+<p>也就是说，由B对X膨胀所产生的二值图象D是<span style="color:blue"><strong><em>满足以下条件的点(x,y)的集合</em></strong></span>：<span style="color:red"><strong><em>如果B的原点平移到点(x,y)，那么它与X的交集非空。</em></strong></span></p>
+<p>膨胀有对偶关系：<span class="math inline">\(\begin{cases}(A\oplus B)^c = (A\ominus^c B)\\ (A\ominus B)^c = (A\oplus^c B) \end{cases}\)</span></p>
+<h3 id="腐蚀erosion"><span style="color:red"><strong><em>腐蚀(Erosion)</em></strong></span></h3>
+<p>腐蚀是一种消除边界点，使边界向内部收缩的过程。可以用来消除小且无意义的物体。一般意义的腐蚀概念定义为 <span class="math inline">\(A\ominus B=\{z|(B)_z\subseteq A\}\)</span> 也就是说，由B对X腐蚀所产生的二值图象E是<span style="color:blue"><strong><em>满足以下条件的点(x,y)的集合</em></strong></span>：<span style="color:red"><strong><em>如果<span class="math inline">\(B\)</span>的原点平移到点<span class="math inline">\((x,y)\)</span>，那么B将完全包含于<span class="math inline">\(A\)</span>中</em></strong></span>。</p>
+<p align="center">
+<img src="http://img.blog.csdn.net/20140414224842203?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcG9lbV9xaWFubW8=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" width="300" >
+</p>
+<h3 id="开运算opening"><span style="color:red"><strong><em>开运算(Opening)</em></strong></span></h3>
+<p>先<span style="color:red"><strong><em>腐蚀</em></strong></span>后<span style="color:red"><strong><em>膨胀</em></strong></span>的过程称为开运算。用来<span style="color:red"><strong><em>消除小物体、在纤细点处分离物体、平滑较大物体的边界的同时并不明显改变其面积</em></strong></span>。</p>
+<span class="math inline">\(A \circ B=\begin{cases}(A\ominus B)\oplus B \\ \cap \{(B)_z|(B)_z\subseteq A\} \end{cases}\)</span>
+<p align="center">
+<img src="http://lanbing510.info/public/img/posts/morphology/image03.jpg" width="300" >
+</p>
+<h3 id="闭运算closing"><span style="color:red"><strong><em>闭运算(Closing)</em></strong></span></h3>
+<p>先<span style="color:red"><strong><em>膨胀</em></strong></span>，后<span style="color:red"><strong><em>腐蚀</em></strong></span>，用来<span style="color:red"><strong><em>填充物体内细小空洞、连接邻近物体</em></strong></span>、平滑其边界的同时并不明显改变其面积。 通常，由于噪声的影响，图象在阈值化后所得到边界往往是很不平滑的，物体区域具有一些噪声孔，背景区域上散布着一些小的噪声物体。连续的开和闭运算可以有效地改善这种情况。有时需要经过多次腐蚀之后再加上相同次数的膨胀，才可以产生比较好的效果。</p>
+<p><span class="math inline">\(A\bullet B=(A\oplus B)\ominus B\)</span></p>
+<h3 id="边缘检测boundary-extraction"><span style="color:red"><strong><em>边缘检测(Boundary extraction)</em></strong></span></h3>
+<p><span class="math inline">\(\beta(A)=A-(A\ominus B)\)</span></p>
+<p>从表达式看出，形态学的边缘检测是：<span style="color:red"><strong><em>首先对图像进行腐蚀，然后用原图像减去腐蚀的图像</em></strong></span>．</p>
+<p>例子：<span style="color:red"><strong><em>下图是一个<span class="math inline">\(C=A-(A\ominus B)\)</span>的边缘检测形态学操作</em></strong></span>．</p>
+<p align="center">
+<img src="/home/jxgu/Dropbox/blog/github.io/2015-05-20-Digital-Image-Processing/morphological.jpg" width="800" >
+</p>
+<h3 id="区域填充region-filling"><span style="color:red"><strong><em>区域填充(Region Filling)</em></strong></span></h3>
+<p>区域填充以集合的<span style="color:red"><strong><em>膨胀、求补和交集为基础</em></strong></span>。</p>
+<p>区域填充的目的是<span style="color:red"><strong><em>从边界内的一个点开始，用1 填充整个区域</em></strong></span>。按照惯例，所有非边界点标记为0，则以将1 赋给 p 开始。</p>
+<p><span class="math inline">\(A^F=X_k\cup A, \ X_k=(X_{k-1}\oplus B)\cap A^c\)</span></p>
+<h3 id="去噪声denosing"><span style="color:red"><strong><em>去噪声(Denosing)</em></strong></span></h3>
+<p><span class="math inline">\(\begin{cases}(A\circ B) \bullet B\\ (A\bullet B) \circ B \end{cases}\)</span></p>
+</body>
+</html>

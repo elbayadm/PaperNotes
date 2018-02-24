@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="deep-networks-with-stochastic-depth"><a href="http://arxiv.org/abs/1603.09382">Deep Networks with Stochastic Depth</a></h2>
+<p>TLDR; The authors randomly drop out complete layers during training using a modified ResNet architecture. The dropout probability hyperparameter decreases linearly (higher layers have a higher chance to be dropped) ending at 0.5 at the final layer in the experiments. This mechanisms helps vanishing gradients, diminishing feature reuse, and long training time. The model achieves new records on the CIFAR-10, CIFAR-100 and SVHN dataset.</p>
+<h4 id="key-points">Key Points:</h4>
+<ul>
+<li>Can easily modify ResNet architecture to dropout out whole layer by only keeping the identity skip connection</li>
+<li>Lower layers get lower probability of being dropped since they intuitively contain more &quot;stable&quot; features. Authors use linear decay with final value 0.5.</li>
+<li>Training time reduces by 25% - 50% depending on dropout probability hyperparameter</li>
+<li>Authors find that vanishing gradients are indeed reduces by plotting the gradient magnitudes vs. number of epochs</li>
+<li>Can be interpreted as an ensemble of networks with varying depth</li>
+<li>All layers are used during test time and need to scale activations appropriately</li>
+<li>Authors successfully train network with 1000+ layers and achieve further error reduction</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="sequence-to-sequence-video-to-textcode"><a href="https://www.cs.utexas.edu/~vsub/">Sequence to Sequence – Video to Text</a>/<a href="http://vsubhashini.github.io/s2vt.html#code">Code</a></h2>
+<p>This paper propose a End-to-end sequence-to-sequence model to generate captions for videos.<br/> Two level LSTMs that learn a representation of a sequence of frames in order to decode it into a sentence that describes the event in the video. <strong>The top LSTM</strong> layer models visual feature inputs. <strong>The second LSTM</strong> layer models language given the text input and the hidden representation of the video sequence. <span class="math inline">\(\&lt; BOS\&gt;\)</span>(Begin-of-sentence) and <span class="math inline">\(\&lt;EOS\&gt;\)</span>(end-of-sentence), and Zeros are used as a <span class="math inline">\(\&lt;pad\&gt;\)</span> when there is no input at the time step.<br/></p>
+<p><strong>Training</strong>: Using SGD to optimize the log-likelihood function</p>
+<p><span class="math display">\[
+\theta^* = \arg\max_{\theta} \sum_{t=1}^m \log p(y_t| h_{n+t-1},y_{t-1};\theta)
+\]</span></p>
+<p>Video and text representation : <strong>RGB frames</strong> + <strong>Optical Flow</strong></p>
+<p>The score of each new word</p>
+<p><span class="math display">\[
+p(y_t=y&#39;) = \alpha . p_{rgb}(y_t=t&#39;)+(1-\alpha).p_{flow}(y_t = y&#39;)
+\]</span></p>
+<p>where the conditional probability of an output sequence <span class="math display">\[(y_1,...,y_m|x_1,...,x_n) = \prod_{t=1}^m p(y_t|h_{n+t-1},y_{n-1})\]</span>, <span class="math display">\[p(y_t|h_{n+t})\]</span> is given by softmax over all the words in the vacabulary.</p>
+<p><span class="math display">\[
+p(y|z_t)=\frac{e^{W_y z_t}}{\sum_{y\\in V}e^{W_{y^,}z_t}}
+\]</span></p>
+</body>
+</html>

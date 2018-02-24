@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="bing-binarized-normed-gradients-for-objectness-estimation-at-300fps"><a href="">BING: Binarized Normed Gradients for Objectness Estimation at 300fps</a></h2>
+<p>CVPR2014的ORAL 对应项目主页：http://mmcheng.net/bing/</p>
+<h2 id="核心贡献"><strong><em>核心贡献</em></strong></h2>
+<p>一句话概括：<strong><em>BING是一种objectness特征，可以用它来做object proposal，来加速直接用滑动窗口来做detection的速度</em></strong>。</p>
+<p><strong><em>解释</em></strong>：传统DPM方法是训练<strong><em>detector</em></strong>，然后做<strong><em>滑动窗口</em></strong>进行搜索，缺点自然是<strong><em>非常慢</em></strong>。一个自然的提速思想就是<strong><em>减少图片的分辨率</em></strong>，但这样子明显会带来识别效果的下降。</p>
+<p>但我们可以这样考虑：<strong><em>在低像素的条件下，导致我们分不清这是什么物体，但是我们依然可以分辨<a href="">这是不是一个物体</a></em></strong>。也就是，认为<strong><em>objectness（objects are stand-alone things with well-defined closed boundaries ans centers）</em></strong>在低像素下依然能够保持。于是作者提出了用一个8*8的梯度级数窗口就能够很好地进行objectness判断。</p>
+<p>所以，其实这依然是一种<strong><em>滑动窗口技术</em></strong>，不过它不是在原图上做滑动窗口，而是先将原图缩放到 一个小的尺寸（10~320共36个scale），然后在上面做滑动窗口，得到每个窗口的objectness分数，然后排序得到<strong><em>1k左右的proposal</em></strong>。（如果直接在原图上做滑动窗口，大概需要500k个窗口）。</p>
+<h2 id="模型"><strong><em>模型</em></strong></h2>
+<p>公式： <span class="math display">\[
+\begin{cases}
+{s}_{l}=\langle{w},{g}_{l}\rangle \\
+l = (i,x,y)
+\end{cases}
+\]</span></p>
+<p>其中<span class="math inline">\(i\)</span>是scale的编号，共36个scale</p>
+<ul>
+<li><span class="math inline">\(l\)</span>是第<span class="math inline">\(i\)</span>个scale下位置在<span class="math inline">\((x,y)\)</span>下的窗口</li>
+<li><span class="math inline">\(g_l\)</span>就是对应位置的特征矩阵了（这里取梯度的级数为特征）</li>
+<li><span class="math inline">\(s_l\)</span>为该窗口的得分，就是等于<span class="math inline">\(w\)</span>和<span class="math inline">\(g_l\)</span>的内积（这里<span class="math inline">\((a,b)\)</span>表示内积</li>
+</ul>
+<p>另外还认为<strong><em>不同scale下objectness的标准应该是不一样的</em></strong>，于是加入<strong><em>校准项</em></strong>：</p>
+<p><span class="math display">\[
+{o}_{l}={v}_{i}\cdot{s}_{l}+{t}_{i}
+\]</span></p>
+<p>最后的<span class="math inline">\(o_l\)</span>看成是<strong><em>该窗口最后的objectness得分</em></strong>。最后就是根据这个得分进行排序来得到前k个proposal的。</p>
+<h2 id="特征"><strong><em>特征</em></strong></h2>
+<p>用的<strong><em>梯度级数（NG）</em></strong>，很简单的算子,计算方法是：$min(|{g}<em>{x}|+|{g}</em>{y}|,255) $</p>
+<p>为了进一步加速运算，使用了<strong><em>其二进制的估计值，称为BING</em></strong>。</p>
+<p>首先对模型<span class="math inline">\(w\)</span>进行二进制估计，算法是：</p>
+<p align="center">
+<img src="http://i.imgur.com/XcOaQJE.png" width="500" >
+</p>
+<p>大概意思是:</p>
+<ul>
+<li>用符号函数计算目前<span class="math inline">\(w\)</span>大致的方向<span class="math inline">\(a_j\)</span></li>
+<li>将<span class="math inline">\(w\)</span>投影到<span class="math inline">\(\alpha_j\)</span>上，投影的长度是<span class="math inline">\(\beta_j\)</span></li>
+<li>从<span class="math inline">\(w\)</span>中减去这个投影<span class="math inline">\(\beta_j\alpha_j\)</span></li>
+<li>重复上述过程，共收集<span class="math inline">\(N_w\)</span>个投影，用这些投影来近似表示<span class="math inline">\(w\)</span></li>
+</ul>
+<p>之后，能够进一步将每个<span class="math inline">\(a_j\)</span>表示成:${a}^{+}<em>{j}- ^{+}</em>{j} $</p>
+<p>然后对于每个图片的NG，也就是<span class="math inline">\(g_l\)</span>，也用二进制来近似：<span class="math inline">\(\mathbf{g}_l=\sum_{k=1}^{N_g}2^{8-k}\mathbf{b}_{k,l}\)</span></p>
+<p>从本质上，可以简单理解为<strong><em>将<span class="math inline">\(g_l\)</span>二进制化后，取其最高的<span class="math inline">\(N_g\)</span>位</em></strong>，也就是在量化时候减少了级数。</p>
+然后，作者还提出了一种方法，来快速读取NG特征：
+<p align="center">
+<img src="http://i.imgur.com/3dE6XDp.png" width="500" >
+</p>
+<p>大致思想是，如果不进行优化，那么对于每个BING特征我们需要读取64个位置，但其实对于相邻的位置来说，他们的BING特征大部分是共享的，我们不需要每次都重新读取64个位置。 更具体的操作，忘了的话，看回原文。</p>
+<h2 id="实验结果"><strong><em>实验结果</em></strong></h2>
+<p>在VOC2007上面做的，简单来说，效果最好，<strong><em>然后速度是selective search的3700倍</em></strong>。而且有不错的泛化性能——在6个类上面做train，另外14类做test，最后效果差不多。</p>
+<p>下载源码：http://mmcheng.net/bing/ 数据集也能在对应的网页上下到：http://mmcheng.net/bingreadme/ 运行了下源代码，需要：</p>
+<ul>
+<li>vs2012环境</li>
+<li>x64 release模式</li>
+<li>配置好opencv</li>
+<li>项目属性–C/C++–代码生成–启用增强指令集设为”/arch:SSE2″</li>
+</ul>
+</body>
+</html>

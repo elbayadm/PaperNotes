@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="数字图像处理--目标识别"><span style="color:red"><strong><em>数字图像处理--目标识别</em></strong></span></h2>
+<h3 id="模式和模式类"><span style="color:red"><strong><em>模式和模式类</em></strong></span></h3>
+<p>模式：描绘子组合，即特征。<span class="math inline">\(x = (x_1,x_2,...x_n)^T\)</span>.</p>
+<ul>
+<li>模式类：共享某些属性的模式族</li>
+<li>常见模式组合: 向量、串和树</li>
+<li>类型可分离的程度的高低很大程度上取决于应用的描绘子的选择</li>
+</ul>
+<p>两大模式识别方法领域：决策理论和结构方法 ### <span style="color:red"><strong><em>基于决策理论方法的识别</em></strong></span> 决策理论方法识别以使用决策（或判别）函数为基础．令<span class="math inline">\(x=(x_1,x_2,...,x_n)^T\)</span>表示一个n维模式向量，对于Ｗ个模式类<span class="math inline">\(w_1,w_2,...,w_W\)</span>，决策理论模式识别的基本问题是依据如下属性来找打Ｗ个决策函数<span class="math inline">\(d_1(x),d_2(x),...,d_w(x)\)</span>，如果模式x属于<span class="math inline">\(w_i\)</span>，则：<span class="math display">\[d_i(x)&gt;d_j(x),j=1,2,..,W,j\ne i\]</span> 换句话，将x代入所有决策树后，如果<span class="math inline">\(d_i(x)\)</span>得到最大值，则称未知模式x属于第i个模式类．该关系可以任意求解． 从类<span class="math inline">\(w_j\)</span>中分离出类<span class="math inline">\(w_i\)</span>的决策边界，由满足<span class="math inline">\(d_i(x)=d_j(x)\)</span>的x值给出，或等价地由<span class="math inline">\(d_i(x)-d_j(x)=0\)</span>的x值给出．</p>
+<p>通常做法是，使用单一函数<span class="math inline">\(d_{ij}(x)=d_i(x)-d_j(x)=0\)</span>来识别两类之间的决策边界．因此，对于模式类<span class="math inline">\(w_i\)</span>有<span class="math inline">\(d_{ij}(x)&gt;0\)</span>.而对于模式<span class="math inline">\(w_j\)</span>有<span class="math inline">\(d_{ij}(x)&lt;0\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>匹配</em></strong></span>
+<ol style="list-style-type: decimal">
+<li>最小距离分类器 使用原型模式向量表示每个类
+<ul>
+<li>计算未知量和每个原型向量间的距离，选择其中最小距离来决策，距离用欧式距离接近。 最小距离分离器</li>
+<li>每个模式类的原型定义为该类模式的平均向量</li>
+<li>将未知模式向量分配给与它最接近的原型类 实际上，当均值间的距离与每个类的分散度或者随机性相比较大时，它工作的很好。</li>
+</ul></li>
+<li>相关匹配 f(x,y) 和w(x,y)相关定义如下： 当c(x,y)最大时，在f中找到与w（待匹配对象）最匹配的部分。 实际中，归一化相关系数更好用，其取值范围在【-1,1】内，1表示匹配。</li>
+</ol></li>
+<li><span style="color:red"><strong><em>最佳统计分类器</em></strong></span> 经由公式推导出的贝叶斯分类器，需要假设对各种密度函数有一个解析表达式，且来自每个类的样本模式有一个必须的参数估计，最通用的假设形式是高斯概率密度函数，这种假设越是与真实近似，就越是接近最小平均损失。</li>
+<li><span style="color:red"><strong><em>神经网络</em></strong></span> 实际上，模式类中的统计参数通常是未知的，或者是无法估计的，所以最佳统计分类器，匹配等决策理论判别不在使用。此类决策理论问题最好直接由训练生产所需决策函数的方法来处理。然后就没有必要再做关于基本的概率密度函数或者关于所考虑模式类的其他概率信息的假设。通过神经网络工具，对模式的训练集的逐次描述，自适应的到处判别函数的系数。 由于事先不知道神经网络中的层数，通常确定第一层和输出层，中间层由试验确定，然后追踪该网络误差以及各个模式相关联的误差。在成功的训练会话中，网络误差会随迭代次数的增加而减小，并且该过程会收敛到一个稳定的权重集合，对于附加的训练，这些权重仅表现为较小的波动。</li>
+</ol>
+<h3 id="结构方法"><span style="color:red"><strong><em>结构方法</em></strong></span></h3>
+<p>主要是根据有精确模式描绘子的结构关系，实现模式识别，例如匹配形状数，即在边界的形状数上有相似度。另外，边界的串描绘子，也可以做匹配。对于这种类型的匹配，都有一种解析表达式，讨论其匹配程度。</p>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>匹配形状数</em></strong></span></li>
+<li><span style="color:red"><strong><em>串匹配</em></strong></span></li>
+</ol>
+<p><span style="color:red"><strong>Reference:</strong></span> <a href="http://www.opencv.org.cn/opencvdoc/2.3.2/html/doc/tutorials/imgproc/imgtrans/remap/remap.html">Remapping 重映射</a> / <a href="http://journal.sitp.ac.cn/hwyhmb/hwyhmbcn/ch/reader/create_pdf.aspx?file_no=20050227">各向异性滤波在红外图像处理中的应用</a> / <a href="http://www.ece.rice.edu/~wakin/images/">Standard Test Images</a> / <a href="http://blog.sina.com.cn/s/blog_6949fede0101frv4.html">opencv特征提取</a> / <a href="http://blog.csdn.net/jinshengtao/article/details/44814297">《Master Opencv...读书笔记》非刚性人脸跟踪 IV (终)</a> / <a href="http://blog.sciencenet.cn/blog-261330-810158.html">目标检测（Object Detection）原理与实现(四)~(六)</a></p>
+<h2 id="detection"><span style="color:red"><strong><em>Detection</em></strong></span></h2>
+<h3 id="face-detection"><span style="color:red"><strong><em>Face detection</em></strong></span></h3>
+<p><span style="color:red"><strong>Reference:</strong></span> <a href="http://blog.csdn.net/wobuaishangdiao/article/details/7685000">人脸检测、跟踪与人脸识别</a> / <a href="http://blog.csdn.net/morewindows/article/details/8426318">【OpenCV入门指南】第十三篇 人脸检测</a>/<a href="http://objccn.io/issue-21-9/">基于 OpenCV 的人脸识别</a> / <a href="http://dlib.net">Dlib</a> / <a href="http://yuanhuan.blog.51cto.com/3367116/1301368">利用OpenCV进行人脸识别</a> / <a href="http://www.cnblogs.com/xltcjylove/p/3587919.html">Opencv摄像头实时人脸识别</a> / <a href="http://blog.sina.com.cn/s/blog_ad64b8200101f7tu.html">基于OpenCV的人脸识别设计方案</a> / <a href="http://wiki.opencv.org.cn/index.php/人脸检测">人脸检测</a> / <a href="http://objccn.io/issue-21-9/">基于 OpenCV 的人脸识别</a> / <a href="http://www.ics.uci.edu/~xzhu/paper/face-cvpr12.pdf">Face Detection, Pose Estimation, and Landmark Localization in the Wild</a> / <a href="http://oncemore2020.github.io/blog/hognote/">HOG/linSVM行人检测器：OpenCV实现</a> / <a href="http://www.cnblogs.com/tornadomeet/archive/2012/08/03/2621814.html">目标检测学习_1(用opencv自带hog实现行人检测)</a> / <a href="http://www.cnblogs.com/justany/archive/2012/12/03/2790548.html">OpenCV 2.4+ C++ 行人检测</a> / <a href="http://blog.csdn.net/ttransposition/article/details/11720801">OpenCV Demo ：行人检测（HOG+SVM）</a> / <a href="http://docs.opencv.org/doc/user_guide/ug_features2d.html">opencv/samples/cpp/matcher_simple.cpp:</a> / <a href="http://www.cnblogs.com/gnuhpc/archive/2012/12/07/2806971.html">LK算法特征点运动跟踪</a> / <a href="http://my.oschina.net/klttl/blog/327329">Opencv实时眼球追踪，解脱的你双手，让你的眼睛写代码！</a> / <a href="http://blog.sina.com.cn/s/blog_40884e9b0100vtiz.html">OpenCV中CamShift目标跟踪的例子记录</a> / <a href="http://www.cesclub.com/bw/jishuzhongxin/xiangmuyanfaguanli/2013/0628/64280.html">opencv里基于特点跟踪类FeatureTracker解析</a> / <a href="http://westice.iteye.com/blog/652787">《Master Opencv...读书笔记》非刚性人脸跟踪 III</a> / <a href="http://www.vjianke.com/Y69FW.clip">不要再找了，你想要的文字识别相关的东西都在这儿了，赶紧收藏了！</a> / <a href="http://www.eefocus.com/pengkinghappy/blog/14-03/302151_321a1.html">tesseract与opencv结合实现数字识别</a> / <a href="http://blog.csdn.net/zhymax/article/details/8435303">在VS2010下编译和使用tesseract_ocr识别验证码</a> / <a href="http://download.csdn.net/download/shuguangyixian_sky/6957473">采用tesseract3.02+mfc+opencv提取中文、英文、数字字符</a> / <a href="http://datathinking.net/article-88583-1.html">Opencv Python 字符识别-分类器（SVM，KNearest，RTrees，Boost，MLP）</a> / <a href="http://blog.csdn.net/yang_xian521/article/details/6927411">手势检测（基于OpenCV）</a> / <a href="http://makematics.com/code/FingerTracker/">FingerTracker</a> / <a href="https://github.com/gpsinghsandhu/Hand-Tracking-with-Kinect">This is the implementation of Hand Tracking with Kinect using OpenCV.</a> / <a href="http://delivery.acm.org/10.1145/2630000/2629637/1114CACMChinaCA1.pdf?ip=155.69.180.193&amp;id=2629637&amp;acc=OPEN&amp;key=4D4702B0C3E38B35%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35%2E7BDEF374746A56FB&amp;CFID=517149628&amp;CFTOKEN=94673229&amp;__acm__=1433515349_1084be3f87d229fd8cae07e2de9b6d82">通过标记像素 实现场景理解</a> / <a href="http://blog.sina.com.cn/s/blog_c144a0e40101c15t.html">Modeling the Appearance and Behavior of Urban Spaces</a> / <a href="http://blog.sina.com.cn/s/blog_631a4cc40101138j.html">视频中行为识别公开数据库汇总</a> / <a href="http://www.cbsr.ia.ac.cn/users/szheng/?page_id=389">步态识别数据库</a></p>
+</body>
+</html>

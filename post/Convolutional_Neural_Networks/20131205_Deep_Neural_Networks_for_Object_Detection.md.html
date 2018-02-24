@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="deep-neural-networks-for-object-detection"><a href="https://pdfs.semanticscholar.org/713f/73ce5c3013d9fb796c21b981dc6629af0bd5.pdf">Deep Neural Networks for Object Detection</a></h2>
+<p>对应网址：http://nips.cc/Conferences/2013/Program/event.php?ID=4018</p>
+<iframe id="iframe_container" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen width="550" height="400" src="https://prezi.com/embed/tick-uwumd-f/?bgcolor=ffffff&amp;lock_to_path=0&amp;autoplay=0&amp;autohide_ctrls=0&amp;landing_data=bHVZZmNaNDBIWnNjdEVENDRhZDFNZGNIUE1WeEV5OG9mcjk1ZjNLZjc3dWMrTE8vdUw1MWtTVVFPUXJINEpFZ1FQST0&amp;landing_sign=J_Yezgm2x9fNL4mZZ_ylJRb6ZSTgnGTA5FExn0N8Z1c">
+</iframe>
+<h2 id="dnn-based-detector"><strong><em>3 DNN-based Detector</em></strong></h2>
+<p align="center">
+<img src="http://i.imgur.com/vcRfHIs.png" width="600" >
+</p>
+<p>如上图，将图片分成多个网格，<strong><em>前景趋向1，背景趋向0</em></strong>。如果将每个网格看成是一种superpixel，那么其实网络做的是<strong><em>分割的问题</em></strong>。当我们得到了网络的分割后，<strong><em>前景像素其实就是物体的检测位置</em></strong>。 另外，图上标注使用的是<strong><em>DBN</em></strong>，而事实上文章使用的是AlexNet，这里应该是原作者笔误。</p>
+<h2 id="detection-as-dnn-regression">4 Detection as DNN Regression</h2>
+<p>网络的loss function如下：</p>
+<p>The network is trained by minimizing the <span class="math inline">\(L_2\)</span> error for predicting a ground truth mask <span class="math inline">\(m\in [0,1]^N\)</span> for an image <span class="math inline">\(x\)</span>: <span class="math display">\[
+\min_{\Theta}\sum_{(x,m)\in D}||(Diag(m)+\lambda I)^{1/2}(DNN(x;\Theta)-m)||_2^2
+\]</span></p>
+<p>也就是<strong><em>每个像素看成独立的二范距离</em></strong>，并且加了一个<strong><em>正则约束项Diag(m)+λI</em></strong>，目的是为了让<strong><em>网络趋向于输出前景</em></strong>（原因是一般前景像素占的都是网络的一小部分，所以如果没有正则项，那么网络会偏向于输出一个全为0的平凡解）</p>
+<p>其他细节，原图分辨率是225×225，粗网格的分辨率是24×24</p>
+<h2 id="precise-object-localization-via-dnn-generated-masks"><strong><em>5 Precise Object Localization via DNN-generated Masks</em></strong></h2>
+<p>上述方法有三个缺点：</p>
+<p><strong><em>1. 用唯一的mask</em></strong>，难以区分识别出来的前景是单个物体还是粘连的多个物体 <strong><em>2. mask分辨率远低于原图分辨率，mask的一个像素对应的是原图16</em>16的像素，带来定位不准确难以识别小物体，因为小物体激活的神经元很少，所以难以让对应的部分监测为前景像素</strong><em> </em><strong>3. 作者用了对应的三个办法来解决上述三个问题：</strong>*</p>
+<h2 id="multiple-masks-for-robust-localization"><strong><em>5.1 Multiple Masks for Robust Localization</em></strong></h2>
+<p>作者定义了五种mask={full,bottom,up,left,right}：</p>
+<p align="center">
+<img src="http://i.imgur.com/NoX8ibX.png" width="600" >
+</p>
+<p>作用：full mask无法分开物体，但如果考虑用left的mask，就能够分开两个物体了。——如果是两个孤立的物体，那么在上述五个mask中至少应该有两个是分开的。 注意，每种mask需要训练一个单独的DNN。</p>
+<p align="center">
+<p>&lt;img src=&quot;http://i.imgur.com/gcmmPVH.png</p>
+<p>上面公式想要说明的是，mask中每个网格的取值不是严格的两极0和1，而是一个0到1之间的数字，直观的物理含义就是该网格中有多少比例是前景像素</p>
+<h2 id="object-localization-from-dnn-output"><strong><em>5.2 Object Localization from DNN Output</em></strong></h2>
+<p>这里说明是如何从分割结果得到检测结果。</p>
+<p align="center">
+<img src="http://i.imgur.com/NBPj786.png" width="600" >
+</p>
+<p>公式(2)大概意思是，T(i,j)表示在位置(i,j)上DNN预测的结果（0或者1），bb表示预测的bbox，根据这两者的overlap的大小来赋予赋予一个得分。 公式(3)大概意思是，计算上面5中mask的分数，然后加起来。 然后对于公式(3)中bb如何得到，用的是滑动窗口技术+聚类：</p>
+<p align="center">
+<img src="http://i.imgur.com/03nhBDe.png" width="600" >
+</p>
+<p>最后还另外用到了AlexNet的classification网络来做进一步的验证：</p>
+<p align="center">
+<img src="http://i.imgur.com/oYY0AfT.png" width="600" >
+</p>
+<h2 id="multi-scale-refinement-of-dnn-localizer"><strong><em>5.3 Multi-scale Refinement of DNN Localizer</em></strong></h2>
+<p>两步走：（1）用滑动窗口（2）用一个循环refine</p>
+<p align="center">
+<img src="http://i.imgur.com/cewZdtb.png" width="600" >
+</p>
+<p><strong><em>4. 用滑动窗口</em></strong>：3个scale，可以看成用三个尺度分别是1×,2×,4×大小的窗口去扫描图片，步长控制在让每个窗口的overlap少于20%，总共大概需要40个滑动窗口（作者强调说这不同于滑动窗口，因为它只需要40个窗口已经很少了，- -个人觉得这就是滑动窗口没错）。最后对于每个scale的多个窗口得到的mask，取maximum（也就是，趋向于取前景像素）。最后每个scale得到5个detection结果，共有15个detection结果。</p>
+<p><strong><em>5. 循环refine</em></strong>：对于上面15个detection的结果，将bbox扩大1.2倍后从新放到网络中做测试。</p>
+<p align="center">
+<img src="http://i.imgur.com/RnzI2KO.png" width="600" >
+</p>
+<p>最后，整个测试的流程如上图所示，注意到，<a href="">本文给每个类别单独训练了一个DNN</a></p>
+<h2 id="dnn-training">6 DNN Training</h2>
+<ol style="list-style-type: decimal">
+<li>对于<strong><em>每个类别</em></strong>，都训练了两个DNN，一个用于回归上面的mask的定位模型，另外用于5.2中的验证步骤的分类模型（二分类）。</li>
+<li><strong><em>Data Augment</em></strong>：对于每个样本，根据上文滑动窗口设置的size，都crop出数千个样本，最后每类生成了10M量级的样本，60%是负样本，40%是正样本。</li>
+<li>先训练分类模型，再用分类模型去pretrain定位模型，然后fine-grained，这里fine-grained是全网络fine-grained（包括卷积层和全连接层）。</li>
+<li>最后，网络的学习率用到<strong><em>ADAGRAD的方法</em></strong>，能够<strong><em>自动估计合适的学习率</em></strong>。</li>
+</ol>
+<h2 id="experiments"><strong><em>7 Experiments</em></strong></h2>
+<p>这里开始是实验结果，就是各种state-of-the-art。具体不表。附上效果图：</p>
+<p align="center">
+<img src="http://i.imgur.com/Ae4npCG.png" width="600" >
+</p>
+</body>
+</html>

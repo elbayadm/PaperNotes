@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="attention-over-attention-neural-networks-for-reading-comprehension"><a href="https://arxiv.org/abs/1607.04423">Attention-over-Attention Neural Networks for Reading Comprehension</a></h2>
+<p>TLDR; The authors present a novel Attention-over-Attention (AoA) model for Machine Comprehension. Given a document and cloze-style question, the model predicts a single-word answer. The model,</p>
+<ol style="list-style-type: decimal">
+<li>Embeds both context and query using a bidirectional GRU</li>
+<li>Computes a pairwise matching matrix between document and query words</li>
+<li>Computes query-to-document attention values</li>
+<li>Computes document-to-que attention averages for each query word</li>
+<li>Multiplies the two attention vectors to get final attention scores for words in the document</li>
+<li>Maps attention results back into the vocabulary space</li>
+</ol>
+<p>The authors evaluate the model on the CNN News and CBTest Question Answering datasets, obtaining state-of-the-art results and beating other models including EpiReader, ASReader, etc.</p>
+<h4 id="notes">Notes:</h4>
+<ul>
+<li>Very good model visualization in the paper</li>
+<li>I like that this model is much simpler than EpiReader while also performing better</li>
+</ul>
+</body>
+</html>

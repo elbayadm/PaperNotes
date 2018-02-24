@@ -1,0 +1,338 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="gated-feedback-recurrent-networks">Gated Feedback Recurrent Networks</h1>
+<h2 id="tldr">tl;dr</h2>
+<p>Gated Feedback Recurrent Networks are a nice improvement to traditional RNNs and their popular variants, the LSTM and GRU. The architectural change is minimal, and the implementation in Tensorflow follows closely.</p>
+<h2 id="intro">Intro</h2>
+<p>Our deep learning study group dove into a detailed study of RNN architecture, focusing on LSTMs. We read the LSTM Search paper (http://arxiv.org/pdf/1503.04069.pdf), and one of our members did a <a href="https://medium.com/jim-fleming/implementing-lstm-a-search-space-odyssey-7d50c3bacf93">great job</a> of implementing the variants in Tensorflow and recreating the performance studies. Next, we read a paper on a new variant of RNNs designed to overcome the problem of sequences that operate at different time lags. The paper introduces the concept of a Gated Feedback Recurrent Neural Network, with the operative change being the additional 'feedback' connections that are themselves gated, using the same principles underlying the LSTM and GRU.</p>
+<h2 id="recurrent-neural-networks">Recurrent Neural Networks</h2>
+<p>Recurrent Neural Networks (RNNs) present a flexible API for modeling input and output sequences of arbitrary length, in contrast to n-gram models and HMMs. RNNs try to model the underlying pattern in the sequence via the hidden state, with each hidden state depends on the hidden state at the previous timestep and the input at the current timestep. The parameters at all timesteps are tied, so the weights reflect the structure across time.</p>
+<p>In a single layer definition (easily generalizable to multiple layers):</p>
+<p><span class="math display">\[
+h_t = tanh(W x_t + U h_{t - 1} + b)
+\]</span></p>
+<p><span class="math display">\[
+y_t = softmax(h_t)
+\]</span></p>
+<p>In the above equations:</p>
+<ul>
+<li><span class="math inline">\(W\)</span>, <span class="math inline">\(U\)</span> and <span class="math inline">\(b\)</span> are weights and biases for applying an affine transformation of the inputs <span class="math inline">\(x_t\)</span> and previous hidden state <span class="math inline">\(h_{t-1}\)</span></li>
+<li>The hidden state, <span class="math inline">\(h_t\)</span>, is also the output, which is run through a softmax layer to output probabilities</li>
+<li>Notice that <span class="math inline">\(W\)</span>, <span class="math inline">\(U\)</span>, and <span class="math inline">\(b\)</span> are not indexed by timestep. This is because the <strong>weights are tied, or shared, across all of time.</strong></li>
+</ul>
+<p>In very explicit Tensorflow code, we reuse symbolic variables <code>W</code>, <code>U</code>, and <code>b</code> across different timesteps, making sure they are under the same variable scope in any given layer.</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="cf">with</span> tf.variable_scope(scope <span class="op">or</span> <span class="bu">type</span>(<span class="va">self</span>).<span class="va">__name__</span>):
+    x <span class="op">=</span> inputs
+    h_t_1 <span class="op">=</span> state
+    W <span class="op">=</span> tf.get_variable(<span class="st">&quot;W&quot;</span>, [<span class="va">self</span>.input_size, <span class="va">self</span>.state_size],
+                        initializer<span class="op">=</span>tf.random_uniform_initializer(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>))
+    U <span class="op">=</span> tf.get_variable(<span class="st">&quot;U&quot;</span>, [<span class="va">self</span>.state_size, <span class="va">self</span>.state_size],
+                        initializer<span class="op">=</span>tf.random_uniform_initializer(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>))
+    b <span class="op">=</span> tf.get_variable(<span class="st">&quot;b&quot;</span>, [<span class="va">self</span>.state_size], tf.constant_initializer(<span class="fl">0.0</span>))
+    h_t <span class="op">=</span> tf.tanh(tf.matmul(x, W) <span class="op">+</span> tf.matmul(h_t_1, U) <span class="op">+</span> b)
+
+<span class="cf">return</span> h_t, h_t</code></pre></div>
+<p>The actual TF implementation further combines matrix operations for efficiency:</p>
+<p>Code:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">output <span class="op">=</span> tanh(linear([inputs, state], <span class="va">self</span>._num_units, <span class="va">True</span>))</code></pre></div>
+<p>Math: <span class="math display">\[
+h_t = tanh(W \cdot [x_t, h_{t - 1}] + b)
+\]</span></p>
+<p><code>linear</code> is the utility function that concatenates <code>inputs</code> and <code>state</code> and applies a single, larger <code>Wx + b</code>.</p>
+<p>Conceptually, RNNs apply the same function <span class="math inline">\(A\)</span> to different inputs and hidden states at every point in time. The realization can be <strong>unrolled</strong> in such a way:</p>
+<p>[[Unrolled RNN][1]][1] [1]: http://colah.github.io/posts/2015-08-Understanding-LSTMs/img/RNN-unrolled.png</p>
+<p><a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/">Source</a></p>
+<p>Sidenote: In a sense, if a neural network is like a function, a recurrent neural network is like a small program.</p>
+<p>The vanilla RNN formulation has trouble capturing long-term dependencies due to the vanishing gradient problem. In practice, backpropagation through time tends to lose information after many timesteps.</p>
+<h2 id="lstm">LSTM</h2>
+<p>The Long Short Term Memory network (LSTM), solves the vanishing gradient problem by introducing a memory cell that is updated conditionally. Influence over and from this cell is controlled by Gates; nonlinear, differentiable transformations that are governed by learnable parameters and that control the flow of data. Over the course of several epochs worth of examples, the gates learn when to open and close, letting information flow in and out of the cell accordingly. The method was <a href="http://deeplearning.cs.cmu.edu/pdfs/Hochreiter97_lstm.pdf">first introduced in 1997</a> and its variants were explored throughout the years.</p>
+<p>For a given layer, the new cell content <span class="math inline">\(c_t\)</span> is calculated as:</p>
+<p><span class="math display">\[
+c_t = f_t c_{t - 1} + i_t \tilde c_t
+\]</span></p>
+<p>It is a combination of the old cell content gated by a 'forget gate' <span class="math inline">\(f_t\)</span> and the candidate cell content gated by an 'input gate' <span class="math inline">\(i_t\)</span>.</p>
+<p>The output of the unit is equal to the new hidden state, which applies an output gate to the new cell state:</p>
+<p><span class="math display">\[
+h_t = o_t \cdot \tanh c_t
+\]</span></p>
+<p>The candidate cell content is calculated purely from the current input and previous hidden state. In other words, the old cell content is never directly leaked into it:</p>
+<p><span class="math display">\[
+\tilde c_t = \tanh (W_c x_t + U_c h_{t - 1})
+\]</span></p>
+<p>The forget gate, input gate, and output gate are all derived from the current input and previous hidden state:</p>
+<p><span class="math display">\[
+f_t = \sigma(W_f x_f + U_f h_{t - 1} + b_f)
+\]</span></p>
+<p><span class="math display">\[
+i_t = \sigma(W_i x_t + U_i h_{t - 1} + b_i)
+\]</span></p>
+<p><span class="math display">\[
+o_t = \sigma(W_o x_t + U_o h_{t - 1} + b_o)
+\]</span></p>
+<p>The gates are dot products, and learn to open and close for every component in the vector based on the internal representation of the sequence (the hidden state), which is <strong>different</strong> from the internal memory of the sequence (the cell state).</p>
+<p>Tensorflow's verbose vs optimized implementations resemble the GRU ones, described in the next section.</p>
+<h2 id="gru">GRU</h2>
+<p>A recent, drastic simplification of the LSTM is the Gated Recurrent Unit (GRU), which merges functionality of the cell and the hidden state. Studies demonstrate competitive performance, especially accounting for the reduced parameter space of the GRU for a hidden state of the same size (due to not having a separate cell state and accompanying gate parameters). A wonderful and intuitive summary can be found on this <a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/">blog post</a>.</p>
+<p>The hidden state update resembles the cell state update:</p>
+<p><span class="math display">\[
+h_t = (1 - z_t) h_{t - 1} + z_t \tilde h_t
+\]</span></p>
+<p>The update gate merges the functionality of input and forget by making one the additive inverse of the other. It's formulation is otherwise the same:</p>
+<p><span class="math display">\[
+z_t = \sigma(W_z x_t + U_z h_{t - 1} + b_z)
+\]</span></p>
+<p>However, the way a candidate is created incorporates an additional 'reset' gate:</p>
+<p><span class="math display">\[
+\tilde h_t = \tanh (W x_t + r_t \odot U h_{t - 1})
+\]</span></p>
+<p>where <span class="math inline">\(\odot\)</span> is pointwise multiplication of 2 vectors rather than a dot product.</p>
+<p>The reset gate is compute in a similar way as other gates we've seen:</p>
+<p><span class="math display">\[
+r_t = \sigma (W_r x_t + U_r h_{t - 1} + b_r)
+\]</span></p>
+<p>The reset gate controls the mix of the previous hidden state that is incorporated in the candidate hidden state.</p>
+<p>This combination of gates is a different way to accomplish what the LSTM does so well - model the beginning and end of arbitrarily long sequences.</p>
+<p>In code:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="cf">with</span> tf.variable_scope(scope <span class="op">or</span> <span class="bu">type</span>(<span class="va">self</span>).<span class="va">__name__</span>):
+    h_t_prev, _ <span class="op">=</span> tf.split(<span class="dv">1</span>, <span class="dv">2</span>, state)
+    x_t <span class="op">=</span> inputs
+    <span class="cf">with</span> tf.variable_scope(<span class="st">&quot;Update Gate&quot;</span>):
+        W_z <span class="op">=</span> tf.get_variable(<span class="st">&quot;W_z&quot;</span>, [<span class="va">self</span>.input_size, <span class="va">self</span>._num_units],
+                              initializer<span class="op">=</span>tf.random_uniform_initializer(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>))
+        U_z <span class="op">=</span> tf.get_variable(<span class="st">&quot;U_z&quot;</span>, [<span class="va">self</span>.input_size, <span class="va">self</span>._num_units],
+                              initializer<span class="op">=</span>tf.random_uniform_initializer(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>))
+        b_z <span class="op">=</span> tf.get_variable(<span class="st">&quot;b_z&quot;</span>, [<span class="va">self</span>._num_units], tf.constant_initializer(<span class="fl">0.0</span>))
+
+        z_t <span class="op">=</span> tf.sigmoid(tf.matmul(x_t, W_z) <span class="op">+</span> tf.matmul(h_t_prev, U_z) <span class="op">+</span> b_z, name<span class="op">=</span><span class="st">&quot;z_t&quot;</span>)
+
+    <span class="cf">with</span> tf.variable_scope(<span class="st">&quot;Reset Gate&quot;</span>):
+        W_r <span class="op">=</span> tf.get_variable(<span class="st">&quot;W_r&quot;</span>, [<span class="va">self</span>.input_size, <span class="va">self</span>._num_units],
+                              initializer<span class="op">=</span>tf.random_uniform_initializer(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>))
+        U_r <span class="op">=</span> tf.get_variable(<span class="st">&quot;U_r&quot;</span>, [<span class="va">self</span>.input_size, <span class="va">self</span>._num_units],
+                              initializer<span class="op">=</span>tf.random_uniform_initializer(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>))
+        b_r <span class="op">=</span> tf.get_variable(<span class="st">&quot;b_r&quot;</span>, [<span class="va">self</span>._num_units], tf.constant_initializer(<span class="fl">1.0</span>))
+
+        r_t <span class="op">=</span> tf.sigmoid(tf.matmul(x_t, W_r) <span class="op">+</span> tf.matmul(h_t_prev, U_r) <span class="op">+</span> b_r, name<span class="op">=</span><span class="st">&quot;r_t&quot;</span>)
+
+    <span class="cf">with</span> tf.variable_scope(<span class="st">&quot;Candidate&quot;</span>):
+        <span class="co"># New memory content</span>
+        W <span class="op">=</span> tf.get_variable(<span class="st">&quot;W&quot;</span>, [<span class="va">self</span>.input_size, <span class="va">self</span>._num_units],
+                            initializer<span class="op">=</span>tf.random_uniform_initializer(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>))
+        U <span class="op">=</span> tf.get_variable(<span class="st">&quot;U&quot;</span>, [<span class="va">self</span>.input_size, <span class="va">self</span>._num_units],
+                            initializer<span class="op">=</span>tf.random_uniform_initializer(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>))
+        b <span class="op">=</span> tf.get_variable(<span class="st">&quot;b&quot;</span>, [<span class="va">self</span>._num_units], tf.constant_initializer(<span class="fl">0.0</span>))
+        hc_t <span class="op">=</span> tf.tanh(tf.matmul(x_t, W) <span class="op">+</span> tf.mul(r_t, tf.matmul(h_t_prev, U) <span class="op">+</span> b))
+
+    <span class="cf">with</span> tf.Variable(<span class="st">&quot;Output&quot;</span>):
+        h_t <span class="op">=</span> tf.mul(z_t, hc_t) <span class="op">+</span> tf.mul((<span class="dv">1</span> <span class="op">-</span> z_t), h_t_prev)
+
+<span class="cf">return</span> h_t, h_t</code></pre></div>
+<p>You can construct a more compact mathematical in the same way we did above. In fact, you can also combine the gate calculations into 1 matrix multiply:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="cf">with</span> vs.variable_scope(scope <span class="op">or</span> <span class="bu">type</span>(<span class="va">self</span>).<span class="va">__name__</span>):  <span class="co"># &quot;GRUCell&quot;</span>
+    <span class="cf">with</span> vs.variable_scope(<span class="st">&quot;Gates&quot;</span>):  <span class="co"># Reset gate and update gate.</span>
+        <span class="co"># We start with bias of 1.0 to not reset and not udpate.</span>
+        r, u <span class="op">=</span> array_ops.split(<span class="dv">1</span>, <span class="dv">2</span>, linear([inputs, state],
+                                        <span class="dv">2</span> <span class="op">*</span> <span class="va">self</span>._num_units, <span class="va">True</span>, <span class="fl">1.0</span>))
+        r, u <span class="op">=</span> sigmoid(r), sigmoid(u)
+    <span class="cf">with</span> vs.variable_scope(<span class="st">&quot;Candidate&quot;</span>):
+        c <span class="op">=</span> tanh(linear([inputs, r <span class="op">*</span> state], <span class="va">self</span>._num_units, <span class="va">True</span>))
+    new_h <span class="op">=</span> u <span class="op">*</span> state <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> u) <span class="op">*</span> c
+    <span class="cf">return</span> new_h, new_h</code></pre></div>
+<p><a href="https://github.com/tensorflow/tensorflow/blob/182bc43407d24ef9d1cd44f70726a847731599d9/tensorflow/python/ops/rnn_cell.py#L144-L155">Source</a></p>
+<h2 id="gated-feedback-recurrent-networks-1">Gated Feedback Recurrent Networks</h2>
+<p>We've solved the vanishing gradient problem with gating, so we can deal with longer timescale dependencies. Past approaches involved stacking multiple layers of RNN cells, but those tended to learn abstractions rather than timescale independence. A heavily-engineered approach called the <a href="http://arxiv.org/pdf/1402.3511v1.pdf">ClockWork-RNN</a> forces the different layers to operate at different timescales, but the timescales themselves were tuned rather than learned.</p>
+<p>The <a href="http://arxiv.org/pdf/1502.02367v4.pdf">paper we read</a> introduces the Gated Feedback Recurrent Neural Network (GF-RNN), where timescale invariance is achieved by creating direct connections for signals between all layers of the previous timestep. Effectively, each timestep becomes &quot;fully-connected&quot; to the previous. It's not intuitively obvious to me how this works, but some examples in the paper show variable-length dependencies that were better handled by the GF-RNN.</p>
+<p>To control direct connections with previous hidden states, global reset gates are used:</p>
+<p><span class="math display">\[
+g^{i \to j} = \sigma (w_g^{i \to j} h_t^{j - 1} + u_g^{i \to j} h_{t - 1}^*)
+\]</span></p>
+<p><span class="math inline">\(g^{i \to j}\)</span> is the global reset scalar value that is separately learned for every hidden layer <span class="math inline">\(i\)</span> in the previous timestep in order to calculate every hidden layer <span class="math inline">\(j\)</span> in the current timestep. <span class="math inline">\(w_g^{i \to j}\)</span> and <span class="math inline">\(u_g^{i \to j}\)</span> are weight vectors for the input and concatenation of the previous hidden states <span class="math inline">\(h_{t - 1}^*\)</span>.</p>
+<p>In the case of a GRU, these connections are injected into candidate generation. Rather than applying the (now) local reset gate to just the previous hidden state at the current layer to obtain the contribution from the previous timestep, the local reset is applied to a sum of all hidden states in all layers in previous timestep, each with a weight matrix and global reset scalar.</p>
+<p><span class="math display">\[
+\tilde h_t^j = tanh(W h_t^{j - 1} + r_t^j \odot \sum_{i = 1}^L g^{i \to j} U^{i \to j} h_{t - 1}^i)
+\]</span></p>
+<p>Notice that the term on the left doesn't change.</p>
+<h2 id="implementation">Implementation</h2>
+<h3 id="simplified">Simplified</h3>
+<p>I attempted a simplified implementation where I actually modified the formula a bit. I wanted to avoid leaking the Gated Feedback abstraction into the <code>RNNCell</code> layer, instead handling it at the <code>MultiRNNCell</code> layer, which is a class that stacks <code>RNNCell</code>s for you and handles passing information between layers.</p>
+<p>The right term in <span class="math inline">\(\tilde h_t^j\)</span> would remain unchanged from the original GRU definition, and instead:</p>
+<p><span class="math display">\[
+h_{t - 1} \leftarrow \sum_{i = 1}^L g^{i \to j} h_{t - 1}^i
+\]</span></p>
+<p>But in fact, <span class="math inline">\(g^{i \to j}\)</span> becomes <span class="math inline">\(g^j\)</span> because the term no longer is depends on <span class="math inline">\(i\)</span> and is calculated outside of the cell altogether.</p>
+<p>In code, the change from <code>MultiRNNCell</code> is under the &quot;Global Reset&quot; scope:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="cf">with</span> tf.variable_scope(scope <span class="op">or</span> <span class="bu">type</span>(<span class="va">self</span>).<span class="va">__name__</span>):
+    <span class="co"># Conveniently the concatenation of all hidden states at t-1</span>
+    h_star_t_prev <span class="op">=</span> state
+    cur_state_pos <span class="op">=</span> <span class="dv">0</span>
+    cur_inp <span class="op">=</span> inputs
+    new_states <span class="op">=</span> []
+    <span class="cf">for</span> i, cell <span class="op">in</span> <span class="bu">enumerate</span>(<span class="va">self</span>._cells):
+        <span class="cf">with</span> tf.variable_scope(<span class="st">&quot;Cell</span><span class="sc">%d</span><span class="st">&quot;</span> <span class="op">%</span> i):
+            cur_state <span class="op">=</span> array_ops.<span class="bu">slice</span>(
+                    state, [<span class="dv">0</span>, cur_state_pos], [<span class="op">-</span><span class="dv">1</span>, cell.state_size])
+            <span class="cf">with</span> tf.variable_scope(<span class="st">&quot;Global Reset&quot;</span>):
+                u_g <span class="op">=</span> tf.get_variable(<span class="st">&quot;u_g&quot;</span>, [<span class="va">self</span>.state_size],
+                                      initializer<span class="op">=</span>tf.random_uniform_initializer(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>))
+                w_g <span class="op">=</span> tf.get_variable(<span class="st">&quot;w_g&quot;</span>, cell.state_size,
+                                      initializer<span class="op">=</span>tf.random_uniform_initializer(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>))
+                g <span class="op">=</span> tf.sigmoid(tf.reduce_sum(tf.mul(w_g, cur_inp)) <span class="op">+</span> tf.reduce_sum(tf.mul(u_g, h_star_t_prev)))
+                cur_state <span class="op">=</span> tf.reduce_sum(g <span class="op">*</span> cur_state)
+
+            cur_state_pos <span class="op">+=</span> cell.state_size
+            cur_inp, new_state <span class="op">=</span> cell(cur_inp, cur_state)
+            new_states.append(new_state)
+
+<span class="cf">return</span> cur_inp, array_ops.concat(<span class="dv">1</span>, new_states)</code></pre></div>
+<p>No change was needed for <code>GRUCell</code>.</p>
+<p>When I brought this to the study group, the flaws of this approach became apparant. Not having separate gates for each <span class="math inline">\(i \to j\)</span> pair didn't provide enough degrees of freedom for the gate. Also, the paper's stance on only applying the global reset to the candidate generation was confirmed by a quick email exchange with Junyoung Chung, the lead on the paper.</p>
+<h3 id="corrected">Corrected</h3>
+<p>With the feedback in mind, I decided to pursue a more faithful (less lazy) implementation.</p>
+<p>The change for <code>MultiRNNCell</code> is actually minimal:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> GFMultiRNNCell(rnn_cell.MultiRNNCell):
+    <span class="co">&quot;&quot;&quot;</span>
+<span class="co">    MultiRNNCell composed of stacked cells that interact across layers</span>
+<span class="co">    Based on http://arxiv.org/pdf/1502.02367v4.pdf</span>
+<span class="co">    &quot;&quot;&quot;</span>
+
+    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, cells):
+        <span class="cf">for</span> cell <span class="op">in</span> cells:
+            <span class="cf">if</span> <span class="op">not</span> <span class="bu">isinstance</span>(cell, GFCell):
+                <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">&quot;Cells must be of type GFCell&quot;</span>)
+
+        <span class="bu">super</span>(FeedbackCell, <span class="va">self</span>).<span class="fu">__init__</span>(cells)
+
+    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, inputs, state, scope<span class="op">=</span><span class="va">None</span>):
+        <span class="cf">with</span> tf.variable_scope(scope <span class="op">or</span> <span class="bu">type</span>(<span class="va">self</span>).<span class="va">__name__</span>):
+            <span class="co"># Conveniently the concatenation of all hidden states at t-1</span>
+            cur_state_pos <span class="op">=</span> <span class="dv">0</span>
+            cur_inp <span class="op">=</span> inputs
+            new_states <span class="op">=</span> []
+            <span class="cf">for</span> i, cell <span class="op">in</span> <span class="bu">enumerate</span>(<span class="va">self</span>._cells):
+                <span class="cf">with</span> tf.variable_scope(<span class="st">&quot;Cell</span><span class="sc">%d</span><span class="st">&quot;</span> <span class="op">%</span> i):
+                    cur_state <span class="op">=</span> array_ops.<span class="bu">slice</span>(
+                            state, [<span class="dv">0</span>, cur_state_pos], [<span class="op">-</span><span class="dv">1</span>, cell.state_size])
+                    cur_state_pos <span class="op">+=</span> cell.state_size
+                    cur_inp, new_state <span class="op">=</span> cell(cur_inp, cur_state, state)
+                    new_states.append(new_state)
+
+        <span class="cf">return</span> cur_inp, array_ops.concat(<span class="dv">1</span>, new_states)</code></pre></div>
+<p>The operative changes is that that every individual cell now has access to the <code>state</code> var, which is <span class="math inline">\(h_{t - 1}^*\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">cur_inp, new_state <span class="op">=</span> cell(cur_inp, cur_state, state)</code></pre></div>
+<p>There's also a type check to make sure you're composing the cell stacks from cells with the gated feedback capability.</p>
+<p>We then define a <code>GFCell</code> class that looks very much like the <code>RNNCell</code> class with a few enhancements:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> GFCell(<span class="bu">object</span>):
+    <span class="co">&quot;&quot;&quot;Abstract object representing a cell in a Gated Feedback RNN</span>
+<span class="co">    Operates like an RNNCell</span>
+<span class="co">    &quot;&quot;&quot;</span>
+
+    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, num_units):
+        <span class="va">self</span>._num_units <span class="op">=</span> num_units
+
+    <span class="at">@property</span>
+    <span class="kw">def</span> input_size(<span class="va">self</span>):
+        <span class="cf">return</span> <span class="va">self</span>._num_units
+
+    <span class="at">@property</span>
+    <span class="kw">def</span> output_size(<span class="va">self</span>):
+        <span class="cf">return</span> <span class="va">self</span>._num_units
+
+    <span class="at">@property</span>
+    <span class="kw">def</span> state_size(<span class="va">self</span>):
+        <span class="cf">return</span> <span class="va">self</span>._num_units
+
+    <span class="kw">def</span> zero_state(<span class="va">self</span>, batch_size, dtype):
+        <span class="co">&quot;&quot;&quot;Return state tensor (shape [batch_size x state_size]) filled with 0.</span>
+
+<span class="co">        Args:</span>
+<span class="co">          batch_size: int, float, or unit Tensor representing the batch size.</span>
+<span class="co">          dtype: the data type to use for the state.</span>
+
+<span class="co">        Returns:</span>
+<span class="co">          A 2D Tensor of shape [batch_size x state_size] filled with zeros.</span>
+<span class="co">        &quot;&quot;&quot;</span>
+        zeros <span class="op">=</span> array_ops.zeros(
+                array_ops.pack([batch_size, <span class="va">self</span>.state_size]), dtype<span class="op">=</span>dtype)
+        zeros.set_shape([<span class="va">None</span>, <span class="va">self</span>.state_size])
+        <span class="cf">return</span> zeros
+
+    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, inputs, state, full_state, layer_sizes, scope<span class="op">=</span><span class="va">None</span>):
+        <span class="cf">raise</span> <span class="pp">NotImplementedError</span>(<span class="st">&quot;Abstract method&quot;</span>)
+
+    <span class="kw">def</span> compute_feedback(<span class="va">self</span>, inputs, full_state, layer_sizes, scope<span class="op">=</span><span class="va">None</span>):
+        <span class="cf">with</span> tf.variable_scope(<span class="st">&quot;Global Reset&quot;</span>):
+            cur_state_pos <span class="op">=</span> <span class="dv">0</span>
+            full_state_size <span class="op">=</span> <span class="bu">sum</span>(layer_sizes)
+            summation_term <span class="op">=</span> tf.get_variable(<span class="st">&quot;summation&quot;</span>, <span class="va">self</span>.state_size, initializer<span class="op">=</span>tf.constant_initializer())
+            <span class="cf">for</span> i, layer_size <span class="op">in</span> <span class="bu">enumerate</span>(layer_sizes):
+                <span class="cf">with</span> tf.variable_scope(<span class="st">&quot;Cell</span><span class="sc">%d</span><span class="st">&quot;</span> <span class="op">%</span> i):
+                    <span class="co"># Compute global reset gate</span>
+                    w_g <span class="op">=</span> tf.get_variable(<span class="st">&quot;w_g&quot;</span>, <span class="va">self</span>.input_size, initializer<span class="op">=</span>tf.random_uniform_initializer(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>))
+                    u_g <span class="op">=</span> tf.get_variable(<span class="st">&quot;u_g&quot;</span>, full_state_size, initializer<span class="op">=</span>tf.random_uniform_initializer(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>))
+                    g__i_j <span class="op">=</span> tf.sigmoid(tf.matmul(inputs, w_g) <span class="op">+</span> tf.matmul(full_state, u_g))
+
+                    <span class="co"># Accumulate sum</span>
+                    h_t_1 <span class="op">=</span> <span class="op">\</span>
+                        tf.<span class="bu">slice</span>(
+                                full_state,
+                                [<span class="dv">0</span>, cur_state_pos],
+                                [<span class="op">-</span><span class="dv">1</span>, layer_size]
+                        )
+                    cur_state_pos <span class="op">+=</span> layer_size
+                    U <span class="op">=</span> tf.get_variable(<span class="st">&quot;U&quot;</span>, [<span class="va">self</span>.input_size, <span class="va">self</span>._num_units],
+                                        initializer<span class="op">=</span>tf.random_uniform_initializer(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>))
+                    b <span class="op">=</span> tf.get_variable(<span class="st">&quot;b&quot;</span>, <span class="va">self</span>.state_size, initializer<span class="op">=</span>tf.constant_initializer(<span class="dv">1</span>.))
+                    summation_term <span class="op">=</span> tf.add(summation_term, g__i_j <span class="op">*</span> tf.matmul(U, h_t_1) <span class="op">+</span> b)
+
+        <span class="cf">return</span> summation_term</code></pre></div>
+<p>A few other pieces are needed in <code>__call__</code>, such as the entire previous hidden state and the layer sizes. We then implement the summation described in the paper. The modified hand term in the paper (e.g. used to replace Eq 9) is always a summation term. For each previous timestep hidden layer <span class="math inline">\(i\)</span>, we compute <span class="math inline">\(g^{i \to j}\)</span> and this summation <span class="math inline">\(S^j\)</span>.</p>
+<h3 id="tensorflow-canonical">Tensorflow Canonical</h3>
+<p>Due to time constraints and the fact that more abstract/general architectures have come out since I started this blog post, I won't actually be doing a TF-canonical implementation to contribute.</p>
+</body>
+</html>

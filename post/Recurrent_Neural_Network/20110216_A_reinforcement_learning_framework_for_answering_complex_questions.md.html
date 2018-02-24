@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h1 id="a-reinforcement-learning-framework-for-answering-complex-questions"><a href="https://www.semanticscholar.org/paper/A-reinforcement-learning-formulation-to-the-Chali-Hasan/ecda3eb54926ed58e5aeea6271dcbe33b869f19b/pdf">A reinforcement learning framework for answering complex questions</a></h1>
+<pre><code>They use extractive multi-document summarization techniques to perform complex question answering and formulate it as a reinforcement learning problem. Given a set of complex questions, a list of relevant documents per question, and the corresponding human generated summaries (i.e. answers to the questions) as training data, the reinforcement learning module iteratively learns a number of feature weights in order to facilitate the automatic generation of summaries i.e. answers to previously unseen complex questions.</code></pre>
+<blockquote>
+<p>So they use multi-document and corresponding human generated summaries to training.</p>
+</blockquote>
+<pre><code>A reward function is used to measure the similarities between the candidate (machine generated) summary sentences and the abstract summaries. </code></pre>
+<blockquote>
+<p>This is the RL learning strategy.</p>
+</blockquote>
+<pre><code>In the training stage, the learner iteratively selects the important document sentences to be included in the candidate summary, analyzes the reward function and updates the related feature weights accordingly.The final weights are used to generate summaries as answers to unseen complex questions in the testing stage. Evaluation results show the effectiveness of our system. </code></pre>
+<pre><code>They also incorporate user interaction into the reinforcement learner to guide the candidate summary sentence selection process. </code></pre>
+<blockquote>
+<p>User interaction is hard to use.</p>
+</blockquote>
+<h1 id="related-knowledge">Related knowledge</h1>
+<p>QA systems can address this challenge effectively (<a href="http://www.aclweb.org/anthology/J07-4007">&quot;Advances in Open Domain Question Answering&quot;</a>).</p>
+<pre><code>Another widely known QA service is Yahoo! Answers which is a community-driven knowledge market website launched by Yahoo!. </code></pre>
+<pre><code>Furthermore, Google launched a QA system4in April 2002 that was based on paid editors. However, the system was closed in December 2006. The main limitation of these QA systems is that they rely on human expertise to help provide the answers.</code></pre>
+<pre><code>QA research can handle different types of questions: fact, list, definition, how, why, etc. Some questions, which we call simple questions, are easier to answer. For example, the question: ‘‘Who is the prime minister of Canada?’’ asks for a person’sname.</code></pre>
+</body>
+</html>

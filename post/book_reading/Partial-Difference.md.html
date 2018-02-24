@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="偏微分方程理解">偏微分方程理解</h2>
+<blockquote>
+<p>偏导的概念</p>
+</blockquote>
+<p>例如，已知<span class="math inline">\(u\)</span>是<span class="math inline">\(x,y\)</span>的函数，则在任意一点<span class="math inline">\((x,y)\)</span>处，<span class="math inline">\(u\)</span>关于<span class="math inline">\(x,y\)</span>的偏导数定义为：<img src="http://mathurl.com/h4fmfd7.png" /> <!-- $$\begin{cases}\frac{\partial u}{\partial x}=\frac{u(x+\Delta x,y)-u(x,y)}{\Delta x}\\
+\frac{\partial u}{\partial y}=\frac{u(x,y+\Delta y)-u(x,y)}{\Delta y}\end{cases}$$ --></p>
+<blockquote>
+<p>偏微分方程定义</p>
+</blockquote>
+<p>如果方程中包含有两个或两个以上自变量的未知函数的偏导数，则称之为<span style="color:red"><strong><em>偏微分方程(partial differential equation, PDE).</em></strong></span></p>
+<p>含有2个自变量的线性二阶偏微分方程的一般形式为：<img src="http://mathurl.com/zye6lu3.png" /> <!-- $$A\frac{\partial^2u}{\partial x^2}+B\frac{\partial^2u}{\partial x\partial y}+C\frac{\partial^2u}{\partial y^2}+D=0\Rrightarrow \begin{cases}B^2-4AC<0 \rightarrow  \text{hyperbolic: }\frac{\partial^2T}{\partial x^2}+\frac{\partial^2T}{\partial y^2}=0 \\
+B^2-4AC=0 \rightarrow  \text{parabola: }\frac{\partial T}{\partial t}=k\frac{\partial^2T}{\partial x^2} \\
+B^2-4AC>0 \rightarrow  \text{hyperbola: }\frac{\partial^2y}{\partial x^2}=\frac{1}{c^2}\frac{\partial^2y}{\partial t^2}
+\end{cases}$$ --></p>
+<p><span style="color:red"><strong><em>椭圆型方程(Elliptic equations)</em></strong></span>：用于刻画稳态系统的特征，例如拉普拉斯方程，不含时间导数说明不随时间变化，典型的例子是受热平板，随着时间推移，系统的温度分布会达到稳定状态; <span style="color:red"><strong><em>抛物型方程(Parabola equations)</em></strong></span>：抛物型方程表述了未知量在空间和时间上的变化，例如热传导函数包含空间和时间两方面的导数，<span style="color:red"><em>这类问题的解是随着时间传播变化，所以也称为传播问题</em></span>。 <span style="color:red"><strong><em>双曲型方程(Hyperbolic equations)</em></strong></span>：该方程也是处理传播问题的。</p>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>有限差分法：椭圆型方程(Elliptic equations)</em></strong></span></li>
+</ol>
+<p>拉普拉斯方程(Laplace equation): <span class="math inline">\(\frac{\partial^2T}{\partial x^2}+\frac{\partial^2T}{\partial y^2}=0\)</span> 泊松方程(Poisson equation)：<span class="math inline">\(\frac{\partial^2T}{\partial x^2}+\frac{\partial^2T}{\partial y^2}=f(x,y)\)</span></p>
+<p>网络图（自行脑部）的中心差分公式为： $ = , =$</p>
+<p>带入得到： <span class="math inline">\(\frac{T_{i+_1,j}-2T_{i,j}+T_{i-1,j}}{\Delta x^2}+\frac{T_{i,j+1}-2T_{i,j}+T_{i,j-1}}{\Delta y^2}=0\)</span></p>
+<p>令<span class="math inline">\(\Delta x=\Delta y\)</span>, 得到<span class="math inline">\(T_{i+1,j}+T_{i-1,j}+T_{i,j+1}+T_{i,j-1}-4T_{i,j}=0\)</span>, 该关系对于所有的内点都成立，成为拉普拉斯方程(laplacian difference equation.)</p>
+<p>除此之外，为保证解的一维性。必须制定平板边缘的边界条件。<span style="color:red"><strong><em>简单的就是固定边界处的温度值，称为狄利克雷条件(Dirichlet boundary conditon).</em></strong></span>， 这只是偏微分方程边界条件中的一种，还有其他的。</p>
+<p align="center">
+<img src="../images/posts/2016-04-17/dirichletbc.png" width="300" >
+</p>
+<p>例如在(1,1)处的平衡关系: <span class="math inline">\(T_{21}+T_{01}+T_{12}+T_{10}-4T_{11}=0\)</span>, 然而<span class="math inline">\(T_{01}=75\)</span>, <span class="math inline">\(T_{10}=0\)</span>. 所以有 ： <span class="math inline">\(-4T_{11}+T_{12}+T_{21}=0\)</span>, 同理可以写出其它内点的平衡关系式子.</p>
+<p>在利用数值方法求解拉普拉斯方程时，由于方程规模很大，所以如果对稀疏方程组采用全矩阵消元法求解，则需要<span style="color:red"><strong><em>很大内存</em></strong></span>。往往采用近似求解，也就是利用<span style="color:red"><strong><em>高斯-赛德尔法</em></strong></span>，这中方法应用与偏微分方程也叫<span style="color:red"><strong><em>李布尔法</em></strong></span>。</p>
+<p>在对内点<span class="math inline">\((i,j)\)</span>得到的恒等关系式：<span class="math inline">\(T_{i+1,j}+T_{i-1,j}+T_{i,j+1}+T_{i,j-1}-4T_{i,j}=0\)</span>， 得到： <span class="math inline">\(T_{i,j}=\frac{T_{i+1,j}+T_{i-1,j}+T_{i,j+1}+T_{i,j-1}}{4}\)</span>.</p>
+<p>然后，按照<span class="math inline">\(j=1\sim n\)</span>和<span class="math inline">\(i=1\sim m\)</span>的顺序迭代求解，最终会得到一个稳态解。</p>
+<p>有时，利用超松弛加快速度，每次迭代后应用: <span class="math inline">\(T_{i,j}^{new}=\lambda T_{i,j}^{new}+(1-\lambda)T_{i,j}^{old}\)</span></p>
+<p>如此反复，直到误差们足条件。</p>
+<blockquote>
+<p>边界条件</p>
+</blockquote>
+<p>将狄利克雷条件扩展：给点<span style="color:red"><strong><em>边界导数值</em></strong></span>和<span style="color:red"><strong><em>边界形状不规则</em></strong></span>。--诺依曼边界条件(Neumann boundary condition)</p>
+<!-- <p align="center"><img src="../images/posts/2016-04-17/neumann.png" width="300" ></p> -->
+<p>如上图所示，(o,j)是受热平板左边界的一个结点，该店应用平衡方程得到: <span class="math inline">\(T_{1,j}+T_{-1,j}+T_{0,j+1}+T_{0,j-1}-4T_{0,j}=0\)</span>.</p>
+<p><span style="color:red"><strong><em>注意</em></strong></span>！这里出现了一个不存在的点（暂时成为虚拟点<span class="math inline">\((-1,j)\)</span>）.</p>
+<p>接着我们考虑在<span class="math inline">\((0,j)\)</span>处，用有限差商表示x方向的一阶导数: <!--$\frac{\partial T}{\partial x}\simeq \frac{T_{1,j}-T_{-1,j}}{2\Delta x} \Rightarrow T_{-1,j}=T_{1,j}-2\Delta x\frac{\partial T}{\partial x}$--><img src="http://mathurl.com/j99osx4.png" /><img src="http://mathurl.com/zlaeb6d.png" />, 然后带入得到:<span class="math inline">\(2T_{1,j}-2\Delta x \frac{\partial T}{\partial x}+T_{0,j+1}+T_{0,j-1}-4T_{0,j}=0\)</span></p>
+<p>回到平板问题，若平板的下边界绝热，那么有: <span class="math inline">\(2T_{1,j}+T_{0,j+1}+T_{0,j-1}-4T_{0,j}=0\)</span>, 联力得方程组。</p>
+<ol start="2" style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>有限差分法：抛物型方程(Parabola equations)</em></strong></span>.</li>
+</ol>
+<p>热传导方程(Heat-conduction equation)和拉普拉斯方程类似，只是该方程不仅仅考虑稳态情况，还需要考虑但是时间周期<span class="math inline">\(\Delta t\)</span>内微分单元中存储的总热量。</p>
+<!-- <p align="center"><img src="../images/posts/2016-04-17/parabola.png" width="300" ></p> -->
+<p><span class="math inline">\(k\frac{\partial^2T}{\partial x^2}=\frac{\partial T}{\partial t}\)</span></p>
+<p>求解热传导方程，需要逼近空间的二阶导数和时间的一阶导数。</p>
+<p>空间的二阶导数与拉普拉斯方程类似，采用中心极限差商: <span class="math inline">\(\frac{\partial ^T}{\partial x^2}=\frac{T_{i+_1,j}-2T_{i,j}+T_{i-1,j}}{\Delta x^2}\)</span> 用前向有限差商逼近时间导数：<span class="math inline">\(\frac{\partial T}{\partial t}=\frac{T_{i}^{l+1}-T_i^l}{\Delta t}\)</span></p>
+<p>得到： <span class="math inline">\(k\frac{T_{i+_1,j}-2T_{i,j}+T_{i-1,j}}{\Delta x^2}=\frac{T_{i}^{l+1}-T_i^l}{\Delta t}\Rightarrow T_i^{l+1}=T_i^l+\lambda(T_{i+1}^l-2T_i^l+T_{i-1}^l)\)</span>, 其中<span class="math inline">\(\lambda=k\Delta t/(\Delta x)^2\)</span>， <span style="color:red"><strong><em>这是一个显式格式(Explicit)</em></strong></span>, 可以根据该点及其相邻结点的当前数据计算下一时刻的数据。</p>
+<p align="center">
+<img src="../images/posts/2016-04-17/disadvantage_explict.png" width="300" >
+</p>
+<p><span style="color:red"><strong><em>显式解的缺点：</em></strong></span> 稳定性限制， 而且还忽略了部分结点。例如<span class="math inline">\((i,j)\)</span>结点只用到了三角形区域的结点，外面的结点没有用到。事实上它们也对<span class="math inline">\((i,j)\)</span>有影响。</p>
+<!-- <p align="center"><img src="../images/posts/2016-04-17/difference_impli_expli.png" width="300" ></p> -->
+<p>在隐式法中，空间导数是用下一时间层<span class="math inline">\(l+1\)</span>的数据逼近的。</p>
+<p>二阶导数的逼近为： <span class="math inline">\(\frac{\partial ^T}{\partial x^2}\simeq \frac{T_{i+1}^{l+1}-2T_i^{l+1}+T_{i-1}^{l+1}}{(\Delta x)^2}\)</span></p>
+<p><span class="math inline">\(k \frac{T_{i+1}^{l+1}-2T_i^{l+1}+T_{i-1}^{l+1}}{(\Delta x)^2}=\frac{T_{i}^{l+1}-T_i^l}{\Delta t}\)</span></p>
+<p>上式可以表示为：<span class="math inline">\(-\lambda T_{i-1}^{l+1}+(1+2\lambda)T_i^{l+1}-\lambda T_{i+1}^{l+1}=T_i^l\)</span>, 其中<span class="math inline">\(\lambda=k\Delta t/(\Delta x)^2\)</span></p>
+<p>除了第一个和最后一个内点之外，上述方程适用所有的内点。第一个和最后一个内点处的方程必须修改，以反应边界条件。</p>
+<p>若给定端点的温度，则左端点的边界条件可以表示为：<span class="math inline">\(_0^{l+1}=f_0(t^{l+1})\)</span>, 其中<span class="math inline">\(f_0(t^{l+1})\)</span>为描述边界温度随时间变化的函数，带入得到第一个内点处<span class="math inline">\(i=0\)</span>的差分方程。</p>
+<p><span class="math inline">\((1+2\lambda)T_i^{l+1}-\lambda T_2^{l+1}=T_1^l+\lambda f_0(t^{l+1})\)</span> 同理，在最后一个内点处<span class="math inline">\((i=m)\)</span>， <span class="math inline">\(-\lambda T_{m-1}^{l+1}+(1+2\lambda)T_m^{l+1}=T_m^l+\lambda f_{m+1}(t^{l+1})\)</span>.</p>
+<p>其中，<span class="math inline">\(f_{m+1}(t^{l+1})\)</span>为给定函数，描述右端点处<span class="math inline">\(i=m+1\)</span>的温度变化。</p>
+<p>隐式法的缺点：虽然稳定且收敛，但是时间差分逼近仅具有一阶精度，而空间差分逼近缺具有二阶精度。</p>
+<ol start="3" style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>有限差分法：双曲型方程(Hyperbolic equations)</em></strong></span></li>
+</ol>
+<p>热传导方程也可以推广到高于一维的空间，在二维空间下，他的形式是：<span class="math inline">\(\frac{\partial T}{\partial t}=k(\frac{\partial^2T}{\partial x^2}+\frac{\partial^2T}{\partial y^2})\)</span></p>
+<p>同样利用一维空间的有限差分逼近得到显示解，但是和一维一样，也收到稳定性的严格限制。</p>
+<p>和一维一样，隐式法可以保证稳定性。</p>
+<p><span style="color:red"><strong><em>1) 椭圆方程，抛物线方程和双曲线偏微分方程区别</em></strong></span> <span style="color:red"><strong><em>2) 有限差分和有限元法的基本区别</em></strong></span> <span style="color:red"><strong><em>3) 联立线性代数方法组的求解方面，布尔曼等价于高斯赛德尔法</em></strong></span> <span style="color:red"><strong><em>4) 知道如何确定二维区域上的二级变量</em></strong></span> <span style="color:red"><strong><em>5) 狄利克雷边界条件的导数边界条件之间的区别</em></strong></span></p>
+<p>导数边界条件引入了虚拟点的概念，用有限差商表示<span class="math inline">\(x\)</span>方向的一阶导数.</p>
+<p><span style="color:red"><strong><em>6) 对于偏微分方程的有限差分法，如果利用加权因子来加入非规则边界</em></strong></span> <span style="color:red"><strong><em>7) 抛物型偏微分方程的收敛性和稳定性差别</em></strong></span> <span style="color:red"><strong><em>8) 抛物型方程的显式和隐式格式之间的差别</em></strong></span> <span style="color:red"><strong><em>1) 在求解抛物型偏微分方程时，显示法标准限制了它的使用范围</em></strong></span> <span style="color:red"><strong><em>1) 知道ADI方法在求及诶二维空间的抛物型偏微分方程是怎么互动哦哦高效率的</em></strong></span></p>
+<p>pass</p>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="object-detection-with-discriminatively-trained-part-based-models"><a href="Object%20Detection%20with%20Discriminatively%20Trained%20Part%20Based%20Models">Object Detection with Discriminatively Trained Part Based Models</a></h2>
+<p><a href="http://www.cs.berkeley.edu/~rbg/latent/">论文和对应的代码</a>, rbg真牛,先是DPM，然后是RCNN，保持了detection上的领先. 下面的结构是根据原文结构进行描述的。</p>
+<h2 id="introduction"><a href="">INTRODUCTION</a></h2>
+<ol style="list-style-type: decimal">
+<li>介绍了<a href="">detection的难点</a>，以及本模型主要应对的是<a href="">intraclass variability</a>大的问题——<a href="">通过part的组合</a>来适应这个变化。</li>
+<li>介绍了<a href="">使用的特征是HOG</a>，是06年冠军使用的特征。后来HOG得到广泛的使用说明这确实是一个很好的人工设计的特征了。</li>
+<li>介绍了<a href="">Latent-SVM</a>，一个<a href="">半凸的优化问题</a></li>
+<li>介绍了data-mining for <a href="http://blog.csdn.net/masibuaa/article/details/16113373">hard negative</a>，因为背景太大，不可能全部用上，所以需要“<a href="">挖掘</a>”到比较难的背景来训练分类器。</li>
+</ol>
+<h2 id="relate-work"><a href="">RELATE WORK</a></h2>
+<p>略</p>
+<h2 id="models"><a href="">MODELS</a></h2>
+<p>总的来说，模型是若干个<a href="">线性滤波器</a>组成的</p>
+<p><span class="math display">\[
+\sum_{x&#39;,y&#39;}F[x&#39;,y&#39;].G[x+x&#39;,y+y&#39;]
+\]</span></p>
+<p>(本质上跟卷积核一样，<span class="math inline">\(F\)</span>理解成权重，<span class="math inline">\(G\)</span>理解成特征）</p>
+<p>为了能够应对多尺度的问题，使用了<a href="http://blog.csdn.net/qustqustjay/article/details/46786075">特征金字塔</a>，另外，<a href="">part所在的层</a>的分辨率是<a href="">root所在的层</a>的分辨率的两倍。</p>
+<p align="center">
+<img src="http://i.imgur.com/WO1AJ28.png" width="400" >
+</p>
+<h2 id="deformable-part-models"><a href="">Deformable Part Models</a></h2>
+<p><a href="">单个的DPM</a>可以理解成是一个<a href="">root滤波器</a>加入若干个<a href="">part滤波器</a>，然后<a href="">减去part的形变损失</a>。</p>
+<p><span class="math display">\[
+\text{score}(p_0,p_1,...,p_n)=\sum_{i=0}^nF_i&#39;.\phi(H,p_i)-\sum_{i=1}^nd_i.\phi_d(dx_i,dy_i)+b
+\]</span></p>
+<p>上面的公式中:</p>
+<ol style="list-style-type: decimal">
+<li><a href="">第一项</a>代表了所有的滤波器（<a href="">root是0</a>，<a href="">part从1到n共有n个</a>，本质上上它们都是线性滤波器）;</li>
+<li>第二项是<a href="">形变损失</a>（即模型的每个part节点都有一个标准位置，比如手在上半身而不是在下半身）; 附带一提形变损失的计算公式是： <span class="math display">\[
+  (dx_i,dy_i)=(x_i,y_i)-(2(x_0,y_0)+v_i) \ (1)
+  \]</span> gives the displacement of the i-th part relative to its anchor position and : <span class="math inline">\(\phi_d(dx,dy)=(dx,dy,dx^2,dy^2)\)</span></li>
+<li>第三项是<a href="">bias</a>，用于在<a href="">多个模型之间实现可比性</a>。</li>
+</ol>
+<p>上面公式(3)中的“2”是由于<a href="">root节点的分辨率只有part节点的一半</a>，所以需要<a href="">映射到2倍大小</a>。 公式(4)表明形变损失<a href="">考虑到了1范距离（曼哈顿距离）和2范距离（欧氏距离）</a>。</p>
+<h2 id="matching"><a href="">Matching</a></h2>
+<p>当训练好一个模型时候，inference就是一个matching的问题了，即需要针对窗口给出分数：</p>
+<p><span class="math display">\[
+\text{score}(p_0)=\max_{p_1,...,p_n}\text{score}(p_0,...,p_n) \ (7)
+\]</span></p>
+<p>上式中的<a href="">p0~pn</a>表示的是filter的位置。 穷举复杂度过高，所以需要用到动态规划，这里不展开了，作者给了一张大图</p>
+<p align="center">
+<img src="http://i.imgur.com/yKO7EoD.png" width="800" >
+</p>
+<p>（还是挺直观的，对于root和part的每个滤波器，都卷积出来一个map，然后叠加这些feature的结果）</p>
+<h2 id="mixture-models"><a href="">Mixture Models</a></h2>
+<p>说明了如何从<a href="">单个model拓展到多个model</a>。 原因是因为<a href="">单个model的描述能力不够</a>——车有正视图、侧视图等。那么就可以根据<a href="">不同视角建立不同的model来表</a>示。</p>
+<h2 id="latent-svm"><a href="">LATENT SVM</a></h2>
+<p>由于本文的model都是<a href="">线性filter</a>，所以其实可以将<a href="">整个model的所有的参数拉成一个长向量</a>，这样就可以用常规的<a href="">线性优化方法</a>来求解了。</p>
+<p align="center">
+<img src="http://i.imgur.com/Eiat9tE.png" width="600" >
+</p>
+<p>又由于<a href="">训练数据（VOC PASCAL）只有root的标注而没有part的标注</a>，所以相对位置是未知的，需要作为<a href="">latent项</a>进行学习，所以就要用到<a href="">Latent SVM</a>（以下也遵循原文简称为LSVM）了。</p>
+<h2 id="semi-convexity"><a href="">Semi-convexity</a></h2>
+<p>作者提出了一个叫“<a href="">半凸</a>”的说法，因为LSVM的损失函数：</p>
+<ul>
+<li>对于<a href="">负样本</a>是凸的</li>
+<li>对于<a href="">正样本</a>是非凸的，但是如果<a href="">固定住latent项</a>，那么就变成<a href="">凸的</a>了</li>
+</ul>
+<p><strong>于是作者把这个情况叫做“半凸”</strong></p>
+<h2 id="optimization"><a href="">Optimization</a></h2>
+<p>既然LSVM是半凸的，那么可以想到转换成<a href="">凸函数</a>来进行求解，作者提出了一种叫坐标下降（<a href="">coordinate descent</a>）的算法，分成两步走：</p>
+<ul>
+<li>先对于<a href="">正样本</a>优化<a href="">latent</a>项，然后固定住，那么损失函数就变凸了;</li>
+<li>然后用SVM的<a href="">常规优化方法</a>来进行优化即可</li>
+</ul>
+<p>迭代重复上面两个步骤，就可以实现LSVM的优化了。 注意到，<strong>这里只是针对正样本的latent项单独优化并且fix住，而负样本的优化是没有fix住latent项的</strong>，作者给出的解释是：</p>
+<p align="center">
+<img src="http://i.imgur.com/cK4GC7q.png" width="400" >
+</p>
+<h2 id="stochastic-gradient-descent"><a href="">Stochastic gradient descent</a></h2>
+<p>这个章节讨论的是上面坐标下降中第二步的优化，即<a href="">求解SVM部分</a>。</p>
+<p>注意到这里面正样本的latent已经被固定住了，所以<a href="">损失函数已经变成了凸函数，可以用常规方法求解</a>。</p>
+<p>一般求解SVM可以用<a href="">二次规划的方法</a>，作者这里用的是随机梯度下降（SGD）。至于为什么，倒没有说明。</p>
+<p>梯度的计算公式： <span class="math display">\[
+\begin{cases}
+\nabla L_D(\beta)=\beta + C\sum_{i=1}^n h(\beta,x_i,y_i) \ \ (16)\\
+h(\beta,x_i,y_i)=\begin{cases}0, \text{ if }y_if_{\beta}(x_i)\ge 1 \\ -y_i\Phi(x_i,z_i(\beta)), \text{ otherwise }\end{cases} \ \ (17)
+\end{cases}
+\]</span></p>
+<p>这里对于(17)可以给出较为直观的解释: - 当<span class="math inline">\(y_if_{\beta}(x_i)\ge 1\)</span>时候，其实也就是样本被<a href="">正确分类了</a>，所以对应部分的梯度为β+0 - 否则，样本类别错了，或者类别对了但是落在了分隔面之内，那么就需要更新(<a href="">β+对应的梯度</a>)了。</p>
+更为具体的过程是：
+<p align="center">
+<img src="http://i.imgur.com/GNXRWNf.png" width="500" >
+</p>
+<p>具体解释一下： 1) 设置学习率，一般设置成1/t就可以了。 2) 选择随机的一个样本 3) 求解最佳隐变量 4)和5) 都是更新梯度了。</p>
+<p>另外需要注意到，作者没有使用<a href="http://blog.csdn.net/llx1990rl/article/details/44001921">mini-batch的下降法</a>，而是用是单个样本的梯度（直接乘上一个n）来估计全体样本</p>
+<h2 id="data-mining-hard-examples-svm-version"><a href="">Data-mining hard examples, SVM version</a></h2>
+<p>上文也提到了，由于负样本太大，无法全部用上，所以需要挖掘出hard negative来帮助分类。 虽然说得data-mining，但实际上思路很简单。</p>
+<p>首先，定义<a href="">easy negative</a>和<a href="">hard negative</a>为：</p>
+<p align="center">
+<img src="http://i.imgur.com/E5pLuBz.png" width="600" >
+</p>
+<p>其实，就是<a href="">能够正确分类的就是easy negative</a>，<a href="">不能正确分类或者分类正确但是在决策面之内的叫做hard negative</a> 具体的过程，如下图：</p>
+<p align="center">
+<img src="http://i.imgur.com/20M9spa.png" width="600" >
+</p>
+<p>简单解释下。 1) 选择一个子集C，训练SVM得到参数β 3) 排除掉C中的easy negative 4) 填充hard negative到C 2) 是结束条件，如果没有可以添加的hard negative，就退出。</p>
+<p>后面是算法有效性的证明，跳过了。</p>
+<h2 id="data-mining-hard-examples-lsvm-version">Data-mining hard examples, LSVM version</h2>
+<p>LSVM的Data-mining算法是类似的。 正样本的latent项被固定住后，本质上也是一个凸优化问题。 通常地，通过维护一个cache，迭代地排除easy negative，加入hard negative。</p>
+<h2 id="training-models">TRAINING MODELS</h2>
+<h2 id="learning-parameters">Learning parameters</h2>
+<p>这里说了几件事：</p>
+<ol style="list-style-type: decimal">
+<li>如何生成正样本：根据gt bbox生成，控制latent项的overlap在50%之内</li>
+<li>如何生成负样本：没看懂，感觉是在小范围内密集地采样</li>
+<li>训练过程的伪代码：基本是将上述过程（搜索并固定正样本的latent项，data-mining）简述了一遍</li>
+</ol>
+<h2 id="initialization">Initialization</h2>
+<p>这里提到了对于有latent项的模型需要较好地初始化，不然会陷入局部最优（略没懂，不是说latent SVM是半凸函数吗？） 大致分成3个步骤：</p>
+<ol style="list-style-type: decimal">
+<li>Initialzation Root Filters: 根据aspect ratio分组，来训练mix model 使用一个线性SVM进行权值的训练</li>
+<li>Merging Components 没看懂，大致是聚类，将相同的component聚在一起</li>
+<li>Initailzing Part Filters 使用启发的贪心算法来寻找能量最大的位置（该位置的中心限制在中轴线或者以中轴线对称）</li>
+</ol>
+<p align="center">
+<img src="http://i.imgur.com/1S6gAYy.png" width="600" >
+</p>
+<h2 id="features">FEATURES</h2>
+<p>略，介绍了HOG，和做了PCA</p>
+<h2 id="post-processing">POST PROCESSING</h2>
+<p>略，包括了，bbox回归，NMS，Context</p>
+<h2 id="empirical-results">EMPIRICAL RESULTS</h2>
+<p>略，当时VOC的state-of-the-art</p>
+<h2 id="discussion">DISCUSSION</h2>
+<p>略</p>
+</body>
+</html>

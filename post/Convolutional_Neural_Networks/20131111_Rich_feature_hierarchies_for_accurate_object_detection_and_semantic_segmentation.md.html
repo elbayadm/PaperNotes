@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="rich-feature-hierarchies-for-accurate-object-detection-and-semantic-segmentation"><a href="http://www.cs.berkeley.edu/~rbg/#girshick2014rcnn">Rich feature hierarchies for accurate object detection and semantic segmentation</a></h2>
+<p>项目地址：https://github.com/rbgirshick/rcnn 论文地址：http://www.cs.berkeley.edu/~rbg/#girshick2014rcnn</p>
+<h2 id="系统简述"><strong><em>系统简述</em></strong></h2>
+<p align="center">
+<img src="http://i.imgur.com/owzgVal.png" width="600" >
+</p>
+<p><strong><em>很简单的框架</em></strong>:</p>
+<ol style="list-style-type: decimal">
+<li>用<strong><em>selective search</em></strong>代替传统的滑动窗口，提取出<strong><em>2k个候选region proposal</em></strong></li>
+<li>对于每个region，用<strong><em>摘掉了最后一层softmax层的AlexNet</em></strong>来提取<strong><em>特征</em></strong> 训练出来<strong><em>K个L-SVM作为分类器</em></strong>，使用AlexNet提取出来的<strong><em>特征</em></strong>作为输出，得到每个region属于<strong><em>某一类的得分</em></strong></li>
+<li>最后对每个类别用<strong><em>NMS</em></strong>来舍弃掉一部分region，得到detection的结果</li>
+</ol>
+<h2 id="object-detection-with-r-cnn"><strong><em>2 Object detection with R-CNN</em></strong></h2>
+<p>这部分对上面3个部分进行了更详细的介绍</p>
+<h3 id="model-design"><strong><em>2.1 Model design</em></strong></h3>
+<ol style="list-style-type: decimal">
+<li><strong><em>Region proposals</em></strong>:这部分是用来替代传统的sliding windows的，文中提到的方法有objectness，selective search，CPMC等。作者说他最后选择了selective search是为了后面方便做对比试验。</li>
+<li><strong><em>Feature extraction</em></strong>：也就是使用CNN，具体来说是AlexNet来提取特征，<strong><em>摘掉了最后一层softmax</em></strong>，利用前面5个卷积层和2个全连接层来提取特征，得到一个4096维的特征。一个值得注意的细节是<strong><em>如何将region缩放到CNN需要的227x227</em></strong>,作者是<strong><em>直接忽略aspect ratio之间缩放到227x227（含一个16宽度的边框）</em></strong>，这样的好处是稍微扩大region，将背景也包括进来来提供先验信息。</li>
+</ol>
+<h3 id="test-time-detection"><strong><em>2.2 Test-time detection</em></strong></h3>
+<p>略</p>
+<h3 id="training"><strong><em>2.3 Training</em></strong></h3>
+<ol style="list-style-type: decimal">
+<li><strong><em>Supervised pre-training</em></strong>： 先用imagenet120w的cls数据训练一个模型（出来的效果比alex差2%）</li>
+<li><strong><em>Domain-specific fine-tuning</em></strong>: 将上面训练出来的模型用到new task(dection)和new domain(warped region proposals)上，作者将最后一个softmax从1000路输出替换成了<strong><em>N+1路输出（N个类别+1背景）</em></strong>。然后将<strong><em>IoU大于50%的region当成正样本，否则是负样本</em></strong>。将fine-tuning学习率设置成pre-train模型中的1/10（目的是为了既能学到新东西但是不会完全否定旧的东西）。batch为128，其中正负样本比例是1:3。</li>
+<li><strong><em>Object category classifiters</em></strong>:选择SVM对每一类都做一个二分类，在选择样本的时候，区分正负样本的IoU取多少很重要，取IoU=0.5时候，mAP下降5%，取IoU=0，mAP下降4%，作者最后取了0.3，用的是grid search（应该算是穷举逼近的一种）。</li>
+</ol>
+<h2 id="visualzation-ablation-and-modes-of-error"><strong><em>3.Visualzation, ablation, and modes of error</em></strong></h2>
+<h2 id="visualzing-learned-feature"><strong><em>3.1 Visualzing learned feature</em></strong></h2>
+<p>核心思想是在pool5中一个神经元<strong><em>对应回去原图的227x227中的195x195个像素</em></strong>(术语是pool5神经元的感受野是195*195)。</p>
+<p>可视化的方法是将10M的region在训练好的网络中FP，然后看某个pool5中特定的神经元的激活程度并且给一个rank。出来的高分的图片如下图：</p>
+<p align="center">
+<img src="http://i.imgur.com/9WYwSB3.png" width="600" >
+</p>
+<h2 id="ablation-studies"><strong><em>Ablation Studies</em></strong></h2>
+<p align="center">
+<img src="http://i.imgur.com/KlFMvjT.png" width="600" >
+</p>
+<ul>
+<li><strong><em>Performance layer-by-layer, without fine tuning</em></strong>，这里想说明的是，用pool5，fc6，fc7的特征做SVM分类，出来的效果都差不多。作者得到的结论是：CNN的特征表达能力大部分是在卷积层。</li>
+<li><strong><em>Performance layer-by-layer, with fine tuning</em></strong>，这里想说明的是，pool5经过finetuning之后，mAP的提高不明显，所以卷积层提取出来的特征是具有普遍性的，而fc7经过finetuning后得到很大的提升，说明finetuning的效果主要是在全连接层上。</li>
+<li><strong><em>Comparision to recent feature learning methods</em></strong>,这里主要说明CNN的特征学习能力比其他方法要好。</li>
+</ul>
+<h2 id="detection-error-analysis"><strong><em>3.3 Detection error analysis</em></strong></h2>
+<p>用了一个工具来分析错误</p>
+<h2 id="boundary-box-regression"><strong><em>3.4 Boundary-box regression</em></strong></h2>
+<p>作者最后还是用了<strong><em>regression的方法来进一步定位物体的</em></strong>，这样子使得mAP提高了4个点。</p>
+<h2 id="appendix"><strong><em>Appendix</em></strong></h2>
+<h3 id="a.-object-proposal-transformations"><strong><em>A. Object proposal transformations</em></strong></h3>
+<p align="center">
+<img src="http://i.imgur.com/UH8E2ic.png" width="600" >
+</p>
+<p>用了不同的缩放方法，最后作者用的是（d）的第二列的方法，准确率的差别大概是3-5个mAP</p>
+<h3 id="b.-positive-vs.-negative-examples-and-softmax"><strong><em>B. Positive vs. Negative examples and softmax</em></strong></h3>
+<p>这里作者想讨论的是，为什么训练CNN时候和训练SVM时候，使用了不同的标准来定义正负样本。感觉还是调参调出来的。</p>
+<p>另外作者讨论了<strong><em>为什么最后用SVM替代softmax，因为效果会提升4个点</em></strong>，作者认为原因在于<strong><em>softmax中的背景样本是共享的，而SVM的背景样本是独立的</em></strong>，更加hard，所以能够带来更好的分类效果。</p>
+<h3 id="c.-bounding-box-regression"><strong><em>C. Bounding-box regression</em></strong></h3>
+<p>最后作者在<strong><em>region proposal中再次做了一个regression</em></strong>。（<strong><em>这是有道理的，因为当时生成样本时候加了一个16像素宽的padding，所以出来的detection bbox是偏大的，做regression刚好可以应付这个情况</em></strong>）</p>
+<h3 id="f.-analysis-of-cross-dataset-redundancy"><strong><em>F. Analysis of cross-dataset redundancy</em></strong></h3>
+<p>这里说明了VOC和imagenet数据的<strong><em>重叠是很小的</em></strong>，1%以下。</p>
+</body>
+</html>

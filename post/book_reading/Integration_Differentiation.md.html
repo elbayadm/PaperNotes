@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="数值积分和数值微分">数值积分和数值微分</h2>
+<p><span style="color:red"><strong><em>数值积分</em></strong></span></p>
+<p><span style="color:red"><strong><em>梯形法则(Trapezoidal rule)</em></strong></span></p>
+<p>梯形法则是：$ _{a}^{b} f(x), dx (b-a).$. 这等同将被积函数近似为直线函数，被积的部分近似为梯形。 <!-- <div class="Wrapper">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Trapezoidal_rule_illustration.png/220px-Trapezoidal_rule_illustration.png" alt="Smiley face" height="170" width="240" />
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Composite_trapezoidal_rule_illustration.png/220px-Composite_trapezoidal_rule_illustration.png" alt="Smiley face" height="170" width="240" />
+</div> --></p>
+<p>要求得较准确的数值，可以将要求积的区间分成多个小区间，再个别估计，即： <span class="math display">\[\int_a^b f(x)\,dx \approx \frac{b-a}{n} \left( {f(a) + f(b) \over 2} + \sum_{k=1}^{n-1} f \left( a+k \frac{b-a}{n} \right) \right)\]</span> 可改写成: <span class="math inline">\(\int_a^b f(x)\,dx \approx \frac{b-a}{2n} \left(f(x_0) + 2f(x_1) + 2f(x_2)+\cdots+2f(x_{n-1}) + f(x_n) \right)\)</span>, 其中 <span class="math inline">\(k=0, 1,..., n\)</span>，<span class="math inline">\(x_k=a+k \frac{b-a}{n}\)</span></p>
+<p><span style="color:red"><strong><em>辛普森法则(Simpson's rule)</em></strong></span></p>
+<p><span style="color:red"><strong><em>辛普森<span class="math inline">\(\frac{1}{3}\)</span>法则(单应用)</em></strong></span></p>
+<p><span class="math inline">\(\int_{a}^{b} f(x) \, dx \approx \ \int_{a}^{b} [\frac{(x-x_1)(x-x_2)}{(x_0-x_1)(x_0-x_2)}f(x_0)+\frac{(x-x_0)(x-x_2)}{(x_1-x_0)(x_1-x_2)}f(x_1)+\frac{(x-x_0)(x-x_1)}{(x_2-x_0)(x_2-x_1)}f(x_2)]dx\)</span></p>
+<p>$ _{a}^{b} f(x) , dx .$</p>
+<p><span style="color:red"><strong><em>辛普森<span class="math inline">\(\frac{1}{3}\)</span>法则(多应用)</em></strong></span></p>
+<p>$ _{a}^{b} f(x) , dx 2h+ 2h+...+ 2h.$</p>
+<p><span style="color:red"><strong><em>辛普森<span class="math inline">\(\frac{3}{8}\)</span>法则(应用)</em></strong></span></p>
+<p><span class="math inline">\(\int_a^b f(x) \, dx\approx \frac h3 \cdot \left[ f(x_0)+2\sum_{k=1}^{n-1}f(x_k)+4\sum_{k=1}^{n}f \left( \frac{x_{k-1}+x_k}2 \right)+ f(x_n) \right], \ h = \frac{b-a}{n}, \ x_k=a+k\cdot h.\)</span></p>
+<p><span style="color:red"><strong><em>牛顿-柯特斯公式(Newton-Cotes rule)</em></strong></span></p>
+<p><span class="math inline">\(\int_a^b f(x) \,dx \approx \sum_{i=0}^n w_i\, f(x_i)\)</span></p>
+<p>其中对<span class="math inline">\(k=0,1,...,n,w_i\)</span>是常数（由n的值决定），<span class="math inline">\(x_k=a+k \frac{b-a}{n}\)</span>。梯形法则和辛普森法则便是n=1,2的情况。</p>
+<p><span style="color:red"><strong><em>数值微分</em></strong></span></p>
+<p>数值微分利用泰勒级数展开推导出导数的有限差商逼近． <span class="math inline">\(f(x_{i+1})=f(x_i)+f&#39;(x_i)h+\frac{f&#39;&#39;(x_i)}{2}h^2+...\)</span> --&gt;</p>
+<p><span style="color:red"><strong><em>前向差商</em></strong></span> <img src="http://mathurl.com/zxt6rqj.png" /> <img src="http://mathurl.com/hus9nd5.png" /></p>
+<!-- $\begin{cases}
+f'(x_i)=\frac{f(x_{i+1})-f(x_i)}{h}\\
+f''(x_i)=\frac{f(x_{i+2})-2f(x_{i+1})+f(x_i)}{h^2}\\
+f'''(x_i)=\frac{f(x_{i+3})-3f(x_{i+2})+3f(x_{i+1})-f(x_i)}{2h^2}\\
+f''''(x_i)=\frac{f(x_{i+4})-4f(x_{i+3})+6f(x_{i+2})-4f(x_{i+1})+f(x_i)}{h^4}
+\end{cases}$, 误差$O(h)$ -->
+<!-- $\begin{cases}
+f'(x_i)=\frac{-f(x_{i+2})+4f(x_{i+1})-3f(x_i)}{2h}\\
+f''(x_i)=\frac{-f(x_{i+3})+4f(x_{i+2})-5f(x_{i+1})+2f(x_i)}{h^2}\\
+f'''(x_i)=\frac{-3f(x_{i+4})+14f(x_{i+3})-24f(x_{i+2})+18f(x_{i+1})-5f(x_i)}{2h^3}\\
+f''''(x_i)=\frac{-2f(x_{i+5})+11f(x_{i+4})-24f(x_{i+3})+26f(x_{i+2})-14f(x_{i+1})+3f(x_i)}{h^4}
+\end{cases}$, 误差$O(h^2)$ -->
+<p><span style="color:red"><strong><em>后向差商</em></strong></span></p>
+<p><img src="http://mathurl.com/zk9qe5y.png" /> <img src="http://mathurl.com/hnx7gl9.png" /> <!-- $\begin{cases}
+f'(x_i)=\frac{f(x_{i})-f(x_{i-1})}{h}\\
+f''(x_i)=\frac{f(x_{i})-2f(x_{i-1})+f(x_{i-2})}{h^2}\\
+f'''(x_i)=\frac{f(x_{i})-3f(x_{i-1})+3f(x_{i-2})-f(x_{i-3})}{2h^2}\\
+f''''(x_i)=\frac{f(x_{i})-4f(x_{i-1})+6f(x_{i-2})-4f(x_{i-3})+f(x_{i-4})}{h^4}
+\end{cases}$, 误差$O(h)$ --> <!-- $\begin{cases}
+f'(x_i)=\frac{-f(x_{i})+4f(x_{i-1})-3f(x_{i-2})}{2h}\\
+f''(x_i)=\frac{-f(x_{i})+4f(x_{i-1})-5f(x_{i-2})+2f(x_{i-3})}{h^2}\\
+f'''(x_i)=\frac{-3f(x_{i})+14f(x_{i-1})-24f(x_{i-2})+18f(x_{i-3})-5f(x_{i-4})}{2h^3}\\
+f''''(x_i)=\frac{-2f(x_{i})+11f(x_{i-1})-24f(x_{i-2})+26f(x_{i-3})-14f(x_{i-4})+3f(x_{i-5})}{h^4}
+\end{cases}$, 误差$O(h^2)$ --></p>
+<p><span style="color:red"><strong><em>中心有限差商</em></strong></span></p>
+<p><img src="http://mathurl.com/jft7hqc.png" /> <img src="http://mathurl.com/glreoj4.png" /> <!-- $\begin{cases}
+f'(x_i)=\frac{f(x_{i+1})-f(x_{i-1})}{2h}\\
+f''(x_i)=\frac{f(x_{i+1})-2f(x_{i})+f(x_{i-1})}{h^2}\\
+f'''(x_i)=\frac{f(x_{i+2})-2f(x_{i+1})+2f(x_{i-1})-f(x_{i-2})}{2h^2}\\
+f''''(x_i)=\frac{f(x_{i+2})-4f(x_{i+1})+6f(x_{i})-4f(x_{i-1})+f(x_{i-2})}{h^4}
+\end{cases}$, 误差$O(h)$
+$\begin{cases}
+f'(x_i)=\frac{-f(x_{i+2})+8f(x_{i+1})-8f(x_{i-1})+f(x_{i-2})}{12h}\\
+f''(x_i)=\frac{-f(x_{i+2})+16f(x_{i+1})-30f(x_{i})+16f(x_{i-1})-f(x_{i-2})}{12h^2}\\
+f'''(x_i)=\frac{-f(x_{i+3})+8f(x_{i+2})-13f(x_{i+1})+13f(x_{i-1})-8f(x_{i-2})+f(x_{i-3})}{8h^3}\\
+f''''(x_i)=\frac{-f(x_{i+3})+12f(x_{i+2})+39f(x_{i+1})+56f(x_{i})-39f(x_{i-1})+12f(x_{i-2})+f(x_{i-3})}{6h^4}
+\end{cases}$, 误差$O(h^2)$ --></p>
+<p><span style="color:red"><strong><em>如何推导梯形法则和2种辛普森法则，认识到梯形法则，辛普森1/3,3/8的计算分别表示一次，二次和三次插值多项式下的面积</em></strong></span></p>
+<p>Pass</p>
+<p><span style="color:red"><strong><em>认识到辛普森1/3虽然只用到3个求积点，但是具有4阶精度</em></strong></span></p>
+<p>辛普森1/3比梯形法则精确，且具有4阶精度。</p>
+<p><span style="color:red"><strong><em>为什么龙贝格积分，自适应积分都对函数有效</em></strong></span></p>
+</body>
+</html>

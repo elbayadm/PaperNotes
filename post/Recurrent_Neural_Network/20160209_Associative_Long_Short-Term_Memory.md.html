@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h1 id="associative-long-short-term-memorycode"><a href="https://arxiv.org/pdf/1602.03032.pdf">Associative Long Short-Term Memory</a>,<a href="https://github.com/mohammadpz/Associative_LSTM">Code</a></h1>
+<p>he authors propose Associate LSTMs, a combination of external memory based on Holographic Reduced Representations and LSTMs. The memory provides noisy key-value lookup based on matrix multiplications without introducing additional parameters. The authors evaluate their model on various sequence copying and memorization tasks, where it outperforms vanilla LSTMs and competing models with a similar number of parameters.</p>
+<h2 id="key-points">Key Points</h2>
+<ul>
+<li>Two limitations of LSTMs:</li>
+<li><ol style="list-style-type: decimal">
+<li>N cells require NxN weight matrices.</li>
+</ol></li>
+<li><ol start="2" style="list-style-type: decimal">
+<li>Lacks mechanism to index memory</li>
+</ol></li>
+<li>Idea of memory comes from &quot;Holographic Reduced Representations&quot; (Plate, 2003), but authors add multiple redundant memory copies to reduce noise.</li>
+<li>More copies of memory =&gt; Less noise during retrieval</li>
+<li>In the LSTM update equations input and output keys to the memory are computed</li>
+<li>Compared to: LSTM, Permutation LSTM, Unitary LSTM, Multiplicative Unitary LSTM</li>
+<li>Tasks: Episodic Copy, XML modeling, variable assignment, arithmetic, sequence prediction</li>
+</ul>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>Only brief comparison with Neural Turing Machines in appendix. Probably NTMs outperform this and are simpler. No comparison with attention mechanisms, memory networks, etc. Why?</li>
+<li>It's surprising to me that deep LSTM without any bells and whistles actually perform pretty well on many of the tasks. Is the additional complexity really worth it?</li>
+</ul>
+</body>
+</html>

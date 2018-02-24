@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="最大似然估计和贝叶斯参数估计">最大似然估计和贝叶斯参数估计</h2>
+<h3 id="最大似然估计"><span style="color:red"><strong><em>最大似然估计</em></strong></span></h3>
+<p>最大似然估计方法在训练样本增多时通常收敛得非常好，而且，最大似然估计方法通常比其他方法要简单． 基本原理: 假设样本集<span class="math inline">\(D\)</span>中有n个样本：<span class="math inline">\(x_1,x_2,...,x_n\)</span>.　由于这些样本是独立抽取的，因此下式成立： <span class="math display">\[p(D|\theta)=\bigcup_{k=1}^np(x_k|\theta)\]</span> 由于样本已知，可以把上式看作是参数向量<span class="math inline">\(\theta\)</span>的函数，被称为样本集Ｄ下的似然函数．根据定义，参数向量<span class="math inline">\(\theta\)</span>的最大似然估计，就是使<span class="math inline">\(p(x_k|\theta)\)</span>达到最大值的那个参数向量<span class="math inline">\(\theta\)</span>.</p>
+<h3 id="贝叶斯估计"><span style="color:red"><strong><em>贝叶斯估计</em></strong></span></h3>
+<p>使用Bayes公式，我们可以把我们关于<span class="math inline">\(\theta\)</span>的先验知识以及在观察数据结合起来，用以确定<span class="math inline">\(\theta\)</span>的后验概率<span class="math inline">\(p(\theta|\mathcal{D})\)</span>：</p>
+<p><span class="math inline">\(p(\theta|\mathcal{D})=\frac{1}{Z_D}p(\mathcal{D}|\theta)p(\theta)\)</span></p>
+<p>其中<span class="math inline">\(Z_D=\int_{\theta} {p(\mathcal{D}|\theta)p(\theta)}\,\mathrm{d}\theta\)</span>是累积因子，以保证<span class="math inline">\(p(\theta|\mathcal{D})\)</span>和为1。要使用Bayes方法，我们需有关于<span class="math inline">\(\theta\)</span>的先验知识，即不同取值的概率<span class="math inline">\(p(\theta)\)</span>。比如<span class="math inline">\(\theta=1\)</span>表示下雨，<span class="math inline">\(\theta=0\)</span>表示不下雨，根据以往的经验我们大体上有<span class="math inline">\(P(\theta=1)=0.01\)</span>、<span class="math inline">\(P(\theta=0)=0.99\)</span>，在这种知识不足的时候，可以假设<span class="math inline">\(\theta\)</span>是均匀分布的，即取各值的概率相等。</p>
+<p>在某个确定的<span class="math inline">\(\theta\)</span>取值下，事件x的概率就是<span class="math inline">\(p(x|\theta)\)</span>，这是关于<span class="math inline">\(\theta\)</span>的函数，比如一元正态分布<span class="math inline">\(p(x|\theta)=\frac{1}{\sqrt{2\pi}}exp(-\frac{(x-\theta)^2}{2})\)</span>。与上一节中的一样，我们认为各次取样是独立的，<span class="math inline">\(p(\mathcal{D}|\theta)\)</span>可以分开来写，这样我们就可以得到<span class="math inline">\(p(\theta|\mathcal{D})\)</span>的一个表达式，不同的<span class="math inline">\(\theta\)</span>对应不同的值。</p>
+<p>根据获得的<span class="math inline">\(p(\theta|\mathcal{D})\)</span>，我们边可以取使其最大化的那个<span class="math inline">\(\theta\)</span>取值，记为<span class="math inline">\(\theta_{B}^{*}\)</span>。可能有人已经看出问题来了：我们做了很多额外功，为了求得一个<span class="math inline">\(\theta_{B}^{*}\)</span>，我们把<span class="math inline">\(\theta\)</span>取其它值的情况也考虑了。当然在有的时候<span class="math inline">\(p(\theta|\mathcal{D})\)</span>分布是有用的，但是有的时候我们取并不需要知道<span class="math inline">\(p(\theta|\mathcal{D})\)</span>，我们只要那个<span class="math inline">\(\theta_{B}^{*}\)</span>。最大后验估计这个时候就上场了。</p>
+<h3 id="贝叶斯参数估计高斯情况"><span style="color:red"><strong><em>贝叶斯参数估计：高斯情况</em></strong></span></h3>
+<h3 id="贝叶斯参数估计一般理论"><span style="color:red"><strong><em>贝叶斯参数估计：一般理论</em></strong></span></h3>
+<h3 id="充分统计量"><span style="color:red"><strong><em>充分统计量</em></strong></span></h3>
+<h3 id="维数问题"><span style="color:red"><strong><em>维数问题</em></strong></span></h3>
+<h3 id="成分分析与判别函数"><span style="color:red"><strong><em>成分分析与判别函数</em></strong></span></h3>
+<p>PCA（Principal Component Analysis）是一种常用的数据分析方法。<span style="color:red"><strong><em>PCA通过线性变换将原始数据变换为一组各维度线性无关的表示</em></strong></span>，可用于<span style="color:red"><strong><em>提取数据的主要特征分量</em></strong></span>，常用于高维数据的降维。网上关于PCA的文章有很多，但是大多数只描述了PCA的分析过程，而没有讲述其中的原理。这篇文章的目的是介绍PCA的基本数学原理，帮助读者了解PCA的工作机制是什么。</p>
+<ol style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>数据的向量表示及降维问题</em></strong></span></li>
+</ol>
+<p>一般情况下，在数据挖掘和机器学习中，数据被表示为向量。例如某个淘宝店2012年全年的流量及交易情况可以看成一组记录的集合，其中每一天的数据是一条记录，格式如下： <em>(日期, 浏览量, 访客数, 下单数, 成交数, 成交金额)</em></p>
+<p>其中“日期”是一个记录标志而非度量值，而数据挖掘关心的大多是度量值，因此如果我们忽略日期这个字段后，我们得到一组记录，每条记录可以被表示为一个五维向量，其中一条看起来大约是这个样子：<span class="math inline">\((500,240,25,13,2312.15)^T\)</span></p>
+<p>注意这里我用了转置，因为习惯上使用<span style="color:red"><strong><em>列向量表示一条记录（后面会看到原因）</em></strong></span>，本文后面也会遵循这个准则。不过为了方便有时我会省略转置符号，但我们说到向量默认都是指列向量。</p>
+<p>我们当然可以对这一组五维向量进行分析和挖掘，不过我们知道，很多机器学习算法的复杂度和数据的维数有着密切关系，甚至与维数呈指数级关联。当然，这里区区五维的数据，也许还无所谓，但是实际机器学习中处理成千上万甚至几十万维的情况也并不罕见，在这种情况下，机器学习的资源消耗是不可接受的，因此我们必须对数据进行降维。</p>
+<p>降维当然意味着信息的丢失，不过鉴于实际数据本身常常存在的相关性，我们可以想办法在降维的同时将信息的损失尽量降低。</p>
+<p><em>举个例子，假如某学籍数据有两列M和F，其中M列的取值是如何此学生为男性取值1，为女性取值0；而F列是学生为女性取值1，男性取值0。此时如果我们统计全部学籍数据，会发现对于任何一条记录来说，当M为1时F必定为0，反之当M为0时F必定为1。在这种情况下，我们将M或F去掉实际上没有任何信息的损失，因为只要保留一列就可以完全还原另一列。</em></p>
+<p>当然上面是一个极端的情况，在现实中也许不会出现，不过类似的情况还是很常见的。例如上面淘宝店铺的数据，从经验我们可以知道，“浏览量”和“访客数”往往具有较强的相关关系，而“下单数”和“成交数”也具有较强的相关关系。这里我们非正式的使用“相关关系”这个词，可以直观理解为“当某一天这个店铺的浏览量较高（或较低）时，我们应该很大程度上认为这天的访客数也较高（或较低）”。后面的章节中我们会给出相关性的严格数学定义。</p>
+<p>这种情况表明，如果我们删除浏览量或访客数其中一个指标，我们应该期待并不会丢失太多信息。因此我们可以删除一个，以降低机器学习算法的复杂度。</p>
+<p>上面给出的是降维的朴素思想描述，可以有助于直观理解降维的动机和可行性，但并不具有操作指导意义。例如，我们到底删除哪一列损失的信息才最小？亦或根本不是单纯删除几列，而是通过某些变换将原始数据变为更少的列但又使得丢失的信息最小？到底如何度量丢失信息的多少？如何根据原始数据决定具体的降维操作步骤？</p>
+<p>要回答上面的问题，就要对降维问题进行数学化和形式化的讨论。而PCA是一种具有严格数学基础并且已被广泛采用的降维方法。下面我不会直接描述PCA，而是通过逐步分析问题，让我们一起重新“发明”一遍PCA。</p>
+<ol start="2" style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>向量的表示及基变换</em></strong></span></li>
+</ol>
+<p>既然我们面对的数据被抽象为一组向量，那么下面有必要研究一些向量的数学性质。而这些数学性质将成为后续导出PCA的理论基础。</p>
+<p><span style="color:red"><strong><em>内积与投影</em></strong></span>: 下面先来看一个高中就学过的向量运算：内积。两个维数相同的向量的内积被定义为：<span class="math inline">\((a_1,a_2,...,a_n)^T.(b_1,b_2,...,b_n)^{T}=a_1b_1+a_2b_2+...+a_n b_n\)</span></p>
+内积运算将两个向量映射为一个实数。其计算方式非常容易理解，但是其意义并不明显。下面我们分析内积的几何意义。假设A和B是两个n维向量，我们知道n维向量可以等价表示为n维空间中的一条从原点发射的有向线段，为了简单起见我们假设A和B均为二维向量，则<span class="math inline">\(A=(x_1,y_1)\)</span>, <span class="math inline">\(B=(x_2,y_2)\)</span>. 则在二维平面上A和B可以用两条发自原点的有向线段表示，见下图：
+<p align="center">
+<img src="http://blog.codinglabs.org/uploads/pictures/pca-tutorial/01.png" width="300" >
+</p>
+<p>好，现在我们从A点向B所在直线引一条垂线。我们知道垂线与B的交点叫做A在B上的投影，再设A与B的夹角是a，则投影的矢量长度为<span class="math inline">\(|A|cos(a)\)</span>, 其中<span class="math inline">\(|A|=\sqrt{x_1^2+y_1^2}\)</span>是向量A的模，也就是A线段的标量长度。</p>
+<p><span style="color:red"><em>注意这里我们专门区分了矢量长度和标量长度，标量长度总是大于等于0，值就是线段的长度；而矢量长度可能为负，其绝对值是线段长度，而符号取决于其方向与标准方向相同或相反。</em></span></p>
+<p>到这里还是看不出内积和这东西有什么关系，不过如果我们将内积表示为另一种我们熟悉的形式：<span class="math inline">\(A\cdot B=|A||B|cos(a)\)</span>. 现在事情似乎是有点眉目了：A与B的内积等于A到B的投影长度乘以B的模。再进一步，如果我们假设B的模为1，即让<span class="math inline">\(|B|=1\)</span>，那么就变成了：<span class="math inline">\(A\cdot B=|A|cos(a)\)</span>, 也就是说，设向量B的模为1，则A与B的内积值等于A向B所在直线投影的矢量长度！这就是内积的一种几何解释，也是我们得到的第一个重要结论。在后面的推导中，将反复使用这个结论。</p>
+<span style="color:red"><strong><em>基</em></strong></span>: 下面我们继续在二维空间内讨论向量。上文说过，一个二维向量可以对应二维笛卡尔直角坐标系中从原点出发的一个有向线段。例如下面这个向量：
+<p align="center">
+<img src="http://blog.codinglabs.org/uploads/pictures/pca-tutorial/02.png" width="300" >
+</p>
+<p>在代数表示方面，我们经常用线段终点的点坐标表示向量，例如上面的向量可以表示为(3,2)，这是我们再熟悉不过的向量表示。</p>
+<p>不过我们常常忽略，只有一个(3,2)本身是不能够精确表示一个向量的。我们仔细看一下，这里的3实际表示的是向量在x轴上的投影值是3，在y轴上的投影值是2。也就是说我们其实隐式引入了一个定义：以x轴和y轴上正方向长度为1的向量为标准。那么一个向量(3,2)实际是说在x轴投影为3而y轴的投影为2。注意投影是一个矢量，所以可以为负。</p>
+<p>更正式的说，向量(x,y)实际上表示线性组合：<span class="math inline">\(x(1,0)^{T}+y(0,1)^{T}\)</span></p>
+不难证明所有二维向量都可以表示为这样的线性组合。此处(1,0)和(0,1)叫做二维空间中的一组基。
+<p align="center">
+<img src="http://blog.codinglabs.org/uploads/pictures/pca-tutorial/03.png" width="300" >
+</p>
+<p>所以，<span style="color:red"><strong><em>要准确描述向量，首先要确定一组基，然后给出在基所在的各个直线上的投影值，就可以了</em></strong></span>。只不过我们经常省略第一步，而默认以(1,0)和(0,1)为基。</p>
+<p>我们之所以默认选择(1,0)和(0,1)为基，当然是比较方便，因为它们分别是x和y轴正方向上的单位向量，因此就使得二维平面上点坐标和向量一一对应，非常方便。但实际上任何两个线性无关的二维向量都可以成为一组基，所谓线性无关在二维平面内可以直观认为是两个不在一条直线上的向量。</p>
+<p>例如，(1,1)和(-1,1)也可以成为一组基。一般来说，我们希望基的模是1，因为从内积的意义可以看到，如果基的模是1，那么就可以方便的用向量点乘基而直接获得其在新基上的坐标了！实际上，对应任何一个向量我们总可以找到其同方向上模为1的向量，只要让两个分量分别除以模就好了。例如，上面的基可以变为 <span class="math inline">\((\frac{1}{\sqrt{2}},\frac{1}{\sqrt{2}})\)</span>和<span class="math inline">\((-\frac{1}{\sqrt{2}},\frac{1}{\sqrt{2}})\)</span>.</p>
+现在，我们想获得(3,2)在新基上的坐标，即在两个方向上的投影矢量值，那么根据内积的几何意义，我们只要分别计算(3,2)和两个基的内积，不难得到新的坐标为<span class="math inline">\((\frac{5}{\sqrt{2}},-\frac{1}{\sqrt{2}})\)</span>, 下图给出了新的基以及(3,2)在新基上坐标值的示意图：
+<p align="center">
+<img src="http://blog.codinglabs.org/uploads/pictures/pca-tutorial/05.png" width="300" >
+</p>
+<p>另外这里要注意的是，我们列举的例子中基是<span style="color:red"><strong><em>正交的</em></strong></span>（即内积为0，或直观说相互垂直），<span style="color:red"><strong><em>但可以成为一组基的唯一要求就是线性无关，非正交的基也是可以的</em></strong></span>。不过因为正交基有较好的性质，所以一般使用的基都是正交的。</p>
+<p><span style="color:red"><strong><em>基变换的矩阵表示</em></strong></span>: 下面我们找一种简便的方式来表示基变换。还是拿上面的例子，想一下，将(3,2)变换为新基上的坐标，就是用(3,2)与第一个基做内积运算，作为第一个新的坐标分量，然后用(3,2)与第二个基做内积运算，作为第二个新坐标的分量。实际上，我们可以用矩阵相乘的形式简洁的表示这个变换：<span class="math inline">\(\begin{pmatrix}  1/\sqrt{2} &amp; 1/\sqrt{2} \\  -1/\sqrt{2} &amp; 1/\sqrt{2} \end{pmatrix} \begin{pmatrix}  3 \\  2 \end{pmatrix} = \begin{pmatrix}  5/\sqrt{2} \\  -1/\sqrt{2} \end{pmatrix}\)</span>. 于是一组向量的基变换被干净的表示为矩阵的相乘。</p>
+<p><span style="color:red"><strong><em>一般的，如果我们有M个N维向量，想将其变换为由R个N维向量表示的新空间中，那么首先将R个基按行组成矩阵A，然后将向量按列组成矩阵B，那么两矩阵的乘积AB就是变换结果，其中AB的第m列为A中第m列变换后的结果。</em></strong></span></p>
+<p>数学表示为：<span class="math inline">\(\begin{pmatrix}  p_1 \\  p_2 \\  \vdots \\  p_R \end{pmatrix} \begin{pmatrix}  a_1 &amp; a_2 &amp; \cdots &amp; a_M \end{pmatrix} = \begin{pmatrix}  p_1a_1 &amp; p_1a_2 &amp; \cdots &amp; p_1a_M \\  p_2a_1 &amp; p_2a_2 &amp; \cdots &amp; p_2a_M \\  \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\  p_Ra_1 &amp; p_Ra_2 &amp; \cdots &amp; p_Ra_M \end{pmatrix}\)</span></p>
+<p>其中<span class="math inline">\(p_i\)</span>是一个行向量，表示第i个基，<span class="math inline">\(a_j\)</span>是一个列向量，表示第j个原始数据记录。 特别要注意的是，<span style="color:red"><strong><em>这里R可以小于N，而R决定了变换后数据的维数</em></strong></span>。也就是说，我们可以将一N维数据变换到更低维度的空间中去，变换后的维度取决于基的数量。因此这种矩阵相乘的表示也可以表示降维变换。</p>
+<p>最后，上述分析同时给矩阵相乘找到了一种物理解释：两个矩阵相乘的意义是将右边矩阵中的每一列列向量变换到左边矩阵中每一行行向量为基所表示的空间中去。更抽象的说，一个矩阵可以表示一种线性变换。很多同学在学线性代数时对矩阵相乘的方法感到奇怪，但是如果明白了矩阵相乘的物理意义，其合理性就一目了然了。</p>
+<ol start="3" style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>协方差矩阵及优化目标</em></strong></span></li>
+</ol>
+<p>上面我们讨论了选择不同的基可以对同样一组数据给出不同的表示，而且如果基的数量少于向量本身的维数，则可以达到降维的效果。但是我们还没有回答一个最最关键的问题：<span style="color:red"><strong><em>如何选择基才是最优的。或者说，如果我们有一组N维向量，现在要将其降到K维（K小于N），那么我们应该如何选择K个基才能最大程度保留原有的信息？</em></strong></span></p>
+<p>要完全数学化这个问题非常繁杂，这里我们用一种非形式化的直观方法来看这个问题。 了避免过于抽象的讨论，我们仍以一个具体的例子展开。假设我们的数据由五条记录组成，将它们表示成矩阵形式：<span class="math inline">\(\begin{pmatrix}  1 &amp; 1 &amp; 2 &amp; 4 &amp; 2 \\  1 &amp; 3 &amp; 3 &amp; 4 &amp; 4 \end{pmatrix}\)</span></p>
+<p>其中每一列为一条数据记录，而一行为一个字段。为了后续处理方便，我们首先将每个字段内所有值都减去字段均值，其结果是将每个字段都变为均值为0（这样做的道理和好处后面会看到）。 我们看上面的数据，第一个字段均值为2，第二个字段均值为3，所以变换后：<span class="math inline">\(\begin{pmatrix}  -1 &amp; -1 &amp; 0 &amp; 2 &amp; 0 \\  -2 &amp; 0 &amp; 0 &amp; 1 &amp; 1 \end{pmatrix}\)</span></p>
+我们可以看下五条数据在平面直角坐标系内的样子：
+<p align="center">
+<img src="http://blog.codinglabs.org/uploads/pictures/pca-tutorial/06.png" width="300" >
+</p>
+<p><span style="color:red"><strong><em>现在问题来了：如果我们必须使用一维来表示这些数据，又希望尽量保留原始的信息，你要如何选择？</em></strong></span></p>
+<p>通过上一节对基变换的讨论我们知道，这个问题实际上是要在二维平面中选择一个方向，将所有数据都投影到这个方向所在直线上，用投影值表示原始记录。这是一个实际的二维降到一维的问题。</p>
+<p>那么如何选择这个方向（或者说基）才能尽量保留最多的原始信息呢？<span style="color:red"><strong><em>一种直观的看法是：希望投影后的投影值尽可能分散。</em></strong></span></p>
+<p>以上图为例，可以看出如果向x轴投影，那么最左边的两个点会重叠在一起，中间的两个点也会重叠在一起，于是本身四个各不相同的二维点投影后只剩下两个不同的值了，这是一种严重的信息丢失，同理，如果向y轴投影最上面的两个点和分布在x轴上的两个点也会重叠。所以看来x和y轴都不是最好的投影选择。我们直观目测，如果向通过第一象限和第三象限的斜线投影，则五个点在投影后还是可以区分的。</p>
+<p>下面，我们用数学方法表述这个问题。</p>
+<p><span style="color:red"><strong><em>方差</em></strong></span> 上文说到，我们希望投影后投影值尽可能分散，而这种分散程度，可以用数学上的方差来表述。此处，一个字段的方差可以看做是每个元素与字段均值的差的平方和的均值，即：<span class="math inline">\(Var(a)=\frac{1}{m}\sum_{i=1}^m{(a_i-\mu)^2}\)</span>, 或者表示为方差是各个样本与样本均值的差的平方和的均值：<span class="math inline">\(s^2 = \frac {\sum_{i=1}^n {{(X_i-\bar X)}^2}} {n-1}\)</span>.</p>
+<p>由于上面我们已经将每个字段的均值都化为0了，因此方差可以直接用每个元素的平方和除以元素个数表示：<span class="math inline">\(Var(a)=\frac{1}{m}\sum_{i=1}^m{a_i^2}\)</span> 于是上面的问题被形式化表述为：<span style="color:red"><strong><em>寻找一个一维基，使得所有数据变换为这个基上的坐标表示后，方差值最大。</em></strong></span></p>
+<p><span style="color:red"><strong><em>特征向量和特征值</em></strong></span></p>
+<p>向量是具有大小（magnitude）和方向（direction）的几何概念。特征向量（eigenvector）是一个矩阵的满足如下公式的非零向量：<span class="math inline">\(A \vec \nu = \lambda \vec \nu\)</span>.</p>
+<p>其中， <span class="math inline">\(\vec \nu\)</span>是特征向量， <span class="math inline">\(A\)</span> 是方阵， <span class="math inline">\(\lambda\)</span> 是特征值。经过 <span class="math inline">\(A\)</span> 变换之后，<span style="color:red"><strong><em>特征向量的方向保持不变，只是其大小发生了特征值倍数的变化</em></strong></span>。也就是说，一个特征向量左乘一个矩阵之后等于等比例放缩（scaling）特征向量。德语单词eigen的意思是属于...或...专有（ belonging to or peculiar to）；矩阵的特征向量是属于并描述数据集结构的向量。</p>
+<p>特征向量和特征值只能由方阵得出，且并非所有方阵都有特征向量和特征值。如果一个矩阵有特征向量和特征值，那么它的每个维度都有一对特征向量和特征值。<span style="color:red"><strong><em>矩阵的主成分是其协方差矩阵的特征向量，按照对应的特征值大小排序。最大的特征值就是第一主成分，第二大的特征值就是第二主成分，以此类推</em></strong></span>。</p>
+<p>让我们来计算下面矩阵的特征向量和特征值：<span class="math inline">\(A= \begin{bmatrix} 1 &amp; -2 \\ 2 &amp; -3 \\ \end{bmatrix}\)</span></p>
+<p>根据前面的公式 A 乘以特征向量，必然等于特征值乘以特征向量。我们建立特征方程求解：<span class="math inline">\((A- \lambda I) \vec \nu=0\)</span>, <span class="math inline">\(|A-\lambda * I| = \begin{vmatrix} \begin{bmatrix} 1 &amp; -2 \\ 2 &amp; -3 \end{bmatrix} - \begin{bmatrix} \lambda &amp; 0 \\ 0 &amp; \lambda \end{bmatrix} \end{vmatrix} = 0\)</span></p>
+<p>从特征方程可以看出，矩阵与单位矩阵和特征值乘积的矩阵行列式为0：<span class="math inline">\(\begin{vmatrix} \begin{bmatrix} 1-\lambda &amp; -2 \\ 2 &amp; -3-\lambda \\ \end{bmatrix} \end{vmatrix} =(\lambda+1)(\lambda+1) = 0\)</span>, 矩阵的两个特征值都等于-1。现在再用特征值来解特征向量。<span class="math inline">\(A \vec \nu = \lambda \vec \nu\)</span> ，我们用特征方程：<span class="math inline">\((A- \lambda I) \vec \nu=0\)</span> 把数据带入：<span class="math inline">\(\begin{pmatrix} \begin{bmatrix} 1 &amp; -2 \\ 2 &amp; -3 \end{bmatrix} - \begin{bmatrix} \lambda &amp; 0 \\ 0 &amp; \lambda \end{bmatrix} \end{pmatrix} \vec \nu = \begin{bmatrix} 1-\lambda &amp; -2 \\ 2 &amp; -3-\lambda \end{bmatrix} \vec \nu = \begin{bmatrix} 1-\lambda &amp; -2 \\ 2 &amp; -3-\lambda \\ \end{bmatrix} \begin{bmatrix} \nu_{1,1} \\ \nu_{1,2} \end{bmatrix} =0\)</span></p>
+<p>可以重新整理成如下方程：<span class="math inline">\(\begin{Bmatrix} 2\nu{1,1} + -(2\nu{1,2})=0 \ 2\nu{1,1} + -(2\nu{1,2})=0 \ \end{Bmatrix}\)</span></p>
+<p>任何满足方程的非零向量都可以作为特征向量： <span class="math inline">\(\begin{bmatrix} 1 &amp; -2 \\ 2 &amp; -3 \end{bmatrix} \begin{bmatrix} 1 \\ 1 \end{bmatrix}=\begin{bmatrix}-1 \\-1\end{bmatrix}\)</span></p>
+<p>PCA需要单位特征向量，也就是L2范数等于1的特征向量：<span class="math inline">\(\begin{Vmatrix} x \\ \end{Vmatrix} = \sqrt {x_1^2 + x_2^2 + ... + x_n^2}\)</span></p>
+<p>那么把前面的特征向量带入可得：<span class="math inline">\(\begin{Vmatrix} \begin{bmatrix} 1 \\ 1 \\ \end{bmatrix} \end{Vmatrix} = \sqrt {1^2+1^2} = \sqrt 2\)</span></p>
+<p>于是单位特征向量是：<span class="math inline">\(\begin{bmatrix} 1 \\ 1 \\ \end{bmatrix} / {\sqrt 2} = \begin{bmatrix} 0.70710678 \\ 0.70710678 \\ \end{bmatrix}\)</span></p>
+<p><span style="color:red"><strong><em>协方差</em></strong></span> 对于上面二维降成一维的问题来说，找到那个使得方差最大的方向就可以了。不过对于更高维，还有一个问题需要解决。考虑三维降到二维问题。与之前相同，首先我们希望找到一个方向使得投影后方差最大，这样就完成了第一个方向的选择，继而我们选择第二个投影方向。</p>
+<p>如果我们还是单纯只选择方差最大的方向，很明显，这个方向与第一个方向应该是“几乎重合在一起”，显然这样的维度是没有用的，因此，应该有其他约束条件。从直观上说，<span style="color:red"><strong><em>让两个字段尽可能表示更多的原始信息，我们是不希望它们之间存在（线性）相关性的，因为相关性意味着两个字段不是完全独立，必然存在重复表示的信息</em></strong></span>。</p>
+<p>数学上可以用两个字段的协方差表示其相关性，由于已经让每个字段均值为0，则： <span class="math inline">\(Cov(a,b)=\frac{1}{m}\sum_{i=1}^m{a_ib_i}\)</span> <span class="math inline">\(Cov(X,Y)=\frac {\sum_{i=1}^n {(X_i-\bar X)(X_i-\bar Y)}} {n-1}\)</span> 可以看到，在字段均值为0的情况下，两个字段的协方差简洁的表示为其内积除以元素数m。</p>
+<p>当协方差为0时，表示两个字段完全独立(注意两个无关的变量并非完全独立，只是没有线性相关性而已)。 如果协方差不为0，如果大于0表示正相关，小于0表示负相关。当协方差大于0时，一个变量增大是另一个变量也会增大。当协方差小于0时，一个变量增大是另一个变量会减小。协方差矩阵（Covariance matrix）由数据集中两两变量的协方差组成。矩阵的第 (i,j)个元素是数据集中第 i和第 j个元素的协方差。例如，三维数据的协方差矩阵如下所示:<span class="math inline">\(C= \begin{bmatrix} cov(x_1,x_1) &amp; cov(x_1,x_2) &amp; cov(x_1,x_3)\\ cov(x_2,x_1) &amp; cov(x_2,x_2) &amp; cov(x_2,x_3)\\ cov(x_3,x_1) &amp; cov(x_3,x_2) &amp; cov(x_3,x_3) \end{bmatrix}\)</span></p>
+<p>为了让协方差为0，我们选择第二个基时只能在与第一个基正交的方向上选择。因此最终选择的两个方向一定是正交的。</p>
+<p>至此，我们得到了降维问题的优化目标：<span style="color:red"><strong><em>将一组N维向量降为K维（K大于0，小于N），其目标是选择K个单位（模为1）正交基，使得原始数据变换到这组基上后，各字段两两间协方差为0，而字段的方差则尽可能大（在正交的约束下，取最大的K个方差）</em></strong></span>。</p>
+<p><span style="color:red"><strong><em>协方差矩阵</em></strong></span> 面我们导出了优化目标，但是这个目标似乎不能直接作为操作指南（或者说算法），因为它只说要什么，但根本没有说怎么做。所以我们要继续在数学上研究计算方案。</p>
+<p>我们看到，最终要达到的目的与字段内方差及字段间协方差有密切关系。因此我们希望能将两者统一表示，仔细观察发现，两者均可以表示为内积的形式，而内积又与矩阵相乘密切相关。于是我们来了灵感：</p>
+<p>假设我们只有a和b两个字段，那么我们将它们按行组成矩阵X：<span class="math inline">\(X=\begin{pmatrix}  a_1 &amp; a_2 &amp; \cdots &amp; a_m \\  b_1 &amp; b_2 &amp; \cdots &amp; b_m \end{pmatrix}\)</span></p>
+<p>然后我们用X乘以X的转置，并乘上系数1/m：<span class="math inline">\(\frac{1}{m}XX^{T}=\begin{pmatrix}  \frac{1}{m}\sum_{i=1}^m{a_i^2} &amp; \frac{1}{m}\sum_{i=1}^m{a_ib_i} \\  \frac{1}{m}\sum_{i=1}^m{a_ib_i} &amp; \frac{1}{m}\sum_{i=1}^m{b_i^2} \end{pmatrix}\)</span></p>
+<p>奇迹出现了！这个矩阵对角线上的两个元素分别是两个字段的方差，而其它元素是a和b的协方差。两者被统一到了一个矩阵的。</p>
+<p>根据矩阵相乘的运算法则，这个结论很容易被推广到一般情况：</p>
+<p>设我们有m个n维数据记录，将其按列排成n乘m的矩阵X，设<span class="math inline">\(C=\frac{1}{m}XX^{T}\)</span>，则C是一个对称矩阵，其对角线分别个各个字段的方差，而第i行j列和j行i列元素相同，表示i和j两个字段的协方差。</p>
+<p><span style="color:red"><strong><em>再说协方差矩阵</em></strong></span> 协方差矩阵: <span class="math inline">\(\Sigma=\frac{1}{m}\Sigma_{i=1}^{m}(x^{(i)})(x^{(i)})^{T}\)</span> 为什么要算协方差矩阵呢？我们来看看这个算出来的矩阵（我们称这个矩阵为A）包含了些什么东西在里面</p>
+<p><span class="math inline">\(\begin{bmatrix} \sum_{i=1}^{m}x_1^{(i)}x_1^{(i)} &amp; \sum_{i=1}^{m}x_1^{(i)}x_2^{(i)} &amp; ... &amp; \sum_{i=1}^{m}x_1^{(i)}x_n^{(i)} \\ \sum_{i=1}^{m}x_2^{(i)}x_1^{(i)} &amp; \sum_{i=1}^{m}x_2^{(i)}x_2^{(i)} &amp; ... &amp; \sum_{i=1}^{m}x_2^{(i)}x_n^{(i)} \\ ... &amp; ... &amp; ... &amp; ... \\ \sum_{i=1}^{m}x_n^{(i)}x_1^{(i)} &amp; \sum_{i=1}^{m}x_n^{(i)}x_2^{(i)} &amp; ... &amp; \sum_{i=1}^{m}x_n^{(i)}x_n^{(i)} \end{bmatrix}= \begin{bmatrix} x_1*x_1^{T} &amp; x_1*x_2^{T} &amp; ... &amp; x_1*x_n^{T} \\ x_2*x_1^{T} &amp; x_2*x_2^{T} &amp; ... &amp; x_2*x_n^{T} \\ ... &amp; ... &amp; ... &amp; ... \\ x_n*x_1^{T} &amp; x_n*x_2^{T} &amp; ... &amp; x_n*x_n^{T} \end{bmatrix}\)</span></p>
+<p>这个矩阵是什么特点呢？ <span style="color:red"><strong><em>这个协方差矩阵是一个对称矩阵。</em></strong></span></p>
+<p>什么？费劲画了这么多知道是对称矩阵又如何？先不用急，先考虑一下 PCA 的目的是什么。</p>
+<p>PCA 主要目的是降维处理数据，方便各种算法，能够快速处理。在一个样本中，并不是所有的 feature 都同等重要，甚至有时候，有的 feature 根本就没有用 （比如 feature <span class="math inline">\(x_2 = 2 * x_1\)</span>）, 这个时候，实际上 feature x2的引入并没有实际意义。那么 PCA 正是试图去掉这样的一些 feature，并同时最小化信息丢失。</p>
+<p>说得好听？怎么才能“最小化信息的丢失”？这里用到线性变换，全部都是线性代数上的知识。首先，将每个样本看做是一个 n 维向量。想想一下二维空间中得一个向量，经过坐标变换可以得到另外一组坐标；n 维向量也可以通过线性变换得到另外一个向量。如果在变换过程中能够依次找到一个一个的基，在第一个基上，所有样本在其上的投影最长（最能区分不同的样本），第二个基，在垂直于第一个基（内积为0）的所有基的基础上，寻找哪个投影次长的基，第三个基在垂直于前两个基的基础上寻找，以此类推。当我们能够找到 n 个基，在他们上面的投影（l1,l2,l3,…,ln）即与原始的（x1,x2,x3,…,xn）相互对应。但是我们的目的是降维，比如从 n 维降低到 k（ 1&lt;=k&lt;n），我们找到的 n 各基，是按照重要程度以此下来的，因此或许找到第 K 的基，在基1,2,…,K上的线性变换或许就可以满足精度需要。</p>
+<p>那么这与协方差矩阵有啥关系呢？观察这个协方差矩阵，假设此时的x1,x2,…,xn已经是按照我们找到的这一组基变换后的值。那么对角线上，<span class="math inline">\(x_i*x_i^{T}\)</span> (1=&lt;i &lt;=n) 就是方差的一个变异形式，描述了在这个基上面的分散程度，我们希望其能够最大化，这也正是我们刚才找到的那一组基的目的。因此，这两个目标是一致的。</p>
+<p>观察上三角区与下三角区，<span class="math inline">\(x_i*x_j\)</span> (1=&lt;i != j &lt;=n) 是不同 feature 之间的协方差。在降维的时候，我们希望选择的各个基之间是线性无关的，也就是互相正交的。因此x1,x2,…,xn这些在各个基上的投影也应该满足<span class="math inline">\(X_i*X_j=0\)</span>=0,或者说让这个值尽量的趋近于零。 于是，我们的目标实际上就是对A进行对角化。</p>
+<p><span style="color:red"><strong><em>协方差矩阵对角化</em></strong></span> 对角化处理在Python中对应的函数有:numpy.linalg.svd，它用来生成特征向量与特征值。<span class="math inline">\(U,S,V=np.linalg.svd(A)\)</span></p>
+<p>矩阵对角化在线性代数上是求得特征向量（U）(确切的说，应该是特征向量对应的标准正交基)和特征值（<span class="math inline">\(\lambda\)</span>）。数学公式略过，只看定理和结论。 特征向量与特征值满足如下公式 A<em>U=U</em>Λ, Λ是特征值λ构成的对角矩阵。矩阵 A，这里是我们要进行对角化的矩阵，也是我们最初定义的那个<span class="math inline">\(X*X^{T}\)</span>，它最终对角化变成了Λ，U 是用来进行变化的一组基。S 就是λi(1&lt;=1&lt;=n)</p>
+<p><span style="color:red"><strong><em>求解协方差例子</em></strong></span></p>
+<h3 id="最大期望算法"><span style="color:red"><strong><em>最大期望算法</em></strong></span></h3>
+<p>根据上述推导，我们发现要达到优化目前，<span style="color:red"><strong><em>等价于将协方差矩阵对角化：即除对角线外的其它元素化为0</em></strong></span>，并且在对角线上将元素按大小从上到下排列，这样我们就达到了优化目的。这样说可能还不是很明晰，我们进一步看下原矩阵与基变换后矩阵协方差矩阵的关系：</p>
+<p>设原始数据矩阵X对应的协方差矩阵为C，而P是一组基按行组成的矩阵，设Y=PX，则Y为X对P做基变换后的数据。设Y的协方差矩阵为D，我们推导一下D与C的关系：</p>
+<p><span class="math inline">\(\begin{array}{l l l}  D &amp; = &amp; \frac{1}{m}YY^{T} \\  &amp; = &amp; \frac{1}{m}(PX)(PX)^{T} \\  &amp; = &amp; \frac{1}{m}PXX^{T}P^{T} \\  &amp; = &amp; P(\frac{1}{m}XX^{T})P^{T} \\  &amp; = &amp; PCP^{T} \end{array}\)</span> 现在事情很明白了！我们要找的P不是别的，而是能让原始协方差矩阵对角化的P。换句话说，优化目标变成了<span style="color:red"><strong><em>寻找一个矩阵P，满足<span class="math inline">\(PCP^{T}\)</span>个对角矩阵，并且对角元素按从大到小依次排列，那么P的前K行就是要寻找的基，用P的前K行组成的矩阵乘以X就使得X从N维降到了K维并满足上述优化条件。</em></strong></span></p>
+<p>至此，我们离“发明”PCA还有仅一步之遥！</p>
+<p>现在所有焦点都聚焦在了协方差矩阵对角化问题上，有时，我们真应该感谢数学家的先行，因为矩阵对角化在线性代数领域已经属于被玩烂了的东西，所以这在数学上根本不是问题。</p>
+<p>由上文知道，协方差矩阵C是一个是对称矩阵，在线性代数上，实对称矩阵有一系列非常好的性质：</p>
+<ol style="list-style-type: decimal">
+<li>实对称矩阵不同特征值对应的特征向量必然正交。</li>
+<li>设特征向量<span class="math inline">\(\lambda\)</span>重数为r，则必然存在r个线性无关的特征向量对应于<span class="math inline">\(\lambda\)</span>，因此可以将这r个特征向量单位正交化。</li>
+</ol>
+<p>由上面两条可知，一个n行n列的实对称矩阵一定可以找到n个单位正交特征向量，设这n个特征向量为<span class="math inline">\(e_1,e_2,\cdots,e_n\)</span>, 我们将其按列组成矩阵：<span class="math inline">\(E=\begin{pmatrix}  e_1 &amp; e_2 &amp; \cdots &amp; e_n \end{pmatrix}\)</span></p>
+<p>则对协方差矩阵C有如下结论：<span class="math inline">\(E^{T}CE=\Lambda=\begin{pmatrix}  \lambda_1 &amp; &amp; &amp; \\  &amp; \lambda_2 &amp; &amp; \\  &amp; &amp; \ddots &amp; \\  &amp; &amp; &amp; \lambda_n \end{pmatrix}\)</span></p>
+<p>其中<span class="math inline">\(\Lambda\)</span>为对角矩阵，其对角元素为各特征向量对应的特征值（可能有重复）。以上结论不再给出严格的数学证明，对证明感兴趣的朋友可以参考线性代数书籍关于“实对称矩阵对角化”的内容。</p>
+<p>到这里，我们发现我们已经找到了需要的矩阵P：<span class="math inline">\(P=E^{T}\)</span></p>
+<p>P是协方差矩阵的特征向量单位化后按行排列出的矩阵，其中每一行都是C的一个特征向量。如果设P按照Λ中特征值的从大到小，将特征向量从上到下排列，则用P的前K行组成的矩阵乘以原始数据矩阵X，就得到了我们需要的降维后的数据矩阵Y。</p>
+<p>至此我们完成了整个PCA的数学原理讨论。在下面的一节，我们将给出PCA的一个实例。</p>
+<ol start="4" style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>算法及实例</em></strong></span> 为了巩固上面的理论，我们在这一节给出一个具体的PCA实例。 <span style="color:red"><strong><em>PCA算法</em></strong></span> 总结一下PCA的算法步骤： 设有m条n维数据。</li>
+</ol>
+<ol style="list-style-type: decimal">
+<li>将原始数据按列组成n行m列矩阵X</li>
+<li>将X的每一行（代表一个属性字段）进行零均值化，即减去这一行的均值</li>
+<li>求出协方差矩阵<span class="math inline">\(C=\frac{1}{m}XX^{T}\)</span></li>
+<li>求出协方差矩阵的特征值及对应的特征向量</li>
+<li>将特征向量按对应特征值大小从上到下按行排列成矩阵，取前k行组成矩阵P</li>
+<li><span class="math inline">\(Y=PX\)</span>即为降维到k维后的数据</li>
+</ol>
+<p><span style="color:red"><strong><em>实例</em></strong></span> 这里以上文提到的 <span class="math inline">\(\begin{pmatrix}  -1 &amp; -1 &amp; 0 &amp; 2 &amp; 0 \\  -2 &amp; 0 &amp; 0 &amp; 1 &amp; 1 \end{pmatrix}\)</span>为例，我们用PCA方法将这组二维数据其降到一维。因为这个矩阵的每行已经是零均值，这里我们直接求协方差矩阵： <span class="math inline">\(C=\frac{1}{5}\begin{pmatrix}  -1 &amp; -1 &amp; 0 &amp; 2 &amp; 0 \\  -2 &amp; 0 &amp; 0 &amp; 1 &amp; 1 \end{pmatrix}\begin{pmatrix}  -1 &amp; -2 \\  -1 &amp; 0 \\  0 &amp; 0 \\  2 &amp; 1 \\  0 &amp; 1 \end{pmatrix}=\begin{pmatrix}  \frac{6}{5} &amp; \frac{4}{5} \\  \frac{4}{5} &amp; \frac{6}{5} \end{pmatrix}\)</span> 然后求其特征值和特征向量，具体求解方法不再详述，可以参考相关资料。求解后特征值为：<span class="math inline">\(\lambda_1=2,\lambda_2=2/5\)</span></p>
+<p>其对应的特征向量分别是：<span class="math inline">\(c_1\begin{pmatrix}  1 \\  1 \end{pmatrix},c_2\begin{pmatrix}  -1 \\  1 \end{pmatrix}\)</span></p>
+<p>其中对应的特征向量分别是一个通解，<span class="math inline">\(c_1,c_2\)</span>可取任意实数。那么标准化后的特征向量为：<span class="math inline">\(\begin{pmatrix}  1/\sqrt{2} \\  1/\sqrt{2} \end{pmatrix},\begin{pmatrix}  -1/\sqrt{2} \\  1/\sqrt{2} \end{pmatrix}\)</span> 因此我们的矩阵P是：<span class="math inline">\(P=\begin{pmatrix}  1/\sqrt{2} &amp; 1/\sqrt{2} \\  -1/\sqrt{2} &amp; 1/\sqrt{2} \end{pmatrix}\)</span></p>
+<p>可以验证协方差矩阵C的对角化：<span class="math inline">\(PCP^{T}=\begin{pmatrix}  1/\sqrt{2} &amp; 1/\sqrt{2} \\  -1/\sqrt{2} &amp; 1/\sqrt{2} \end{pmatrix}\begin{pmatrix}  6/5 &amp; 4/5 \\  4/5 &amp; 6/5 \end{pmatrix}\begin{pmatrix}  1/\sqrt{2} &amp; -1/\sqrt{2} \\  1/\sqrt{2} &amp; 1/\sqrt{2} \end{pmatrix}=\begin{pmatrix}  2 &amp; 0 \\  0 &amp; 2/5 \end{pmatrix}\)</span></p>
+<p>最后我们用P的第一行乘以数据矩阵，就得到了降维后的表示：<span class="math inline">\(Y=\begin{pmatrix}  1/\sqrt{2} &amp; 1/\sqrt{2} \end{pmatrix}\begin{pmatrix}  -1 &amp; -1 &amp; 0 &amp; 2 &amp; 0 \\  -2 &amp; 0 &amp; 0 &amp; 1 &amp; 1 \end{pmatrix}=\begin{pmatrix}  -3/\sqrt{2} &amp; -1/\sqrt{2} &amp; 0 &amp; 3/\sqrt{2} &amp; -1/\sqrt{2} \end{pmatrix}\)</span></p>
+降维投影结果如下图：
+<p align="center">
+<img src="http://blog.codinglabs.org/uploads/pictures/pca-tutorial/07.png" width="300" >
+</p>
+<p><span style="color:red"><strong><em>进一步讨论</em></strong></span> 根据上面对PCA的数学原理的解释，我们可以了解到一些PCA的能力和限制。PCA本质上是将方差最大的方向作为主要特征，并且在各个正交方向上将数据“离相关”，也就是让它们在不同正交方向上没有相关性。 因此，PCA也存在一些限制，例如它可以很好的解除线性相关，但是对于高阶相关性就没有办法了，对于存在高阶相关性的数据，可以考虑Kernel PCA，通过Kernel函数将非线性相关转为线性相关，关于这点就不展开讨论了。另外，PCA假设数据各主特征是分布在正交方向上，如果在非正交方向上存在几个方差较大的方向，PCA的效果就大打折扣了。 最后需要说明的是，PCA是一种无参数技术，也就是说面对同样的数据，如果不考虑清洗，谁来做结果都一样，没有主观参数的介入，所以PCA便于通用实现，但是本身无法个性化的优化。</p>
+<h3 id="隐马尔可夫模型"><span style="color:red"><strong><em>隐马尔可夫模型</em></strong></span></h3>
+</body>
+</html>

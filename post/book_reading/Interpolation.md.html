@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="多项式插值与傅里叶变换">多项式插值与傅里叶变换</h2>
+<p>在日常工作中，需要对精确数据点之间的值做出估计，要实现这个，一般通用的方法是采用多项式插值，<span class="math inline">\(n\)</span>阶多项式的一般表示公式: <span class="math inline">\(f(x)=a_0+a_1x+a_2x^2+...+a_nx^n\)</span></p>
+<p>对n+1个数据点，有且仅有一个n阶多项式通过所有的n+1个数据点。所以多项式你和的目的就是确定一个n阶多项式。</p>
+<p><span style="color:red"><strong><em>牛顿差商插值多项式</em></strong></span></p>
+<p><span style="color:red"><strong><em>牛顿差商插值多项式的一般形式</em></strong></span>：<span class="math inline">\(f_n(x)=b_0+b_1(x-x_0)+..+b_n(x-x_0)(x-x_1)...(x-x_{n-1})\)</span> 对于n阶多项式，需要<span style="color:red"><strong><em><span class="math inline">\(n+1\)</span></em></strong></span>个数据点：<span class="math inline">\([x_0,f(x_0)],..,[x_n,f(x_n)]\)</span>, 利用这些数据点来计算这些系数：<img src="http://mathurl.com/gmxte2a.png" /></p>
+<!-- $\begin{cases}b_0=f(x_0)\\
+b_1=f[x_1,x_0]\\
+b_2=f[x_2,x_1,x_0]\\
+...\\
+b_n=f[x_n,x_{n-1},...,x_1,x_0]
+\end{cases}$ -->
+<p><span style="color:red"><strong><em>1阶差商(first finite divided difference)</em></strong></span>: <span class="math inline">\(f[x_i,x_j]=\frac{f(x_i)-f(x_j)}{x_i-x_j}\)</span> <span style="color:red"><strong><em>2阶差商(first finite divided difference)</em></strong></span>: <span class="math inline">\(f[x_i,x_j,x_k]=\frac{f(x_i,x_j)-f(x_j,x_k)}{x_i-x_k}\)</span> <span style="color:red"><strong><em>n阶差商(first finite divided difference)</em></strong></span>: <span class="math inline">\(f[x_1,x_2,..,x_n]=\frac{f(x_1,x_2,..,x_n)-f(x_0,x_2,..,x_{n-1})}{x_n-x_0}\)</span></p>
+<p>（1）<span style="color:red"><strong><em>线性插值</em></strong></span></p>
+<p>线性插值的公式表示为:<span class="math inline">\(f_1(x)=f_0(x)+\frac{f(x_1)-f(x_0)}{x_1-x_0}(x-x_0)\)</span>, 该公式又称为线性插值公式(Linear-interpolation formula). <span class="math inline">\(\frac{f(x_1)-f(x_0)}{x_1-x_0}(x-x_0)\)</span> 除了表示连接2各数据点的直线斜率外，还是<span class="math inline">\(f(x)\)</span>在<span class="math inline">\(x_1,x_0\)</span>两点处的有限差商(finite-divided-difference).</p>
+<p><span style="color:red"><strong><em>线性插值的误差</em></strong></span>：线性插值和数据点的间隔有关，间隔越大，误差越大。</p>
+<p>（2）<span style="color:red"><strong><em>二次插值</em></strong></span> 二次插值目的是引入有一定曲率的线来连接数据点，用3个数据点你和一个二次多项式:<span class="math inline">\(f_2(x)=b_0+b_1(x-x_0)+b_2(x-x_0)(x-x_1)\)</span></p>
+<p>这里有一个简单的方法来确定系数：<img src="http://mathurl.com/hb57jnb.png" /> <!--$\begin{cases}b_0=f(x_0)\\
+b_1=\frac{f(x_1)-f(x_0)}{x_1-x_0}\\
+b_2=\frac{\frac{f(x_2)-f(x_1)}{x_2-x_1}-\frac{f(x_1)-f(x_0)}{x_1-x_0}}{x_2-x_0}\end{cases}$-->, 最后一项引入了二阶曲率。</p>
+<ol start="2" style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>拉格朗日插值多项式</em></strong></span></li>
+</ol>
+<p>拉格朗日插值是牛顿插值的一个简单变形，避免了计算差商，可以简洁的将拉格朗日插值多项式表示成如下形式： <span class="math inline">\(f_n(x)=\sum_{i=0}^n L_i(x)f(x_i)\)</span>, 其中 <span class="math inline">\(L_i(x)=\prod_{i=0,j+i}^n\frac{x-x_j}{x_i-x_j}\)</span></p>
+<p><span style="color:red"><strong><em>1阶拉格朗日插值多项式</em></strong></span>：<span class="math inline">\(f_1(x)=\frac{x-x_1}{x_0-x_1}f(x_0)+\frac{x-x_0}{x_1-x_0}f(x_1)\)</span> <span style="color:red"><strong><em>2阶拉格朗日插值多项式</em></strong></span>：<span class="math inline">\(f_2(x)=\frac{(x-x_1)(x-x_2)}{(x_0-x_1)(x_0-x_2)}f(x_0)+\frac{(x-x_0)(x-x_2)}{(x_1-x_0)(x_1-x_2)}f(x_1)+\frac{{}(x-x_0)(x-x_1)}{(x_2-x_0)(x_2-x_1)}f(x_2)\)</span></p>
+<ol start="3" style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>样条插值</em></strong></span></li>
+</ol>
+<p>虽然可以用一个高阶多项式拟合数据，但是由于<span style="color:red"><strong><em>舍入误差(round-off error)和过去超越问题(overshoot)</em></strong></span>， 这些插值函数也可能导致错误的结果。另一个可选的方法是用<span style="color:red"><strong><em>多个低阶多项式分别对数据点的各个子集进行拟合</em></strong></span>。这种相互连接的多项式称为样条函数(spline funciton).</p>
+<p><span style="color:red"><strong><em>对于局部变化较大的函数，样条函数可以更好的逼近这类函数。</em></strong></span></p>
+<p><span style="color:red"><strong><em>线性样条</em></strong></span></p>
+<p><img src="http://mathurl.com/z3aftoq.png" /> <!-- $\begin{cases}
+f(x)=f(x_0)+m_0(x-x_0), \ \ m_0=\frac{f(x_1)-f(x_0)}{x_1-x_0} \\
+f(x)=f(x_1)+m_0(x-x_1), \ \ m_0=\frac{f(x_2)-f(x_1)}{x_2-x_1} \\
+... \\
+f(x)=f(x_{n-1})+m_0(x-x_{n-1}), \ \ m_0=\frac{f(x_n)-f(x_{n-1})}{x_n-x_{n-1}}
+\end{cases}$ --></p>
+<p><span style="color:red"><strong><em>线性样条的缺点：不够光滑，这些函数在链接点处一阶导数不连续。</em></strong></span></p>
+<p><span style="color:red"><strong><em>二次样条</em></strong></span></p>
+<p>每个区间的多项式: <span class="math inline">\(f_i(x)=a_ix^2+b_ix+c\)</span>. 对于<span class="math inline">\(n+1\)</span>个数据点<span class="math inline">\((i=0,1,2,..,n)\)</span>，一共有n个区间，所以一共需要3n个未知常数，为了计算未知数，需要3n个方程或条件。 a. 相邻多项式在内部连接点的函数值必须相等， <img src="http://mathurl.com/j96txl9.png" /><!--$\begin{cases}a_{i-1}x_{i-1}^2+b_{i-1}x_{i-1}+c_{i-1}=f(x_{i-1})\\a_{i}x_{i-1}^2+b_{i}x_{i-1}+c_{i}=f(x_{i-1})\end{cases}$-->, 其中n的取值范围是2到n，因为只有内部结点用。 b. 第一个和最后一个函数比较通过端点<img src="http://mathurl.com/hh98qnp.png" />。<!--$\begin{cases}a_xx_0^2+b_1x_0+c_1=f(x_0)\\a_nx_n^2+b_nx_n+c_n=f(x_n)\end{cases}$--> c. 内部结点的一阶导数必须相等。<span class="math inline">\(f&#39;(x)=2ax+b\)</span></p>
+<p>（3）<span style="color:red"><strong><em>三次样条</em></strong></span> 三次样条的目的是在每2个相邻数据点之间的区间推导一个三阶多项式: <span class="math inline">\(f_i(x)=a_ix^3+b_ix^2+c_ix+d_i\)</span>,因此， 对<span class="math inline">\(n+1\)</span>个数据点(i=1,2,..,n)，一共有n个区间，所以需要计算n各位置常数。需要<span style="color:red"><strong><em>4n</em></strong></span>个条件来计算这些未知数。</p>
+<p>条件是： a. 在内部节点处的函数值必须相等(<span class="math inline">\(2n-2\)</span>)的条件； b. 第一和最后一个函数必须通过端点(2个条件); c. 内部结点处的一阶导数必须相等(n-1个条件); d. 内部结点处的二阶导数必须相等(n-1个条件)； e. 端点处的二阶导数为0(2个条件)</p>
+<p>三次样条的方程为：<span class="math inline">\(f_i(x)=\frac{f_i&#39;&#39;(x_{i-1})}{6(x_i-x_{i-1})}(x_i-x)^3+\frac{f_i&#39;&#39;(x_{i-1})}{6(x_i-x_{i-1})}(x-x_{i-1})^3+[\frac{f(x_{i-1})}{x_i-x_{i-1}}-\frac{f&#39;&#39;(x_{i-1}(x_i-x_{i-1}))}{6}](x_i-x)+[\frac{f(x_i)}{x_i-x_{i-1}}-\frac{f&#39;&#39;(x_i)(x_i-x_{i-1})}{6}](x-x_{i-1})\)</span></p>
+<p><span style="color:red"><strong><em>多维插值</em></strong></span></p>
+<p><span style="color:red"><strong><em>一维插值可以扩展到多维插值。双线性插值利用4个点来估计中间点<span class="math inline">\(f(x_i,y_i)\)</span>的值。</em></strong></span></p>
+<p><span style="color:red">***<span style="color:red"><strong><em>首先，固定<span class="math inline">\(y\)</span>值，在<span class="math inline">\(x\)</span>方向应用一维线性插值，使用拉格朗日形式</em></strong></span>， <span class="math inline">\((x_i,y_1)\)</span>的插值结果为：<span class="math inline">\(f(x_i,y_1)=\frac{x_i-x_2}{x-1-x_2}f(x_1,y_1)+\frac{x_i-x_1}{x_2-x_1}f(x_2,y_1)\)</span> <span class="math inline">\((x_i,y_2)\)</span>的插值结果为：<span class="math inline">\(f(x_i,y_2)=\frac{x_i-x_2}{x-1-x_2}f(x_1,y_2)+\frac{x_i-x_1}{x_2-x_1}f(x_2,y_2)\)</span></p>
+<p><span style="color:red"><strong><em>接着，使用这些点在<span class="math inline">\(y\)</span>方向上进行线性插值，得到最终结果</em></strong></span>:<span class="math inline">\(f(x_i,y_i)=\frac{y_i-y_2}{y_1-y_2}f(x_i,y_1)+\frac{y_i-y_1}{y_2-y_1}f(x_i,y_2)\)</span></p>
+<p>最后，得到：<span class="math inline">\(f(x_i,y_i)=\frac{x_i-x_2}{x_1-x_2}\frac{y_i-y_2}{y_1-y_2}f(x_1,y_1)+\frac{x_i-x_1}{x_2-x_1}\frac{y_i-y_2}{y_1-y_2}f(x_2,y_1)+\frac{x_i-x_2}{x_1-x_2}\frac{y_i-y_1}{y_2-y_1}f(x_1,y_2)+\frac{x_i-x_1}{x_2-x_1}\frac{y_i-y_1}{y_2-y_1}f(x_2,y_2)\)</span></p>
+<ol start="4" style="list-style-type: decimal">
+<li><span style="color:red"><strong><em>傅立叶变换</em></strong></span></li>
+</ol>
+<p>前面讲的都是利用标准多项式，也就是单项式<span class="math inline">\(1,x,x^2,x^3,..,x^n\)</span>的线性组合，傅立叶变换则是利用三角函数进行线性组合产生。</p>
+<blockquote>
+<p>History</p>
+</blockquote>
+<p><em>傅立叶是一位法国数学家和物理学家，原名是Jean Baptiste Joseph Fourier(1768-1830), Fourier于1807年在法国科学学会上发表了一篇论文，论文里描述运用正弦曲线来描述温度分布，论文里有个在当时具有争议性的决断：任何连续周期信号都可以由一组适当的正弦曲线组合而成。</em></p>
+<p><em>当时审查这个论文拉格朗日坚决反对此论文的发表，而后在近50年的时间里，拉格朗日坚持认为傅立叶的方法无法表示带有棱角的信号，如在方波中出现非连续变化斜率。直到拉格朗日死后15年这个论文才被发表出来。</em></p>
+<p><em>谁是对的呢？拉格朗日是对的：正弦曲线无法组合成一个带有棱角的信号。但是，我们可以用正弦曲线来非常逼近地表示它，逼近到两种表示方法不存在能量差别，基于此，傅立叶是对的。</em></p>
+<p><em>为什么我们要用正弦曲线来代替原来的曲线呢？如我们也还可以用方波或三角波来代替呀，分解信号的方法是无穷多的，但分解信号的目的是为了更加简单地处理原来的信号。</em></p>
+<p><em>用正余弦来表示原信号会更加简单，因为正余弦拥有原信号所不具有的性质：正弦曲线保真度。一个正余弦曲线信号输入后，输出的仍是正余弦曲线，只有幅度和相位可能发生变化，但是频率和波的形状仍是一样的。且只有正余弦曲线才拥有这样的性质，正因如此我们才不用方波或三角波来表示。</em></p>
+<p>傅立叶分析特点：同时处理<span style="color:red"><strong><em>时域(time domain)和频域(frequency domain)</em></strong></span>。</p>
+<p>（1）<span style="color:red"><strong><em>连续傅立叶级数</em></strong></span></p>
+<p><span class="math inline">\(\begin{cases}f(t)=a_0+a_1cos(w_0t)+b_1sin(w_0t)+a_2cos(2w_0t)+b_2sin(2w_0t)+a_3cos(3w_0t)+b_3sin(3w_0t)...\\ f(t)=a_0+\sum_{k=1}^{\infty}[a_kcos(kw_ot)+b_ksin(kw_0t)] \end{cases}\)</span>, 其中<span class="math inline">\(w_0=2\pi/T\)</span>是基频。 上式的系数计算：<span class="math inline">\(\begin{cases}a_k=\frac{2}{T}\int_{0}^Tf(t)cos(kw_0t)dt \\b_k=\frac{2}{T}\int_{0}^Tf(t)sin(kw_0t)dt\end{cases}\)</span></p>
+<p>（2）<span style="color:red"><strong><em>离散傅立叶级数</em></strong></span></p>
+<p>连续形式的傅里叶变换其实是傅里叶级数 (Fourier series)的推广，因为积分其实是一种极限形式的求和算子而已。对于周期函数，其傅里叶级数是存在的：</p>
+<p><span class="math inline">\(\begin{cases}F_k=\sum_{n=0}^{N-1}f_ne^{-jkw_0n}=\sum_{n=0}^{N-1}f_nW^{-kn}, \ k=0,1,2,...,N-1\\ f_n=\frac{1}{N}\sum_{k=0}^{N-1}F_ke^{jkw_0n}=\frac{1}{N}\sum_{k=0}^{N-1}W^{kn}, \ n=0,1,2,..,N-1\end{cases}\)</span>, <span class="math inline">\(W^{kn}=e^{jknw_0}, \ w_0=2\pi/N\)</span></p>
+<p>(3）<span style="color:red"><strong><em>快速傅立叶变换</em></strong></span></p>
+<p>FFT是计算DFT的一种极其有效的算法，因为它利用前面的计算结果，减少了运算的次数，<span style="color:red"><strong><em>傅立叶变换只需要<span class="math inline">\(Nlog_2(N)\)</span></em></strong></span>个运算。</p>
+<p align="center">
+<img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/DIF_DIT.jpg" width="600" >
+</p>
+<p><span style="color:red"><strong><em>a. Sande-Tukey算法(频域抽取法)</em></strong></span></p>
+<p>Sande-Tukey算法的前提是N为2的整数次幂，也就是<span class="math inline">\(N=2^M\)</span>，其中M为整数。</p>
+<p>我们可以将DFT公式中的项目在频域上重新分组，这样就叫做频域抽取（Decimation-in-frquency）。</p>
+<p>DFT的一般形式是：<span class="math inline">\(F_k=\sum_{n=0}^{N-1}f_n e^{-jw_0kn}=\sum_{n=0}^{N-1}f_n W^{kn},\ k=0\sim N-1, \ W=e^{-j(2\pi/N)}\)</span> 将样本分成偶数和奇数部分：<span class="math inline">\(\begin{cases}F_{2k+1}=\sum_{n=0}^{(N/2)-1}(f_n-f_{n+N/2})W^{(2k+1)n}\\F_{2k}=\sum_{n=0}^{(N/2)-1}(f_n+f_{n+N/2})W^{(2k)n}\end{cases}\)</span></p>
+<div class="Wrapper">
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/7/79/DIF_N8.JPG" alt="Smiley face" height="200" width="240" /> <img src="https://upload.wikimedia.org/wikipedia/commons/b/bd/DIF_N4.JPG" alt="Smiley face" height="200" width="240" /> <img src="https://upload.wikimedia.org/wikipedia/commons/f/f8/DIF_N8_ALL.JPG" alt="Smiley face" height="200" width="240" /></p>
+</div>
+<p><span style="color:red"><strong><em>b. Cooley-Tukey算法(时域抽取法)</em></strong></span></p>
+<p>Cooley-Tukey是一种时域抽取法，我们可以将DFT公式中的项目在时域上重新分组，这样就叫做时域抽取（Decimation-in-time），在这里<span class="math inline">\(e^{-j(2 \pi \frac{nk}{N})}\)</span> 将会被代换为旋转因子（twiddle factor）<span class="math inline">\(W_N^{nk}\)</span>。</p>
+<p><span class="math inline">\(F_k= \sum_{n=0}^{N-1} f_n e^{-j(2 \pi \frac{nk}{N})}\qquad k=0,1,\ldots,N-1\)</span> <span class="math inline">\(=\sum_{n \ even} f_n W_N^{nk} + \sum_{n \ odd} f_n W_N^{nk}\)</span> <span class="math inline">\(=\sum_{r=0}^{(N/2)-1} f_{2r}W_N^{2rk} + W_N^k \sum_{r=0}^{(N/2)-1} f_{2r+1}W_N^{2rk}\)</span> <span class="math inline">\(=\sum_{r=0}^{(N/2)-1} f_{2r}W_N^{2rk} + \sum_{r=0}^{(N/2)-1} f_{2r+1}W_N^{(2r+1)k}\)</span> <span class="math inline">\(=\sum_{r=0}^{(N/2)-1} f_{2r}W_{N/2}^{rk} + W_N^k \sum_{r=0}^{(N/2)-1} f_{2r+1}W_{N/2}^{rk}\)</span> <span class="math inline">\(=G[k]+W_N^k H[k]\)</span></p>
+在这边我们要注意的是，我们所替换的<span class="math inline">\(G[k]\)</span>与<span class="math inline">\(H[k]\)</span>具有周期性：
+<div class="Wrapper">
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/2/2b/DIT_N8.JPG" alt="Smiley face" height="200" width="240" /> <img src="https://upload.wikimedia.org/wikipedia/commons/7/71/DIT_N4.JPG" alt="Smiley face" height="200" width="240" /> <img src="https://upload.wikimedia.org/wikipedia/commons/4/4d/DIT_N8_ALL.JPG" alt="Smiley face" height="200" width="240" /></p>
+</div>
+</body>
+</html>

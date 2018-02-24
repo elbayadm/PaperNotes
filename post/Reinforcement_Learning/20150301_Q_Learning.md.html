@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="q-learningsarsa-learning">Q learning/Sarsa learning</h1>
+<p>接下来我们回顾一下<strong>动态规划算法(DP)和蒙特卡罗方法(MC)</strong>的特点，对于动态规划算法有如下特性： - 需要环境模型，即状态转移概率<span class="math display">\[P_{s,a}\]</span>; - 状态值函数的估计是自举的(bootstrapping)，即当前状态值函数的更新依赖于已知的其他状态值函数。</p>
+<p>相对的，<strong>蒙特卡罗方法的特点则有</strong>： - 可以从经验中学习不需要环境模型 - 状态值函数的估计是相互独立的 - 只能用于episode tasks</p>
+<p>而我们希望的算法是这样的： - 不需要环境模型 - 它不局限于episode task，可以用于连续的任务</p>
+<p>这里介绍的<strong>时间差分学习(Temporal-Difference learning, TD learning)正是具备了上述特性的算法</strong>，它结合了DP和MC，并兼具两种算法的优点。</p>
+<h2 id="td-learing">TD Learing</h2>
+<p>在介绍TD learning之前，我们先引入如下简单的蒙特卡罗算法，我们称为constant-<span class="math display">\[\alpha\]</span> MC，它的状态值函数更新公式如下： <span class="math display">\[
+V(s_t) \leftarrow V(s_t) + \alpha[R_t - V(s_t)] \tag {1}
+\]</span> 其中<span class="math display">\[R_t\]</span>是每个episode结束后获得的实际累积回报，<span class="math display">\[\alpha\]</span>是学习率，这个式子的直观的理解就是用实际累积回报<span class="math display">\[R_t\]</span>作为状态值函数<span class="math display">\[V(s_t)\]</span>的估计值。具体做法是对每个episode，考察实验中<span class="math display">\[s_t\]</span>的实际累积回报<span class="math display">\[R_t\]</span>和当前估计<span class="math display">\[V(s_t)\]</span>的偏差值，并用该偏差值乘以学习率来更新得到<span class="math display">\[V(s_t)\]</span>的新估值。</p>
+<p>现在我们将公式修改如下，把<span class="math inline">\(R_t\)</span>换成<span class="math inline">\(r_{t+1} + \gamma V(s_{t+1})\)</span>，就得到了TD(0)的状态值函数更新公式： <span class="math display">\[
+V(s_t) \leftarrow V(s_t) + \alpha[r_{t+1} + \gamma V(s_{t+1}) - V(s_t)] \tag {2}
+\]</span></p>
+<p>为什么修改成这种形式呢，我们回忆一下状态值函数的定义：</p>
+<p><span class="math display">\[
+V^{\pi}(s)=E_{\pi}[r(s&#39;|s,a)+\gamma V^{\pi}(s&#39;)] \tag {3}
+\]</span></p>
+<p>容易发现这其实是根据(3)的形式，利用真实的立即回报<span class="math inline">\(r_{t+1}\)</span>和下个状态的值函数<span class="math inline">\(V(s_{t+1})\)</span>来更新<span class="math inline">\(V(s_t)\)</span>，这种就方式就称为时间差分(temporal difference)。由于我们没有状态转移概率，所以要利用多次实验来得到期望状态值函数估值。类似MC方法，在足够多的实验后，状态值函数的估计是能够收敛于真实值的。</p>
+<p>那么MC和TD(0)的更新公式的有何不同呢？我们举个例子，假设有以下8个episode, 其中A-0表示经过状态A后获得了回报0:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">index</th>
+<th align="left">samples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">episode 1</td>
+<td align="left">A-0, B-0</td>
+</tr>
+<tr class="even">
+<td align="left">episode 2</td>
+<td align="left">B-1</td>
+</tr>
+<tr class="odd">
+<td align="left">episode 3</td>
+<td align="left">B-1</td>
+</tr>
+<tr class="even">
+<td align="left">episode 4</td>
+<td align="left">B-1</td>
+</tr>
+<tr class="odd">
+<td align="left">episode 5</td>
+<td align="left">B-1</td>
+</tr>
+<tr class="even">
+<td align="left">episode 7</td>
+<td align="left">B-1</td>
+</tr>
+<tr class="odd">
+<td align="left">episode 8</td>
+<td align="left">B-0</td>
+</tr>
+<tr class="even">
+<td align="left">episode 6</td>
+<td align="left">B-1</td>
+</tr>
+</tbody>
+</table>
+<p>首先我们使用constant-<span class="math inline">\(\alpha\)</span>MC方法估计状态A的值函数，其结果是V(A)=0，这是因为状态A只在episode 1出现了一次，且其累计回报为0。</p>
+<p>现在我们使用TD(0)的更新公式，简单起见取λ=1，我们可以得到V(A)=0.75。这个结果是如何计算的呢？ 首先，状态B的值函数是容易求得的，B作为终止状态，获得回报1的概率是75%，因此V(B)=0.75。接着从数据中我们可以得到状态A转移到状态B的概率是100%并且获得的回报为0。根据公式(2)可以得到<span class="math inline">\(V(A) \leftarrow V(A) + \alpha[0 + \lambda V(B) - V(A)]\)</span>，可见在只有<span class="math inline">\(V(A)=\lambda V(B)=0.75\)</span>的时候，式(2)收敛。对这个例子，可以作图表示：</p>
+<p align="center">
+<img src="http://static.zybuluo.com/Kintoki/jr1dxnxa6qmbhszm76ds3c0b/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-01-05%20%E4%B8%8B%E5%8D%889.48.30.png" width="300" >
+</p>
+<p>可见式(2)由于能够利用其它状态的估计值，其得到的结果更加合理，并且由于不需要等到任务结束就能更新估值，也就不再局限于episode task了。此外，实验表明TD(0)从收敛速度上也显著优于MC方法。</p>
+<p>将式(2)作为状态值函数的估计公式后，前面文章中介绍的策略估计算法就变成了如下形式，这个算法称为TD prediction:</p>
+<pre><code>输入：待估计的策略ππ
+任意初始化所有V(s)V(s)，(e.g.,V(s)=0,∀s∈s+e.g.,V(s)=0,∀s∈s+)
+Repeat(对所有episode):
+　　初始化状态 ss
+　　Repeat(对每步状态转移):
+　　　　a←a←策略ππ下状态ss采取的动作
+　　　　采取动作aa，观察回报rr，和下一个状态s′s′
+　　　　V(s)←V(s)+α[r+λV(s′)−V(s)]V(s)←V(s)+α[r+λV(s′)−V(s)]
+　　　　s←s′s←s′
+　　Until stst is terminal
+　Until 所有V(s)V(s)收敛
+输出Vπ(s)Vπ(s)</code></pre>
+<h2 id="sarsa算法"><strong><em><span style="color:red">Sarsa算法</span></em></strong></h2>
+<p>现在我们利用TD prediction组成新的强化学习算法，用到决策/控制问题中。在这里，强化学习算法可以分为在策略(on-policy)和离策略(off-policy)两类。首先要介绍的sarsa算法属于on-policy算法。 与前面DP方法稍微有些区别的是，sarsa算法估计的是动作值函数(Q函数)而非状态值函数。也就是说，我们估计的是策略π下，任意状态s上所有可执行的动作a的动作值函数<span class="math inline">\(Q^{\pi}(s,a)\)</span>，Q函数同样可以利用TD Prediction算法估计。如下就是一个状态-动作对序列的片段及相应的回报值。</p>
+<p align="center">
+<img src="http://static.zybuluo.com/Kintoki/h6korj3ipv13w7slzbw29pku/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-01-06%20%E4%B8%8B%E5%8D%889.28.07.png" width="500" >
+</p>
+<p>给出sarsa的动作值函数更新公式如下：</p>
+<p><span class="math display">\[Q(s_t,a_t) \leftarrow Q(s_t,a_t) + \alpha[r_{t+1} + \lambda Q(s_{t+1}, a_{t+1}) - Q(s_t,a_t)] \tag {4}\]</span></p>
+<p>可见式(4)与式(2)的形式基本一致。需要注意的是，对于每个非终止的状态stst，在到达下个状态st+1st+1后，都可以利用上述公式更新Q(st,At)Q(st,At)，而如果stst是终止状态，则要令Q(st+1=0,at+1)Q(st+1=0,at+1)。由于动作值函数的每次更新都与(st,at,rt+1,st+1,at+1)(st,at,rt+1,st+1,at+1)相关，因此算法被命名为sarsa算法。sarsa算法的完整流程图如下： 屏幕快照 2016-01-06 下午9.52.57.png-61kB 算法最终得到所有状态-动作对的Q函数，并根据Q函数输出最优策略ππ</p>
+<h2 id="q-learning"><strong><em><span style="color:red">Q-learning</span></em></strong></h2>
+<p>在sarsa算法中，选择动作时遵循的策略和更新动作值函数时遵循的策略是相同的，即ϵ−greedyϵ−greedy的策略，而在接下来介绍的Q-learning中，动作值函数更新则不同于选取动作时遵循的策略，这种方式称为离策略(Off-Policy)。Q-learning的动作值函数更新公式如下： <span class="math display">\[
+Q(s_t,a_t) \leftarrow Q(s_t,a_t) + \alpha[r_{t+1} + \lambda \max _{a} Q(s_{t+1}, a) - Q(s_t,a_t)] \tag {5}
+\]</span></p>
+<p>可以看到，Q-learning与sarsa算法最大的不同在于更新Q值的时候，直接使用了最大的<span class="math inline">\(Q(s_{t+1},a)\)</span>值——相当于采用了<span class="math inline">\(Q(s_{t+1},a)\)</span>值最大的动作，并且与当前执行的策略，即选取动作atat时采用的策略无关。 Off-Policy方式简化了证明算法分析和收敛性证明的难度，使得它的收敛性很早就得到了证明。Q-learning的完整流程图如下：</p>
+<div class="figure">
+<img src="http://static.zybuluo.com/Kintoki/jovo7i3whlczd1sqcb6v05h4/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-01-09%20%E4%B8%8A%E5%8D%8812.35.01.png" />
+
+</div>
+<h1 id="小结"><strong><em><span style="color:red">小结</span></em></strong></h1>
+<p>介绍了TD方法思想和TD(0),Q(0),Sarsa(0)算法。TD方法结合了蒙特卡罗方法和动态规划的优点，能够应用于无模型、持续进行的任务，并拥有优秀的性能，因而得到了很好的发展，其中Q-learning更是成为了强化学习中应用最广泛的方法。</p>
+<h1 id="参考资料"><strong><em><span style="color:red">参考资料</span></em></strong></h1>
+<p>[1] R.Sutton et al. Reinforcement learning: An introduction, 1998</p>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="方差分析analysis-of-variance-anova">方差分析(Analysis of Variance, ANOVA)</h2>
+<p><span style="color:red"><strong><em>单因子方差分析</em></strong></span></p>
+<p>线性回归中的ANOVA是一个多因素方差分析，衡量了变量x的变异对变量y的变异解释程度. ANOVA最擅长针对的事情，是可控变量实验，检验比如多块田施肥量的区别是否对产量有影响，多组小白鼠的用药量是否有效果。这个时候，由于实验中控制了除了施肥量、用药量等的其他变量，那么ANOVA的结果是有说服力的。 ANOVA的基本作用是告诉我们<span style="color:red"><strong><em>变量对模型的贡献程度(方差解释比例)</em></strong></span>和<span style="color:red"><strong><em>这种贡献的可信程度（显著性水平）</em></strong></span>．比如检验某个变量是否显著，可以用t检验，也可以用方差检验；在简单情形，这两个检验是等价的．</p>
+<p>ANOVA的方差解释比例是一个衡量模型好坏很直观的指标，且不依赖假设.ANOVA的想法更直观简单，所以很容易移植到更复杂的情形．比如在函数型数据分析中，依然可以用ANOVA，而线性回归里的单个变量的显著性检验就不行了．再比如在样条回归里，单个变量的显著性检验也很难解释，而ANOVA依然有一定的作用．</p>
+<p><span style="color:red"><strong><em>ANOVA的功能：</em></strong></span> 判定自变量多大程度上可以被因变量解释; 判断哪一个自变量的影响更大一些; 在类别变量的前提下，结合回归分析，方差分析还可以帮助我们发现交叉影响. <span style="color:red"><strong><em>方差分析的缺点是条件有些苛刻，需要满足如下条件：</em></strong></span> 各样本是相互独立的； 各样本数据来自正态总体（正态性：normality）； 各处理组总体方差相等（方差齐性：homogeneity of variance）。</p>
+<p>因此在作方差分析之前，<span style="color:red"><strong><em>要作正态性检验和方差齐性检验</em></strong></span>，如不满足上述要求，可考虑作变量变换。常用的变量变换方法有平方根变换，平方根反正弦变换、对数变换及倒数变换等。<a href="http://tiramisutes.github.io/2015/10/08/ANOVA/">ref</a></p>
+<p>例子: 假设a个理想或想要比较的某一单因子的不同水平，a个处理的每一个中的观测相应都是一个随机变量，<span class="math inline">\(y_{ij}\)</span>代表第<span class="math inline">\(i\)</span>种因子水平下所取的第<span class="math inline">\(j\)</span>个观测值。</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">处理水平</th>
+<th align="left">观测值</th>
+<th align="left">总和</th>
+<th align="left">平均值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left"></td>
+<td align="left"><img src="http://mathurl.com/zqthapx.png" /></td>
+<td align="left"><span class="math inline">\(\bar{y_{1.}}=y_{1.}/n\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left"><img src="http://mathurl.com/zegjdtg.png" /></td>
+<td align="left"><span class="math inline">\(y_{2.}=\sum_{j=1}^ny_{2j}\)</span></td>
+<td align="left"><span class="math inline">\(\bar{y_{2.}}=y_{2.}/n\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(\vdots\)</span></td>
+<td align="left"><span class="math inline">\(\vdots\)</span></td>
+<td align="left"><span class="math inline">\(\vdots\)</span></td>
+<td align="left"><span class="math inline">\(\vdots\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">a</td>
+<td align="left"><img src="http://mathurl.com/h63h4om.png" /></td>
+<td align="left"><span class="math inline">\(y_{a.}=\sum_{j=1}^ny_{aj}\)</span></td>
+<td align="left"><span class="math inline">\(\bar{y_{a.}}=y_{a.}/n\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"><span class="math inline">\(y_{..}=\sum_{i=1}^a\sum_{j=1}^ny_{ij}\)</span></td>
+<td align="left"><span class="math inline">\(\bar{y_{..}}=y_{..}/(an)\)</span></td>
+</tr>
+</tbody>
+</table>
+<!-- |  处理水平  | 观测值  |   总和  |  平均值 |
+|---|---|---|---|
+|  1 |  | $y_{1.}=\sum_{j=1}^ny_{1j}$  | $\bar{y_{1.}}=y_{1.}/n$|
+|  2 |  $y_{21}, \ y_{22},\ ...,\ y_{2n}$| $y_{2.}=\sum_{j=1}^ny_{2j}$  |$\bar{y_{2.}}=y_{2.}/n$ |
+|  $\vdots$ |  $\vdots$ | $\vdots$  |  $\vdots$ |
+|  a |  $y_{a1}, \ y_{a2},\ ...,\ y_{an}$ | $y_{a.}=\sum_{j=1}^ny_{aj}$  |  $\bar{y_{a.}}=y_{a.}/n$ |
+|  |  | $y_{..}=\sum_{i=1}^a\sum_{j=1}^ny_{ij}$  |  $\bar{y_{..}}=y_{..}/(an)$ | -->
+<p><span style="color:red"><strong><em>均值模型</em></strong></span>： <img src="http://mathurl.com/z8owb8o.png" /></p>
+<!--{#-$y_{ij}=\mu_i+\varepsilon_{ij} \begin{cases}i=1,2,...,a\\j=1,2,...,n\end{cases}$}-->
+<p><span class="math inline">\(y_{ij}\)</span>是第<span class="math inline">\(ij\)</span>个观测值，<span class="math inline">\(\mu_i\)</span>是第<span class="math inline">\(i\)</span>个因子水平的均值，<span class="math inline">\(\varepsilon_{ij}\)</span>是随机误差分量。 <span style="color:red"><strong><em>效应模型</em></strong></span>： <span class="math inline">\(\mu_i=\mu+\tau_i, i=1,2,...,a\)</span>, <span class="math inline">\(\mu\)</span>是所有处理的共同参数，叫作总均值，<span class="math inline">\(\tau_i\)</span>是第<span class="math inline">\(i\)</span>个处理的参数，也叫做第<span class="math inline">\(i\)</span>个处理效应。</p>
+<p>上面由于<span style="color:red"><strong><em>只有一个因子</em></strong></span>，研究一个因子在不同水平下的方差分析，所以也叫<span style="color:red"><strong><em>单因子方差分析</em></strong></span>。</p>
+<p>实验要求：完全随机化设计，目标是关于处理均值的假设，并估计处理均值，假定方差<span class="math inline">\(\sigma^2\)</span>在该因子的各个水平下都是常量，所以观测值<span class="math inline">\(y_{ij}\sim N(\mu+t_i,\sigma^2)\)</span></p>
+<p><span style="color:red"><strong><em>固定效应模型的分析</em></strong></span></p>
+<p>我们的兴趣在于检验<span class="math inline">\(a\)</span>个处理均值的等式，也就是<span class="math inline">\(E(y_{ij})=\mu+\tau_i\)</span>,</p>
+<p>合理的假设是: <img src="http://mathurl.com/h5dfx47.png" /></p>
+<!---$\begin{cases}H_0:\mu_1=\mu_2=...=\mu_a\\H_1:\mu_i\ne\mu_j, \text{at least one pair (i,j)}\end{cases}$--->
+<p>通常认为<span class="math inline">\(\mu\)</span>是总平均，所以<span class="math inline">\(\frac{\sum_{1}^{a}\mu_i}{a}=\mu\)</span>, 这意味着<span class="math inline">\(\sum_{i=1}^a\tau_i=0\)</span>, 也就是处理或因子效应可以被认为是与总均值的偏差。</p>
+<p>假设的等价写法是: <img src="http://mathurl.com/zbw5so7.png" /></p>
+<!---$\begin{cases}H_0:\tau_1=\tau_2=...=\tau_a=0\\H_1:\tau_i\ne 0, \text{at least one pair (i,j)}\end{cases}$--->
+<p><span style="color:red"><strong><em>总平方和的分解</em></strong></span></p>
+<p><span style="color:red"><strong><em>ANOVA来源于把总变异性分解成它的分量，总矫正平方和:</em></strong> </span><img src="http://mathurl.com/zq3ykeb.png" /> <img src="http://mathurl.com/hp8p5qj.png" /></p>
+<!---
+$$SS_T=\sum_{i=1}^a\sum_{j=1}^n(y_{ij}-\bar{y}_{..})^2$$
+$$SS_T=\sum_{i=1}^a\sum_{j=1}^n(y_{ij}-\bar{y}_{..})=n\sum_{i=1}^a(\bar{y}_.-\bar{y}_{..})^2+\sum_{i=1}^a\sum_{j=1}^n(y_{ij}-\bar{y}_{.})=SS_{treatment}+SS_E$$ --->
+<!--- 上面的公式就是ANOVA个公式，<span style="color:red">***用总矫正平方和来度量一组数据的总变异性可以分解成：处理均值平方和与总平均值的平方和***</span>。$$\begin{cases}SS_{treatment}=n\sum_{i=1}^a(\bar{y}_.-\bar{y}_{..})^2\\SS_E=\sum_{i=1}^a\sum_{j=1}^n(y_{ij}-\bar{y}_{.})\end{cases}$$ --->
+<p><img src="http://mathurl.com/hzd9dpu.png" /></p>
+<p>其中<span style="color:red"><strong><em><span class="math inline">\(SS_{treatment}\)</span>是处理平方和（有<span class="math inline">\(an=N\)</span>个总观测值，所以有<span class="math inline">\(N-1\)</span>个自由度）</em></strong></span>，而<span style="color:red"><strong><em><span class="math inline">\(SS_E\)</span>是误差平方和(<span class="math inline">\(a\)</span>个因子水平/<span class="math inline">\(a\)</span>个处理均值，所以有<span class="math inline">\(a-1\)</span>个自由度。)</em></strong></span>。任一处理内部有<span class="math inline">\(n\)</span>个重复，给出<span class="math inline">\(n-1\)</span>个自由度，且有<span class="math inline">\(a\)</span>个处理，所有误差有<span class="math inline">\(a(n-1)=N-a\)</span>个自由度。</p>
+<p><span style="color:red"><strong><em>上式给<span class="math inline">\(\sigma^2\)</span>提供了2个估计:</em></strong></span>:一个根据<span style="color:red"><strong><em>处理内部</em></strong></span>的固有变异性; 一个<span style="color:red"><strong><em>处理之间</em></strong></span>的变异性。</p>
+<p><span style="color:red"><strong><em>如果<span class="math inline">\(a\)</span>个处理均值之间没差异，就可以用处理平均值对总平均值的偏差平方来估计</em></strong></span> <span class="math inline">\(\sigma^2=\frac{SS_{treatment}}{a-1}=n\frac{n\sum_{i=1}^a(\bar{y_.}-\bar{y_{..}})^2}{a-1}\)</span></p>
+<p><span class="math inline">\(MS_{treatment}=\frac{SS_{treatment}}{a-1}\)</span>是处理均方(mean square) <span class="math inline">\(MS_{E}=\frac{SS_{E}}{a-1}\)</span>是误差均方(mean square)</p>
+<p><img src="http://mathurl.com/hnthyy5.png" /></p>
+<!--- $\begin{cases}E(MS_E)=E(\frac{SS_E}{N-a})=\frac{1}{N-a}E[\sum_{i=1}^a\sum_{j=1}^ny_{ij}^2-\frac{1}{n}\sum_{i=1}^a\bar{y_{l.}}^2]\end{cases}$ --->
+<p>因为<span class="math inline">\(SS_{treatment},SS_{E}\)</span>的自由度加起来等于总的自由度<span class="math inline">\(N-1\)</span>,所以，<span style="color:red"><strong><em><span class="math inline">\(SS_{treatment}/\sigma^2,SS_E/\sigma^2\)</span>是独立分布的<span class="math inline">\(\chi^2\)</span>随机变量</em></strong></span>。当处理均值没有差异的<span class="math inline">\(H_0\)</span>为真时，比值:<span class="math inline">\(F_0=\frac{SS_{treatment}/(a-1)}{SS_E/(N-a)}=\frac{MS_{treatment}}{MS_E}\)</span>服从<span style="color:red"><strong><em>自由度为<span class="math inline">\(a-1\)</span>与<span class="math inline">\(N-a\)</span>的F分布。</em></strong></span></p>
+<p><span style="color:red"><strong><em>当<span class="math inline">\(F_0&gt;F_{\alpha,a-1,N-a}\)</span>时，应该拒绝<span class="math inline">\(H_0\)</span>。</em></strong></span></p>
+<p><span style="color:red"><strong><em>单因子方差分析表，固定效应模型</em></strong></span> <!--
+|  方差来源  | 平方和  |   自由度  |  均方 |$F_0$ |
+|---|---|---|---|---|
+|  处理间 |<img src="http://mathurl.com/j8ehe2j.png" />|$a-1$|$MS_{treatment}=\frac{SS_{treatment}}{a-1}$|$F_0=\frac{MS_{treatment}}{MS_{E}}$|
+|  误差(处理内) |$SS_{E}=SS_T-SS_{treatment}$|$N-a$|$MS_{E}=\frac{SS_{E}}{N-a}$||
+|  总和 |$SS_T=\sum_{i=1}^{a}\sum_{j=1}^n(y_{ij}-\bar{y}_{..})^2$|$N-1$|||
+
+<!--
+|  方差来源  | 平方和  |   自由度  |  均方 |$F_0$ |
+|---|---|---|---|---|
+|  处理间 |$\begin{cases}SS_{treatment}=n\sum_{i=1}^{a}(\bar{y}_{i.}-\bar{y}_{..})\\SS_{treatment}=\frac{1}{n}\sum_{i=1}^{a}y_{i.}^2-\frac{y_{..}^2}{N}\end{cases}$|$a-1$|$MS_{treatment}=\frac{SS_{treatment}}{a-1}$|$F_0=\frac{MS_{treatment}}{MS_{E}}$|
+|  误差(处理内) |$SS_{E}=SS_T-SS_{treatment}$|$N-a$|$MS_{E}=\frac{SS_{E}}{N-a}$||
+|  总和 |$SS_T=\sum_{i=1}^{a}\sum_{j=1}^n(y_{ij}-\bar{y}_{..})^2$|$N-1$||| --></p>
+<p><span style="color:red"><strong><em>任意2个处理均值之差<span class="math inline">\(\mu_i-\mu_j\)</span>的一个<span class="math inline">\(100(1-\alpha)\%\)</span>置信区间是：</em></strong></span><img src="http://mathurl.com/h3je4y3.png" /></p>
+<!-- $$
+\bar{y}_{i.}-\bar{y}_{j.}-t_{\alpha/2,N-a}\sqrt{\frac{2MS_E}{n}}\le \mu_i-\mu_j\le\bar{y}_{i.}-\bar{y}_{j.}+t_{\alpha/2,N-a}\sqrt{\frac{2MS_E}{n}}
+$$ -->
+<p><span style="color:red"><strong><em>方差相等性的统计检验法</em></strong></span></p>
+<p><img src="http://mathurl.com/zkg6wyx.png" /></p>
+<!-- $\begin{cases}H_0:\sigma_1^2=\sigma_2^2=...=\sigma_a^2\\H_1:\text{At least one } \sigma_i^2 \text{ is not true}\end{cases}$ -->
+<p><span style="color:red"><strong><em>处理均值的配对比较法</em></strong></span></p>
+<p>在实际情况下，我们<span style="color:red"><strong><em>只比较配对均值</em></strong></span>。假定我们想要比较所有<span class="math inline">\(a\)</span>个处理均值的配对。</p>
+<p>那么，<span style="color:red"><strong><em>想要检验的<span class="math inline">\(H_0\)</span>就是：对一切<span class="math inline">\(i\ne j\)</span> <span class="math inline">\(\mu_i=\mu_j\)</span></em></strong></span>。 常用的2中普遍方法是：<span style="color:red"><strong><em>Tukey检验，Fisher LSD最小显著性差异检验</em></strong></span></p>
+<p><span style="color:red"><strong><em>Tukey检验</em></strong></span><img src="http://mathurl.com/zlphlcb.png" /></p>
+<!-- $\begin{cases}H_0:\mu_i=\mu_j\\H_1:\mu_i\ne \mu_j\end{cases}$ -->
+<p>Tukey利用<span style="color:red"><strong><em>学生化极差统计量(studentized range statistic):<span class="math inline">\(q=\frac{\bar{y}_{max}-\bar{y}_{min}}{\sqrt{MS_E/n}}\)</span>, 其中<span class="math inline">\(\bar{y}_{max},\bar{y}_{min}\)</span>是p个样本均值中的最大值和最小值。当样本容量相当时，如果样本均值差的绝对值超过<span class="math inline">\(T_{\alpha}=q_{\alpha}(a,f)\sqrt{\frac{MS_E}{n}}\)</span>, 就表明均值显著性差异。</em></strong></span></p>
+<p>等价的，<span style="color:red"><strong><em>构建所有配对均值的<span class="math inline">\(100(1-\alpha)\%\)</span>置信区间：</em></strong></span><img src="http://mathurl.com/zc3f6mh.png" /></p>
+<!-- $$
+\bar{y}_{i.}-\bar{y}_{j.}-q_{\alpha}(a,f)\sqrt{\frac{2MS_E}{n}}\le \mu_i-\mu_j\le\bar{y}_{i.}-\bar{y}_{j.}+q_{\alpha}(a,f)\sqrt{\frac{2MS_E}{n}}
+$$ -->
+<p><span style="color:red"><strong><em>Fisher LSD 最小显著性差异检验</em></strong></span></p>
+<p>该方法使用<span style="color:red"><strong><em><span class="math inline">\(t\)</span>统计量检验<span class="math inline">\(H_0:\mu_i=\mu_j\)</span></em></strong></span> <img src="http://mathurl.com/je9ugs9.png" /></p>
+<!-- $$
+t_0=\frac{\bar{y}_{i.}-\bar{y}_{j.}}{\sqrt{MS_E(\frac{1}{n_i}+\frac{1}{n_j})}}
+$$ -->
+<p><span style="color:red"><strong><em>当时，表明均值对<span class="math inline">\(\mu_i,\mu_j\)</span>有显著性差异。</em></strong></span>:<img src="http://mathurl.com/hc6g262.png" /></p>
+<!--$|\bar{y}_{i.}-\bar{y}_{j.}|>t_{\alpha/2,N-a}\sqrt{MS_E(\frac{1}{n_i}+\frac{1}{n_j}}$-->
+<p><span style="color:red"><strong><em>LSD(least significant difference)表明最小显著性差异</em></strong></span>：<span class="math inline">\(LSD=t_{\alpha/2,N-a}\sqrt{MS_E(\frac{1}{n_i}+\frac{1}{n_j}}\)</span></p>
+<p><span style="color:red"><strong><em>方差分析中的非参数法</em></strong></span></p>
+<p>首先将观测值<span class="math inline">\(y_{ij}\)</span>按<span style="color:red"><strong><em>升序排列</em></strong></span>， 然后将每一观测值用它的<span style="color:red"><strong><em>秩<span class="math inline">\(R_{ij}\)</span></em></strong></span>, 最小的观测值的秩是1,对于观测值秩相同，则用<span style="color:red"><strong><em>平均秩</em></strong></span>。 令<span style="color:red"><strong><em><span class="math inline">\(R_{i.}\)</span>为第<span class="math inline">\(i\)</span>种处理的秩</em></strong></span>，检验统计量是:<span class="math display">\[H=\frac{1}{S^2}[\sum_{i=1}^{a}\frac{R_{i.}^2}{n_i}-\frac{N(N+1)^2}{4}]\]</span> <span class="math display">\[
+S^2=\frac{1}{N-1}[\sum_{i=1}^a\sum_{j=1}^{n_i}R_{ij}^2-\frac{N(N+1)^2}{4}]
+\]</span> 注意到<span class="math inline">\(S^2\)</span>正好是秩的方差，如果没有结，则<span class="math inline">\(S^2=N(N+1)/12\)</span>，且<span style="color:red"><strong><em>检验统计量简化为:<span class="math inline">\(H=\frac{12}{N(N+1)}\sum_{i=1}^{a}\frac{R_{i.}^2}{n_i}-3(N+1)\)</span></em></strong></span></p>
+<p>在<span class="math inline">\(H_0\)</span>假设成立的条件下，<span class="math inline">\(H\)</span>近似服从<span class="math inline">\(\chi_{a-1}^2\)</span>分布，所以，<span style="color:red"><strong><em>如果<span class="math inline">\(H&gt;\chi_{\alpha,\alpha-1}^2\)</span>则拒绝<span class="math inline">\(H_0\)</span>。</em></strong></span></p>
+<p>span style=&quot;color:red&quot;&gt;<strong><em>析因设计</em></strong></span></p>
+<p><span style="color:red"><strong><em>正交表的由来</em></strong></span></p>
+<p>拉丁方名称的由来 : 古希腊是一个多民族的国家，国王在检阅臣民时要求每个方队中每行有一个民族代表，每列也要有一个民族的代表。数学家在设计方阵时，以每一个拉丁字母表示一个民族，所以设计的方阵称为拉丁方。</p>
+<p>什么是n阶拉丁方？ 用n个不同的拉丁字母排成一个n阶方阵（n&lt;26 ），如果每行的n个字母均不相同，每列的n个字母均不相同，则称这种方阵为n*n拉丁方或n阶拉丁方。每个字母在任一行、任一列中只出现一次。</p>
+<p><span style="color:red"><strong><em>正交实验法: 正交试验设计(Orthogonal experimental design)是研究多因素多水平的又一种设计方法</em></strong></span>，它是根据正交性从全面试验中挑选出部分有代表性的点进行试验，这些有代表性的点具备了“均匀分散，齐整可比”的特点，正交试验设计是分式析因设计的主要方法。是一种高效率、快速、经济的实验设计方法。</p>
+<p><span style="color:red"><strong><em>析因设计的优点：</em></strong></span>:比<span style="color:red"><strong><em>一次一因子实验效率高</em></strong></span>; 当有<span style="color:red"><strong><em>交互作用时</em></strong></span>，为避免产生令人误解的结论，必须用析因设计; 析因设计容许<span style="color:red"><strong><em>一个因子相对于其他各因子的几个水平</em></strong></span>来估计其效应.</p>
+<p><span style="color:red"><strong><em>2因子析因设计</em></strong></span></p>
+<!-- <span style="color:red">***2因子设计的一般排列表***</span>
+
+
+| 因子A  | 因子B  |     |   | |||
+|---|---|---|---|---|---|---|
+| $y_{ij.}=\sum_{k=1}^ny_{ijk}$ |1|2|$...$|b|||
+| 1 |<img src="http://mathurl.com/jpewzmr.png" /> ||$...$|<img src="http://mathurl.com/zmvt2h6.png" />|<img src="http://mathurl.com/gtodtvf.png" />|
+| 2 |<img src="http://mathurl.com/z743fth.png" />|<img src="http://mathurl.com/z34burx.png" />|$...$|<img src="http://mathurl.com/j5jbvcs.png" />|||
+| $\vdots$|||$...$||||
+| $a$|<img src="http://mathurl.com/hrg6w3o.png"/>||$...$|<img src="http://mathurl.com/hstkr9r.png" />$|||
+|  |$y_{.j.}=\sum_{i=1}^a\sum_{k=1}^ny_{ijk}$||||$y_{...}=\sum_{i=1}^a\sum_{i=j}^b\sum_{k=1}^ny_{ijk}$||
+|   | |  <img src="http://mathurl.com/jbgmsfe.png" />   |   | ||<img src="http://mathurl.com/gp6xk6k.png" />| -->
+<!--
+| 因子A  | 因子B  |     |   | |||
+|---|---|---|---|---|---|---|
+| $y_{ij.}=\sum_{k=1}^ny_{ijk}$ |1|2|$...$|b|||
+| 1 |$\begin{bmatrix}y_{111}y_{112},...,y_{11n}\end{bmatrix}$, |$[y_{121},y_{122},...,y_{12n}]$|$...$|$[y_{1b1},y_{1b2},...,y_{1bn}]$|$y_{i..}=\sum_{j=1}^b\sum_{k=1}^ny_{ijk}$|$SS_B=\frac{1}{an}\sum_{i=1}^a(\bar{y}_{i..}-\bar{y}_{...})^2$|
+| 2 |$[y_{211},y_{212},...,y_{21n}]$|$[y_{221},y_{222},...,y_{22n}]$|$...$|$[y_{2b1},y_{2b2},...,y_{2bn}]$|||
+| $\vdots$|||$...$||||
+| $a$|$[y_{a11},y_{a12},...,y_{a1n}]$|$[y_{a21},y_{a22},...,y_{11n}]$|$...$|$[y_{ab1},y_{ab2},...,y_{abn}]$|||
+|  |$y_{.j.}=\sum_{i=1}^a\sum_{k=1}^ny_{ijk}$||||$y_{...}=\sum_{i=1}^a\sum_{i=j}^b\sum_{k=1}^ny_{ijk}$||
+|   |  $SS_A=\frac{1}{bn}\sum_{i=1}^a(\bar{y}_{i..}-\bar{y}_{...})^2$ |     |   | ||$SS_{AB}=n\sum_{i=1}^a\sum_{j=1}^b(\bar{y}_{ij.}-\bar{y}_{i..}-\bar{y}_{.j.}+\bar{y}_{...})$| -->
+<!--
+$SS_T=SS_A+SS_B+SS_{AB}+SS_E=\sum_{i=1}^a\sum_{j=1}^b\sum_{k=1}^ny_{ijk}^2-\frac{y_{...}^2}{abn}$ -->
+<p><span style="color:red"><strong><em>二因子析因设计另一种计算平方和的方法：</em></strong></span></p>
+<!-- $\begin{cases}
+SS_A=\frac{[(a-1)(b+1)]}{2n}\\
+SS_B=\frac{[(a+1)(b-1)]}{2n}\\
+SS_{AB}=\frac{[(a-1)(b-1)]}{2n}
+\end{cases}$$\begin{cases}
+SS_A=\frac{[(a-1)(b+1)]^2}{4n}\\
+SS_B=\frac{[(a+1)(b-1)]^2}{4n}\\
+SS_{AB}=\frac{[(a-1)(b-1)]^2}{4n}
+\end{cases}$ -->
+<p><img src="http://mathurl.com/zs37rjn.png" /></p>
+<p><span style="color:red"><strong><em>效应模型为</em></strong></span>: <img src="http://mathurl.com/ztvj3pw.png" /></p>
+<!-- $\mu$是<span style="color:red">***总平均效应***</span>;
+$\tau_{i}$是<span style="color:red">***行因子A的第$i$水平的效应***</span>;
+$\beta_{j}$是<span style="color:red">***列因子B的第$j$水平的效应***</span>;
+$(\tau\beta)_{ij}$是<span style="color:red">***$\tau_j$与$\beta_j$之间的交互作用的效应***</span>;
+$\varepsilon_{ijk}$是<span style="color:red">***随机误差分量***</span>。 -->
+<!-- <span style="color:red">***2因子析因设计的方差分析表，固定效应模型***</span>
+
+|  方差来源  | 平方和  |   自由度  |  均方 |$F_0$ |
+|---|---|---|---|---|
+|  处理A |$SS_A=\frac{1}{bn}\sum_{i=1}^ay_{i..}^2-\frac{y_{...}^2}{abn}$|$a-1$|$MS_{A}=\frac{SS_{A}}{a-1}$|$F_0=\frac{MS_{A}}{MS_{E}}$|
+|  处理B |$SS_B=\frac{1}{an}\sum_{j=1}^by_{.j.}^2-\frac{y_{...}^2}{abn}$|$b-1$|$MS_{E}=\frac{SS_{B}}{b-1}$|$F_0=\frac{MS_{B}}{MS_{E}}$|
+|  交互作用 |$SS_{AB}=SS_{subtotal}-SS_A-SS_B$|$(a-1)(b-1)$|$MS_{AB}=\frac{SS_{AB}}{(a-1)(b-1)}$|$F_0=\frac{MS_{AB}}{MS_{E}}$|
+|  误差 |$SS_E=SS_T-SS_{subtotal}$|$ab(n-1)$|$MS_{E}=\frac{SS_{E}}{ab(n-1)}$||
+|  总和 |$SS_T$|$abn-1$||| -->
+<!-- 例子：电池设计寿命数据
+
+|  材料类型  | 温度  |     |   ||||||||
+|---|---|---|---|---|---|---|---|---|---|---|
+|   |15|||70|||125|||$y_{i..}$|
+| 1 |130|155||34|40||20|70|||
+|   |74|180|$y_{11.}=539$|80|75|$y_{12.}=539$|82|58|$y_{13.}=230$|$y_{1..}=\sum_{i=1}^3y_{1i.}=998$|
+| 2 |150|188||136|122||25|70|||
+|  |159|126|$y_{21.}=623$|106|115|$y_{22.}=479$|58|45|$y_{23.}=198$|$y_{2..}=\sum_{i=2}^3y_{2i.}=1300$|
+| 3 |138|110||174|120||96|104|||
+|  |168|160|$y_{31.}=576$|50|139|$y_{32.}=583$|82|60|$y_{33.}=342$|$y_{3..}=\sum_{i=3}^3y_{3i.}=1501$|
+|$y_{.j.}$|||$y_{.1.}=1738$|||$y_{.2.}=1291$|||$y_{.2.}=770$|$y_{...}=3799$|
+
+$SS_T=\sum_{i=1}^a\sum_{j=1}^b\sum_{k=1}^ny_{ijk}^2-\frac{y_{...}^2}{abn}=77646.97$
+$SS_A=\frac{1}{bn}\sum_{i=1}^a(\bar{y}_{i..}-\bar{y}_{...})^2=10683.72$
+$SS_B=\frac{1}{an}\sum_{i=1}^a(\bar{y}_{i..}-\bar{y}_{...})^2=39118.72$
+$SS_{AB}=n\sum_{i=1}^a\sum_{j=1}^b(\bar{y}_{ij.})^2-\frac{{y}_{...}^2}{abn}-SS_A-SS_B=39118.72$
+$SS_E=SS_T-SS_{A}-SS_B-SS_{AB}=18230.75$
+
+|  方差来源  | 平方和  |   自由度  |  均方 |$F_0,\alpha=0.05$ |
+|---|---|---|---|---|
+|  处理A(材料类型) |$SS_A=10683.72$|$a-1=2$|$MS_{A}=\frac{SS_{A}}{a-1}=5341.86$|$F_0=\frac{MS_{A}}{MS_{E}}=7.91$>$F_{\alpha,a-1,ab(n-1)}=3.35$|
+|  处理B(温度) |$SS_B=39118.72$|$b-1=2$|$MS_{E}=\frac{SS_{B}}{b-1}=19559.36$|$F_0=\frac{MS_{B}}{MS_{E}}=28.97$>$F_{\alpha,a-1,ab(n-1)}=3.35$|
+|  交互作用 |$SS_{AB}=9613.78$|$(a-1)(b-1)=4$|$MS_{AB}=\frac{SS_{AB}}{(a-1)(b-1)}=2403.44$|$F_0=\frac{MS_{AB}}{MS_{E}}=3.56$>$F_{\alpha,(a-1)(b-1),ab(n-1)}=2.73$|
+|  误差 |$SS_E=18230.75$|$ab(n-1)=27$|$MS_{E}=\frac{SS_{E}}{ab(n-1)}=675.21$||
+|  总和 |$SS_T=77646.97$|$abn-1=35$||| -->
+<p><span style="color:red"><strong><em>2因此析因设计中，行因子A与列因子B同样重要，</em></strong></span> <span style="color:red"><strong><em>行处理效应的等式假设</em></strong></span>：<img src="http://mathurl.com/htq4f9p.png" /></p>
+<!--$\begin{cases}H_0:\tau_1=\tau_2=...=\tau_a=0\\H_1:\text{At lest one }\tau_i\ne 0\end{cases}$-->
+<p><span style="color:red"><strong><em>列处理效应的等式假设</em></strong></span>：<img src="http://mathurl.com/hhp4fa5.png" /></p>
+<!--$\begin{cases}H_0:\beta_1=\beta_2=...=\beta_b=0\\H_1:\text{At lest one }\beta_i\ne 0\end{cases}$-->
+<p><span style="color:red"><strong><em>行与列处理有没有交互作用</em></strong></span>：<img src="http://mathurl.com/hd7nbly.png" /></p>
+<!--$\begin{cases}H_0:(\tau\beta)_{ij}=0, \text{For all i,j }\\H_1:\text{At lest one }(\tau\beta)_{ij}\ne 0\end{cases}$-->
+<p>所以得出结论：<span style="color:red"><strong><em>材料类型和温度之间有显著的交互作用，且材料类型和温度的主效应也是显著的。</em></strong></span></p>
+<p><span style="color:red"><strong><em><span class="math inline">\(2^k\)</span>因子析因设计</em></strong></span></p>
+<p>特殊情况是，有<span class="math inline">\(k\)</span>个因子，每个因子有2个水平，这类设计的一个完全重复需要<span class="math inline">\(2\times 2\times 2 ...\times 2=2^k\)</span>个观测值，并称为<span class="math inline">\(2^k\)</span>析因设计。</p>
+<p><span style="color:red"><strong><em><span class="math inline">\(2^2\)</span>设计</em></strong></span></p>
+<p><span class="math inline">\(2^2\)</span>设计是仅有2个因子，每个因子都有2个水平，这叫<span class="math inline">\(2^2\)</span>设计。</p>
+<!-- <span style="color:red">***催化剂实验***</span>
+
+| 因子  | 处理组合  |   重复  |   |||总和|
+|---|---|---|---|---|---|---|
+|A|B||I|II|III||
+|$-$|$-$|$(1)$|28|25|27|80|
+|$+$|$-$|$a$|36|25|32|100|
+|$-$|$+$|$b$|18|32|23|60|
+|$+$|$+$|$ab$|31|19|29|90|
+|$A=\frac{1}{2}(A_{B_{+}}+A_{B_{-}})=\frac{1}{2}(\frac{a-(1)}{n}+\frac{ab-b}{n})=8.33$|$B=\frac{1}{2}(B_{A_{+}}+B_{A_{-}})=\frac{1}{2}(\frac{ab-a}{n}+\frac{b-(1)}{n})=-5.00$||||||
+|$AB=\frac{1}{2}(A_{B_{+}}-A_{B_{-}})=\frac{1}{2}(\frac{a-(1)}{n}-\frac{ab-b}{n})=1.67$||||||| -->
+<!-- $A$的效应是正的，说明递增，A从低水平增至高水平将增加产率;
+$B$的效应是正的，说明递减，B从低水平增至高水平将降低产率;
+<span style="color:red">***相对主效应，交互效应显得较小。***</span> -->
+<!-- 在涉及$2^k$设计的实验中，<span style="color:red">***考察因子效应的大小(magnitude)和方向(direction)***</span>，以便确定哪些变量可能是重要的。<span style="color:red">***ANOVA可以用来证明这一点***</span>。
+
+|  方差来源  | 平方和  |   自由度  |  均方 |$F_0,\alpha=0.05$ |
+|---|---|---|---|---|
+|  处理A |$SS_A=\frac{[ab+a-b-(1)]^2}{4n}=280.33$|$a-1=1$|$MS_{A}=\frac{SS_{A}}{a-1}=208.33$|$F_0=\frac{MS_{A}}{MS_{E}}=53.15$|
+|  处理B |$SS_B=\frac{[ab+b-a-(1)]^2}{4n}=75.00$|$b-1=1$|$MS_{E}=\frac{SS_{B}}{b-1}=75.00$|$F_0=\frac{MS_{B}}{MS_{E}}=19.13$|
+|  交互作用 |$SS_{AB}=\frac{[ab+(1)-a-b]^2}{4n}=8.33$|$(a-1)(b-1)=1$|$MS_{AB}=\frac{SS_{AB}}{(a-1)(b-1)}=8.33$|$F_0=\frac{MS_{AB}}{MS_{E}}=2.13$|
+|  误差 |$SS_E=31.34$|$ab(n-1)=8$|$MS_{E}=\frac{SS_{E}}{ab(n-1)}=3.92$||
+|  总和 |$SS_T=323.00$|$abn-1=11$||| -->
+<p><span style="color:red"><strong><em><span class="math inline">\(2^3\)</span>设计</em></strong></span></p>
+<p align="center">
+<img src="https://github.com/gujiuxiang/gujiuxiang.github.io/blob/master/images/posts/2016-04-17/chip_anova.png" width="600" >
+</p>
+<p><img src="http://mathurl.com/hznsl8a.png" /> <!-- $\begin{cases}
+A=\frac{1}{4}(A_{B+C+}+A_{B-C+}+A_{B-C-}+A_{B+C-})=\frac{1}{4}[(abc-bc)+(ac-c)+(a-(1))+(ab-b)]=-101.625\\
+B=\frac{1}{4}(B_{A+C+}+B_{A-C+}+B_{A-C-}+B_{A+C-})=\frac{1}{4}[(abc-ac)+(b-(1))+(a-(1))+(ab-a)]=7.375\\
+A=\frac{1}{4}(C_{B+A+}+C_{B-A+}+C_{B-A-}+C_{B+A-})=\frac{1}{4}[(abc-ab)+(c-(1))+(ac-a)+(ab-b)]=306.125\\
+AB=\frac{1}{2}(\bar{A}_{B+}-\bar{A}_{B-})=\frac{1}{2}[\frac{(abc-bc)+(ab-b)}{2n}-\frac{(ac-c)+(a-(1))}{2n}]=-24.875\\
+BC=\frac{1}{2}(\bar{B}_{C+}-\bar{B}_{C-})=\frac{1}{2}[\frac{(bc-c)+(abc-ac)}{2n}-\frac{(b-(1))+(ab-a)}{2n}]=-2.125\\
+AC=\frac{1}{2}(\bar{A}_{C+}-\bar{A}_{C-})=-153.625\\
+ABC=\frac{1}{2}(\bar{AB}_{C+}-\bar{AB}_{C-})=\frac{1}{2}[\frac{(abc-bc)-(ac-c)}{2n}-\frac{(ab-b)+(a-(1))}{2n}]=5.625
+\end{cases}$ --></p>
+<p><span style="color:red"><strong><em>最大的效应是C，A，AC</em></strong></span></p>
+<p><span style="color:red"><strong><em><span class="math inline">\(2^3\)</span>因子析因设计另一种计算平方和的方法：</em></strong></span> <!--$\begin{cases}
+A=\frac{[(a-1)(b+1)(c+1)]}{4n}\\
+B=\frac{[(a+1)(b-1)(c-1)]}{4n}\\
+C=\frac{[(a-1)(b-1)(c+1)]}{4n}\\
+AB=\frac{[(a-1)(b+1)(c+1)]}{4n}\\
+BC=\frac{[(a+1)(b-1)(c-1)]}{4n}\\
+AC=\frac{[(a-1)(b+1)(c-1)]}{4n}\\
+ABC=\frac{[(a-1)(b-1)(c-1)]}{4n}
+\end{cases}$--><img src="http://mathurl.com/zhm8k9v.png" /><img src="http://mathurl.com/h767ehp.png" /><!--$\begin{cases}
+SS_A=\frac{[(a-1)(b+1)(c+1)]^2}{8n}\\
+SS_B=\frac{[(a+1)(b-1)(c-1)]^2}{8n}\\
+SS_C=\frac{[(a-1)(b-1)(c+1)]^2}{8n}\\
+SS_AB=\frac{[(a-1)(b+1)(c+1)]^2}{8n}\\
+SS_BC=\frac{[(a+1)(b-1)(c-1)]^2}{8n}\\
+SS_AC=\frac{[(a-1)(b+1)(c-1)]^2}{8n}\\
+SS_ABC=\frac{[(a-1)(b-1)(c-1)]^2}{8n}
+\end{cases}$ --> --&gt;</p>
+</body>
+</html>

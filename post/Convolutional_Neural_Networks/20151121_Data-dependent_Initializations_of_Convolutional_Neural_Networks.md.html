@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="data-dependent-initializations-of-convolutional-neural-networks"><a href="https://arxiv.org/abs/1511.06856">Data-dependent Initializations of Convolutional Neural Networks</a></h2>
+<blockquote>
+<p>This work aims to explore how to better fine-tune CNNs</p>
+</blockquote>
+<p>A small miscalibration of the initial weights leads to vanishing or explod- ing gradients, as well as poor convergence properties.</p>
+<p>In this work we present <span style="color:red"><strong><em>a fast and simple data-dependent initialization procedure, that sets the weights of a network such that all units in the network train at roughly the same rate, avoiding vanishing or exploding gradients</em></strong></span>.</p>
+<p><span style="color:red"><strong><em>Our initialization matches the current state-of-the-art unsupervised or self-supervised pre-training methods on standard computer vision tasks, such as image classification and object detection, while reducing the pre-training time by three orders of magnitude</em></strong></span> .</p>
+<h3 id="background">Background</h3>
+<p>This “pre-trained” representation is then “fine-tuned” on a smaller dataset where the target labels may be more expensive to obtain. These fine-tuning datasets generally do not fully constrain the CNN learning: different initializations can be trained until they achieve equally high training-set performance, but they will often perform very differently at test time.</p>
+<p><span style="color:red"><strong><em>However, little else is known about which other factors affect a CNN’s generalization performance when trained on small datasets</em></strong></span>.</p>
+<p>There is a pressing need to understand these factors： 1. first because we can potentially exploit them to improve performance on tasks where few labels are available. 2. Second they may already be confounding our attempts to evaluate pre-training methods.</p>
+<blockquote>
+<p>We show that simple statistical properties of the network, which can be easily measured using training data, can have a significant impact on test time performance.</p>
+</blockquote>
+<blockquote>
+<p>Surprisingly, we show that controlling for these statistical properties leads to a fast and general way to improve performance when training on relatively little data. Empirical</p>
+</blockquote>
+<h3 id="related-researches">Related researches</h3>
+<ol style="list-style-type: decimal">
+<li>Empirical evaluations have found that when transferring deep features across tasks, <span style="color:red"><strong><em>freezing weights of some layers during fine-tuning generally harms performance</em></strong></span> (<a href="https://arxiv.org/abs/1411.1792">Yosinski et al., 2014</a>).</li>
+<li>These results suggest that, given a small dataset, it is better to adjust all of the layers a little rather than to adjust just a few layers a large amount, and so perhaps <span style="color:red"><strong><em>the ideal setting will adjust all of the layers the same amount</em></strong></span>.</li>
+</ol>
+<p><span style="color:red"><strong><em>While these studies did indeed set the learning rate to be the same for all layers, somewhat counterintuitively this does not actually enforce that all layers learn at the same rate</em></strong></span>.</p>
+<blockquote>
+<p>Example</p>
+</blockquote>
+<p>Say we have a network where there are two convolution layers separated by a ReLU. Multiplying the weights <span class="math inline">\(\mathbf{W_1}\)</span> and bias <span class="math inline">\(\mathbf{B_1}\)</span> term of the first layer by a scalar <span class="math inline">\(\alpha \mathbf{W_1}, \alpha&gt;0\)</span>. And then dividing the weights <span class="math inline">\(\mathbf{W_2}\)</span> (but not bias) of the next (higher) layer by the same constant <span class="math inline">\(\mathbf{W_2}/\alpha\)</span> will result in a network which computes exactly the same function.</p>
+<p>However, note that the gradients of the two layers are not the same: they will be <span style="color:red"><strong><em>divided</em></strong></span> by <span class="math inline">\(\alpha\)</span> for the first layer, and <span style="color:red"><strong><em>multiplied</em></strong></span> by <span class="math inline">\(\alpha\)</span> for the second.</p>
+<p><span class="math display">\[
+\alpha\mathbf{W_1} \Leftarrow \alpha\mathbf{W_1}+\Delta \alpha\mathbf{W_1} , \Delta \alpha\mathbf{W_1} = -\eta \nabla J(\alpha\mathbf{W_1}), \nabla J(\alpha\mathbf{W_1}) = \frac{\partial J(\alpha\mathbf{W_1})}{\partial \alpha \mathbf{W_1}}=\frac{\partial E\{(t-\alpha\mathbf{W_1}^T\mathbf{x})^2\}}{\alpha\partial \mathbf{W_1}}
+\]</span></p>
+<p><span style="color:red"><strong><em>Worse, an update of a given magnitude will have a smaller effect on the lower layer than the higher layer, simply because the lower layer’s norm is nowlarger</em></strong></span>.</p>
+<blockquote>
+<p>A number of works have already suggested that statisti- cal properties of network activations can impact network performance.</p>
+</blockquote>
+<ol style="list-style-type: decimal">
+<li>Many focus on initializations which control the variance of network activations.
+<ol style="list-style-type: decimal">
+<li>Krizhevsky et al. (2012) carefully designed their architecture to ensure gradients neither vanish nor explode. However, this is no longer possible for deeper architectures such as VGG (Simonyan &amp; Zisserman, 2015) or GoogLeNet (Szegedy et al., 2015).</li>
+<li>Glorot &amp; Bengio (2010); Saxe et al. (2013); Sussillo &amp; Abbot (2015); He et al. (2015); Bradley (2010) show that properly scaled random initialization can deal with the vanishing gradi- ent problem, if the architectures are limited to linear transformations, followed by a very specific non-linearities.</li>
+<li>Saxe et al. (2013) focus on linear networks, Glorot&amp;Bengio (2010) derive an initial- ization for networks with tanh non-linearities, while He et al. (2015) focus on the more commonly used ReLUs.</li>
+<li>However, none of the above papers consider more general network including pooling, dropout, LRN layers (Krizhevsky et al., 2012), or DAG-structured networks (Szegedy et al., 2015).</li>
+</ol></li>
+</ol>
+<h3 id="data-dependent-initialization">Data-dependent initialization</h3>
+<ul>
+<li>算法1：with-in layer 初始化</li>
+</ul>
+<ol style="list-style-type: decimal">
+<li>for each affine layer <span class="math inline">\(k\)</span> do
+<ol style="list-style-type: decimal">
+<li>Initialize weights from a zero-mean Gaussian <span class="math inline">\(W_k\sim N(0,1)\)</span> and biases <span class="math inline">\(b_k=0\)</span></li>
+<li>Draw samples <span class="math inline">\(z_0\in \tilde{D}\subset D\)</span> and pass them through the first <span class="math inline">\(k\)</span> layers of the network</li>
+<li>compute the per-channel sample mean <span class="math inline">\(\hat{\mu}_k(i)\)</span> and variance <span class="math inline">\(\hat{\delta}_k(i)^2\)</span> of <span class="math inline">\(z_k(i)\)</span></li>
+<li>rescale the weights by <span class="math inline">\(W_k(i,:)\leftarrow W_k(i,:)/\bar{\sigma_k}(i)\)</span></li>
+<li>set the bias <span class="math inline">\(b_k(i)\leftarrow \beta - \hat{\mu}_k(i)/\hat{\sigma}_k(i)\)</span></li>
+</ol></li>
+<li>end for</li>
+</ol>
+<h3 id="with-in-layer-weight-normalization">with-in layer weight normalization</h3>
+<p>They aim to ensure that each channel that a layer k + 1 receives a similarly distributed input.</p>
+<h3 id="between-layer-scale-adjustment">between-layer scale adjustment</h3>
+<p>Because the initialization given in &quot;with-in layer weight normalization&quot; results in activations <span class="math inline">\(z_k(i)\)</span> with unit variance, the expected change rate <span class="math inline">\(C_{k,i}^2\)</span> with unit variance.</p>
+<ul>
+<li>Algorithm 2 Between-layer normalization.</li>
+</ul>
+<ol style="list-style-type: decimal">
+<li>Draw samples from <span class="math inline">\(z_0\in \tilde{D}\subset D\)</span></li>
+<li>Repeat
+<ol style="list-style-type: decimal">
+<li>Compute the ratio <span class="math inline">\(\tilde{C}_k=\mathbb{E}_j [\tilde{C}_{k,j}]\)</span></li>
+<li>Compute the average ratio <span class="math inline">\(\tilde{C}=(\prod_{k}C_k)^{1/N}\)</span></li>
+<li>Compute a scale correction <span class="math inline">\(r_k=(\tilde{C}/\tilde{C}_k)^{\alpha/2}\)</span></li>
+<li>Correct the weights and biases of layer <span class="math inline">\(k: b_k \leftarrow r_kb_k\)</span>,<span class="math inline">\(W+k \leftarrow r_kW_k\)</span> Undo the scaling <span class="math inline">\(r_k\)</span> in the layer above.</li>
+</ol></li>
+<li>until Convergence (roughly 10 iterations)</li>
+</ol>
+<h3 id="weight-initialization">weight initialization</h3>
+<p>Until now, we used a random Gaussian initialization of the weights, but our procedure does not require this.</p>
+<p>They explored two data-driven initializations: 1. a PCA-based initialization 2. a k-means based initialization.</p>
+<h3 id="conclusion">conclusion</h3>
+<p>Our method is a conceptually simple data-dependent initialization strategy for CNNs which enforces empirically identically distributed activations locally (within a layer), and roughly uniform global scaling of weight gradients across all layers of arbitrarily deep networks.</p>
+</body>
+</html>

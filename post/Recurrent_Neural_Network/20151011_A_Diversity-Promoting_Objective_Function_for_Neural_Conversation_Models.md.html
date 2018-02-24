@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="a-diversity-promoting-objective-function-for-neural-conversation-models"><a href="http://arxiv.org/abs/1510.03055">A Diversity-Promoting Objective Function for Neural Conversation Models</a></h2>
+<p>TLDR; The authors use a Maximum Mutual Information (MMI) objective function to generate conversational responses. They still train their models with maximum likelihood, but use MMI to generate responses during decoding. The idea behind MMI is that it promotes more diversity and penalizes trivial responses. The authors evaluate their method using BLEU scores, human evaluators, and qualitative analysis and find that the proposed metric indeed leads to more diverse responses.</p>
+<h4 id="key-points">Key Points</h4>
+<ul>
+<li>In practice, NCM (Neural Conversation Models) often generate trivial responses using high-frequency terms partly due to the likelihood objective function.</li>
+<li>Two models: MMI-antiLM and MMI-bidi depending on the formulation of the MMI objective. These objectives are used during response generation, not during training.</li>
+<li>Use Deep 4-layer LSTM with 1000-dimensional hidden state, 1000-dimensional word embeddings.</li>
+<li>Datasets: Twitter triples with 129M context-message-response triples. OpenSubtitles with 70M spoken lines that are noisy and don't include turn information.</li>
+<li>Authors state that perplexity is not a good metric because their objective is to explicitly steer away from the high probability responses.</li>
+</ul>
+<h4 id="notes">Notes</h4>
+<ul>
+<li>BLEU score seems like a bad metric for this. Shouldn't more diverse responses result in a lower BLEU score?</li>
+<li>Not sure if I like the direction of this. To me it seems wrong to &quot;artificially&quot; promote diversity. Shouldn't diversity come naturally as a function of context and intention?</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="multi-objective-convolutional-learning-for-face-labeling"><a href="https://eng.ucmerced.edu/people/jyang44/papers/cvpr15_faceparsing_final.pdf">Multi-Objective Convolutional Learning for Face Labeling</a></h2>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Vgo3Y4iyxGk" frameborder="0" allowfullscreen>
+</iframe>
+<h2 id="动机"><strong><em>动机</em></strong></h2>
+<p>该文章解决的是<strong><em>face labeling</em></strong>的问题，如Figure 1，输入是原图(a)，想要得到的是结果图(d)，可以看成是semantic segmentation的一个子问题。</p>
+<p align="center">
+<img src="http://hexo-pic-zhangliliang.qiniudn.com/小Q截图-20150512152507.png" width="800" >
+</p>
+<h3 id="cnncrf"><strong><em>CNN+CRF</em></strong></h3>
+<p>我觉得本文最厉害的一点是<strong><em>将CRF的公式转化为了可以跟CNN联合求解的形式</em></strong>。下面会描述这个过程。</p>
+<p>公式1中用<strong><em>CRF对问题建模</em></strong>，X是输入的原始图像，Y是输出的label map，<span class="math inline">\(E_{u}\)</span>表示CRF的unary项，这里可以理解为<strong><em>X中的一个patch决定了Y中的某个点的输出</em></strong>；<span class="math inline">\(E_b\)</span>是binary项，表示<span class="math inline">\(Y\)</span>中两个点<span class="math inline">\(y_i\)</span>和<span class="math inline">\(y_j\)</span>的关系由他们在X中对应的overlapping patch来决定。</p>
+<p><span class="math display">\[
+E(\mathbf{Y},\mathbf{X})=\sum_{i\in V}E_u(y_i,x_i)+\lambda \sum_{(i,j)\in V}E_b(y_i,y_j,x_{ij}) \qquad (1)
+\]</span></p>
+<p>关键是对于上面的公式，怎么转化为<strong><em>一个CNN能够求解的形式</em></strong>。</p>
+<p>对于unary项，很自然就能对应上可以<strong><em>将能量函数设为为softmax的形式</em></strong>。</p>
+<p>关键是对于binary项，可以通过引入一个额外的label <span class="math inline">\(z_{ij}\)</span>来转化为一个二值问题，那么就可以用sigmoid来拟合了！</p>
+<p>明白这一点之后，<strong><em>CNN+CRF就比较顺理成章了</em></strong>。</p>
+<p>Figure 2给了示意图，作者将这两个loss都接到最后的FC上，联合训练。</p>
+<p align="center">
+<img src="http://hexo-pic-zhangliliang.qiniudn.com/小Q截图-20150512152628.png" width="800" >
+</p>
+<p>最后在inferece的时候，需要将unary和binary得到的几张map做一个fusion，这一步用graphcut就好了:</p>
+<p align="center">
+<img src="http://hexo-pic-zhangliliang.qiniudn.com/小Q截图-20150512154402.png" width="800" >
+</p>
+<p>笔者觉得就上面而言，已经是一个挺漂亮的工作了。但是这篇paper还没有完，下面还有增加prior，full image inference，upsampling等工作。</p>
+<h3 id="nonparametric-prior">Nonparametric prior</h3>
+face labeling虽然是semantic segmentation的子问题，但是也有自己的一些prior，比如人脸是一个强结构性的object，所以可以先通过估计一个label的概率图来提供prior。
+<p align="center">
+<img src="http://hexo-pic-zhangliliang.qiniudn.com/小Q截图-20150512152637.png" width="800" >
+</p>
+<h3 id="full-image-inference">Full image inference</h3>
+<p>跟FCN一样，也是将全连接层换成1x1的卷积核，考虑到这是FCN的同期工作，看来大家都想一块去了。</p>
+<h3 id="upsampling">Upsampling</h3>
+<p>这篇文章也考虑到upsampling的过程，不过用的是不同于FCN的方法。这里是通过pixel shift，最后拼接到一起来实现的。</p>
+<p align="center">
+<img src="http://hexo-pic-zhangliliang.qiniudn.com/小Q截图-20150512152647.png" width="800" >
+</p>
+<h2 id="appendix-crf">Appendix: CRF</h2>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/GF3iSJkgPbA" frameborder="0" allowfullscreen>
+</iframe>
+</body>
+</html>

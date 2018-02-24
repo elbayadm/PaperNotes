@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="multi-way-multilingual-neural-machine-translation-with-a-shared-attention-mechanism"><a href="http://arxiv.org/abs/1601.01073">Multi-Way, Multilingual Neural Machine Translation with a Shared Attention Mechanism</a></h2>
+<p>TLDR; The authors train a <em>single</em> Neural Machine Translation model that can translate between N*M language pairs, with a parameter spaces that grows linearly with the number of languages. The model uses a single attention mechanism shared across encoders/decoders. The authors demonstrate the the model performs particularly well for resource-constrained languages, outperforming single-pair models trained on the same data.</p>
+<h4 id="key-points">Key Points</h4>
+<ul>
+<li>Attention mechanism: Both encoder and decoder output attention-specific vectors, which are then combined. Thus, adding a new source/target language does not result in a quadratic explosion of parameters.</li>
+<li>Bidirectional RNN, 620-dimensional embeddings, GRU with 1k units, 1k affine layer tanh. Adam, minibatch 60 examples. Only use sentence up to length 50.</li>
+<li>Model clearly outperforms single-pair models when parallel corpora are constrained to small size. Not so much for large corpora.</li>
+<li>The single model doesn't fit on a GPU.</li>
+<li>Can in theory be used to translate between pairs that didn't have a bilingual training corpus, but the authors don't evaluate this in the paper.</li>
+<li>Main difference to &quot;Multi-task Sequence to Sequence Learning&quot;: Uses attention mechanism</li>
+</ul>
+<h4 id="notes-questions">Notes / Questions</h4>
+<ul>
+<li>I don't see anything that would force the encoders to map sequences of different languages into the same representation (as the authors briefly mentioned). Perhaps it just encodes language-specific information that the decoders can use to decide which source language it was?</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="language-generation-with-recurrent-generative-adversarial-networks-without-pre-training"><a href="https://arxiv.org/pdf/1706.01399.pdf">Language Generation with Recurrent Generative Adversarial Networks without Pre-training</a></h1>
+<p>This paper first points out that MLE has some drawbacks. 1. First, MLE suffers from &quot;explore bias&quot;, that is, at training time the model is exposed to gold data, but at test time it observes its own prediction. Thus, wrong predictions quickly accumulate, resulting in bad text generation. 2. The MLE loss function is very stringent, A languge model trained with MLE objective aims to allocate all probability mass to the i-th character of the training set given the previous i-1 characters.</p>
+<p>In generative adversarial training, the objective of fooling the discriminator is more dynamic and can evolve as the training precess unfolds.</p>
+<ul>
+<li>The loss of the improved WGAN generator is: <span class="math display">\[
+L_G= -\mathbb{E}_{\tilde{x}\sim \mathbb{P}_g}[D(\tilde{x})]
+\]</span></li>
+<li>The loss of the discriminator is : <span class="math display">\[
+L_D = \mathbb{E}_{\tilde{x}\sim \mathbb{P}_g}[D(\tilde{x})]-\mathbb{E}_{x\sim \mathbb{P}_r}[D(x)]+\lambda \mathbb{E}_{\hat{x}\sim \mathbb{P}_x}[(\|\nabla_{\hat{x}}D(\hat{x})\|_2-1)^2]
+\]</span></li>
+</ul>
+<p>where the last term of the objective controls for the complexity of the discriminator function and penalizes functions that have high gradient norm and change too rapidly.</p>
+<h2 id="recurrent-models">Recurrent Models</h2>
+<p>More discussions can be found <a href="https://www.reddit.com/r/MachineLearning/comments/6fl9cl/r_language_generation_with_recurrent_generative/">here</a></p>
+</body>
+</html>

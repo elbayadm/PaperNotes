@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="renet-a-recurrent-neural-network-based-alternative-to-convolutional-networks"><a href="http://arxiv.org/abs/1505.00393">ReNet: A Recurrent Neural Network Based Alternative to Convolutional Networks</a></h2>
+<p>TLDR; The authors propose a novel architecture called ReNet, which replaces convolutional and max-pooling layers with RNNs that sweep over the image vertically and horizontally. These RNN layers are then stacked. The authors demonstrate that ReNet architecture is a viable alternative to CNNs. ReNet doesn't outperform CNNs in this paper, but further optimizations and hyperparameter tuning are likely going to lead to improved results in the future.</p>
+<h4 id="key-points">Key Points:</h4>
+<ul>
+<li>Split images into patches, feed one patch per time step into RNN, vertically then horizontally. 4 RNNs per layer, 2 vertical and 2 horizontal, one per diretion.</li>
+<li>Because the RNNs sweep over the whole image they can see the context of the full image, as opposed to just a local context in the case of conv/pool layers.</li>
+<li>Smooth from end-end to end.</li>
+<li>In experiments, 2 256-dimensional ReNet layers, 2x2 patches, 4096-dimensional affine layers.</li>
+<li>Flipping and shifting for data augmentation.</li>
+</ul>
+<h4 id="notesquestions">Notes/Questions:</h4>
+<ul>
+<li>What is the training time/complexity compared to a CNN?</li>
+<li>Why split the image into patches at all? I wonder if the authors have experimented with various patch sizes, like defining patches that go over the full vertical height. 2x2 patches as used in the experiment seem quite small and like a waste of computational resources.</li>
+</ul>
+</body>
+</html>

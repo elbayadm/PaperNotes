@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="are-you-talking-to-a-machine-datasetand-methods-for-multilingual-image-question-answering"><a href="http://arxiv.org/abs/1505.05612">Are you talking to a machine? datasetand methods for multilingual image question answering</a></h2>
+<p align="center">
+<img src="https://camo.githubusercontent.com/b7258ec56e7236d6b8ae4966e6f1feded518994a/687474703a2f2f7333322e706f7374696d672e6f72672f676e6d7934313039312f53637265656e5f53686f745f323031365f30355f30385f61745f335f33345f35345f504d2e706e67" width="500" >
+</p>
+<ul>
+<li><p>Divides into 4 components (CNN, question LSTM, answer LSTM, fusing layer)</p></li>
+<li><p>The answer LSTM does not use inputs from the CNN and does not decide the output</p></li>
+<li><p>The fusing component (a fully connected net) instead takes the CNN and answer LSTM outputs to decide the next word</p></li>
+<li><p>Evaluates output via an adversarial setup</p></li>
+<li><p>An answer is deemed good if a human can't figure out that the answer is generated from the model</p></li>
+</ul>
+</body>
+</html>

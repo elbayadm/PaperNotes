@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="achieving-open-vocabulary-neural-machine-translation-with-hybrid-word-character-models"><a href="http://arxiv.org/abs/1604.00788">Achieving Open Vocabulary Neural Machine Translation with Hybrid Word-Character Models</a></h2>
+<p>TLDR; The authors train a word-level NMT where UNK tokens in both source and target sentence are replaced by character-level RNNs that produce word representations. The authors can thus train a fast word-based system that still generalized that doesn't produce unknown words. The best system achieves a new state of the art BLEU score of 19.9 in WMT'15 English to Czech translation.</p>
+<h4 id="key-points">Key Points</h4>
+<ul>
+<li>Source Sentence: Final hidden state of character-RNN is used as word representation.</li>
+<li>Source Sentence: Character RNNs always initialized with 0 state to allow efficient pre-training</li>
+<li>Target: Produce word-level sentence including UNK first and then run the char-RNNs</li>
+<li>Target: Two ways to initialize char-RNN: With same hidden state as word-RNN (same-path), or with its own representation (separate-path)</li>
+<li>Authors find that attention mechanism is critical for pure character-based NMT models</li>
+</ul>
+<h4 id="notes">Notes</h4>
+<ul>
+<li>Given that the authors demonstrate the potential of character-based models, is the hybrid approach the right direction? If we had more compute power, would pure character-based models win?</li>
+</ul>
+</body>
+</html>

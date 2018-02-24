@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="playing-atari-with-deep-reinforcement-learning"><a href="http://arxiv.org/abs/1312.5602">Playing Atari with Deep Reinforcement Learning</a></h1>
+<p>要理解这篇文章，没有背景知识是很难的，虽然作者在这里介绍了一下<strong><em>RL的基本知识</em></strong>及<strong><em>Q-learning算法</em></strong>以及采用神经网络来代替<strong><em>Q矩阵</em></strong>的方法，但篇幅太短，没有基础很难理解。</p>
+<p>核心就是几个公式：<strong><em>Q-learning</em></strong> ，用<strong><em>neural network的loss function</em></strong>，<strong><em>梯度公式</em></strong>。</p>
+<h1 id="创新点"><strong><em>创新点</em></strong></h1>
+<p><strong><em>第一个将深度学习模型与增强学习结合在一起从而成功地直接从高维的输入学习控制策略</em></strong></p>
+<p>具体是将卷积神经网络和Q Learning结合在一起。卷积神经网络的输入是原始图像数据（作为状态）输出则为每个动作对应的价值Value Function来估计未来的反馈Reward</p>
+<p><strong><em>实验成果</em></strong>：使用同一个网络学习玩Atari 2600 游戏，在测试的7个游戏中6个超过了以往的方法并且好几个超过人类的水平。 在这篇文章中，还只是测试7个游戏，到了Nature的文章则测试了更多的游戏，并且取得了更好的效果</p>
+<blockquote>
+<p><strong><em>优点</em></strong></p>
+</blockquote>
+<ol style="list-style-type: decimal">
+<li>算法具备通用性，一样的网络可以学习<strong><em>不同的游戏</em></strong>（当然，游戏具有相似性）</li>
+<li>采用End-to-End的训练方式，无需人工提取Feature（比如游戏中敌人的位置等等）</li>
+<li>通过不断的测试训练，可以实时<strong><em>生成无尽的样本</em></strong>用于有监督训练（Supervised Learning）</li>
+</ol>
+<blockquote>
+<p><strong><em>缺点</em></strong></p>
+</blockquote>
+<ol style="list-style-type: decimal">
+<li>由于<strong><em>输入的状态</em></strong>是短时的，所以只适用于处理<strong><em>只需短时记忆</em></strong>的问题，无法处理需要长时间经验的问题。（比如玩超级玛丽）</li>
+<li>使用CNN来训练<strong><em>不一定能够收敛</em></strong>，需要对网络的参数进行<strong><em>精良的设置</em></strong>才行。</li>
+</ol>
+<blockquote>
+<p><strong><em>改进办法</em></strong></p>
+</blockquote>
+<ol style="list-style-type: decimal">
+<li>使用<strong><em>LSTM 来增强记忆性</em></strong>？</li>
+<li>改进<strong><em>Q-Learning</em></strong>的算法提高网络收敛能力。</li>
+</ol>
+<h1 id="分析"><strong><em>分析</em></strong></h1>
+<h2 id="introduction"><strong><em>Introduction</em></strong></h2>
+<p><strong><em>提出问题</em></strong>：直接从<strong><em>高维的输入（比如视觉或听觉）</em></strong>来学习一个控制策略 是 RL增强学习的长期挑战。个人理解：这个问题是人工智能抽象出来的极其重要的子问题，因为人类都是通过视觉听觉触觉等感觉然后来学习一项技能，比如玩游戏，打篮球，洗碗等等。 解决这个问题的意义在于<strong><em>机器人不一定可以具有自我意识，但是却可以实现 机器人彻底代替重复性劳动 的愿景</em></strong>。</p>
+<blockquote>
+<p><strong><em>以往的解决办法</em></strong></p>
+</blockquote>
+<ol style="list-style-type: decimal">
+<li><strong><em>人工提取特征</em></strong>（比如物体的位置）</li>
+<li>使用线性的<strong><em>value function</em></strong>或者<strong><em>policy策略</em></strong>来表征</li>
+<li>性能的好坏主要取决于<strong><em>特征提取</em></strong>的好坏</li>
+</ol>
+<blockquote>
+<p><strong><em>Deep Learning 带来的机会</em></strong></p>
+</blockquote>
+<p>当前，深度学习已经在视觉，语音等领域取得突破性进展，根本的方法就是<strong><em>通过神经网络自动提取复杂特征</em></strong>。所以，很自然的我们会考虑一个问题：<strong><em>增强学习能否收益于深度学习</em></strong>. 答案当然是<strong><em>YES</em></strong>.</p>
+<blockquote>
+<p><strong><em>从RL看结合Deep Learning的困难之处</em></strong></p>
+</blockquote>
+<ol style="list-style-type: decimal">
+<li>深度学习的成功依赖于<strong><em>大量的有标签的样本</em></strong>，从而进行<strong><em>有监督学</em></strong>习。而增强学习<strong><em>只有一个reward返回值</em></strong>，并且这个值还常常带有<strong><em>噪声，延迟，并且是稀少的（sparse）</em></strong>，理解是不可能每个state给个reward。特别是<strong><em>延迟Delay</em></strong>，常常是几千毫秒之后再返回。</li>
+<li>深度学习的样本都是<strong><em>独立的</em></strong>，而RL中的<strong><em>state状态却是相关的</em></strong>，前后的状态是<strong><em>有影响的</em></strong>，这显而易见。</li>
+<li>深度学习的<strong><em>目标分布是固定的</em></strong>。一个图片是车就是车，不会变。但增强学习，<strong><em>分布却是一直变化的</em></strong>，比如超级玛丽，前面的场景和后面的场景不一样，可能前面的训练好了，后面又不行了，或者后面的训练好了前面又用不了了。</li>
+</ol>
+<blockquote>
+<p><strong><em>从上面分析出增强学习要结合深度学习存在的三个问题</em></strong></p>
+</blockquote>
+<ol style="list-style-type: decimal">
+<li><strong><em>没有标签</em></strong>怎么办？</li>
+<li>样本<strong><em>相关性太高</em></strong>怎么办？</li>
+<li><strong><em>目标分布不固定</em></strong>怎么办？</li>
+</ol>
+<p>确实，如果没有这篇文章的突破性创新，我们如何知道怎么解决这三个问题。这篇文章<strong><em>至少解决了前两个问题及部分解决了第三个问题</em></strong>。</p>
+<blockquote>
+<p><strong><em>解决之道</em></strong>: <strong><em>CNN + Q-Learning = Deep Q Network</em></strong></p>
+</blockquote>
+<ol style="list-style-type: decimal">
+<li>通过<strong><em>Q-Learning</em></strong>使用<strong><em>eward</em></strong>来构造标签</li>
+<li>通过<strong><em>experience replay的方法</em></strong>来解决<strong><em>相关性及非静态分布</em></strong>问题</li>
+</ol>
+<h1 id="实验">实验</h1>
+<p>使用<strong><em>Arcade Learning Environment</em></strong> 来训练Atari 2600 游戏。 - <strong><em>目标</em></strong>：使用一个基于神经网络的agent来学习玩各种游戏，玩的越多越好。 - <strong><em>输入</em></strong>：要求<strong><em>输入图像数据和得分</em></strong>，和人类基本一样 - <strong><em>输出</em></strong>：控制动作 - <strong><em>要求</em></strong>：对于不同游戏，<strong><em>网络的结构及顶层参数设定一样</em></strong></p>
+<h1 id="related-work">Related Work</h1>
+<blockquote>
+<p><strong><em>TD-gammon</em></strong></p>
+</blockquote>
+<p>看到这里才知道实际上<strong><em>并不是Deepmind第一次将神经网络用于RL</em></strong>，<a href="https://en.wikipedia.org/wiki/TD-Gammon">TD-gammon</a>使用了<strong><em>MLP(Multi-layer percetron)也就是一般的神经网络</em></strong>，一个隐藏层（hidden layer）来训练。并且将其应用到了玩<strong><em>backgammon游戏</em></strong>上取得了人类水平。但是很可惜的是，<strong><em>当时人们把算法用到其他游戏象棋围棋并不成功</em></strong>，导致人们认为TD-gammon算法只适用于backgammon这个特殊的例子，不具备通用性。</p>
+<p>本质上，使用神经网络是为了模拟一个<strong><em>非线性的函数</em></strong>（<strong><em>value或者policy都行</em></strong>，比如flappy bird，<strong><em>设定它上升到一个高度下降这就是一个分段函数</em></strong>）。人们发现，将<strong><em>model-free</em></strong>的算法比如<strong><em>Q-learning</em></strong>与<strong><em>非线性函数拟合</em></strong>的方法（神经网络是一种）<strong><em>很容易导致Q-network发散</em></strong>。因此，大部分的工作就使用<strong><em>线性的函数拟合（linear function approximation），收敛性好</em></strong>。</p>
+<blockquote>
+<p><strong><em>其他</em></strong></p>
+</blockquote>
+<p>显然不是Deepmind第一个想到把深度学习和增强学习结合在一起的。之前也有人尝试用<strong><em>深度神经网络</em></strong>来估计环境environment，估值函数<strong><em>value function</em></strong>或者<strong><em>policy策略</em></strong>。这实际上是三个Deep Learning与Reinforcement Learning结合的思路</p>
+<p>并且<strong><em>结合Q-learning发散的问题</em></strong>也被<strong><em><a href="http://www.jmlr.org/proceedings/papers/v24/silver12a/silver12a.pdf">Gradient temporal-difference</a>方法部分解决</em></strong>。</p>
+<p>这些方法用在使用<strong><em>非线性</em></strong>来估计固定策略或者<strong><em>使用线性</em></strong>来估计一个控制策略还是证明可以收敛的。 但是这些方法<strong><em>还没有拓展到非线性控制nonlinear control</em></strong>。</p>
+<p>这就是研究点！！！！</p>
+<blockquote>
+<p><strong><em>最相近的工作 NFQ</em></strong></p>
+</blockquote>
+<p>采用同样的loss function，但是使用<strong><em><a href="https://en.wikipedia.org/wiki/Rprop">RPROP</a></em></strong>来更新参数，问题是采用batch update而不是sgd 需要更多的计算开销而且取决于数据集的大小。</p>
+<p>采用<strong><em>deep autoencoder</em></strong>，也是使用<strong><em>visual input</em></strong>。但是不同的是，NFQ是把<strong><em>特征提取和增强学习</em></strong>分开进行的。先提取特征，再应用NFQ训练。</p>
+<p>而Deepmind是End-to-End。<strong><em>学习的特征</em></strong>和<strong><em>最后的动作价值是直接关联的</em></strong>。也就是学习什么特征也是网络决定</p>
+<blockquote>
+<p><strong><em>关于Atari 2600 模拟器</em></strong></p>
+</blockquote>
+<p>使用它做增强学习研究之前就有，但采用的<strong><em>是线性函数估计</em></strong>和<strong><em>获取的视觉特征</em></strong>（linear function approximation and generic visual features) 总之之前是人工提取特征，降维。 <strong><em><a href="https://en.wikipedia.org/wiki/HyperNEAT">HyperNEAT</a></em></strong>使用神经网络来代替一个策略，但不同游戏用不同的网络。</p>
+<h1 id="deep-reinforcement-learning"><strong><em>Deep reinforcement learning</em></strong></h1>
+<blockquote>
+<p><strong><em>目标</em></strong></p>
+</blockquote>
+<p>当前深度学习的方式核心在于<strong><em>采用大量的数据集</em></strong>，然后使用<strong><em>SGD</em></strong>进行权值的更新。所以，这里的目标就是<strong><em>将增强学习的算法连接到深度神经网络中</em></strong>，然后能直接输入RGB的原始图像，并使用SGD进行处理。</p>
+<blockquote>
+<p><strong><em>对比TD-gammon的改进之处</em></strong></p>
+</blockquote>
+<p>实际上TD-gammon的思路就是上面的思路，只是<strong><em>训练是直接获取experience样本进行训练，也就是on-policy</em></strong>。而关键是这个算法是20年前的了。所以，经过20年的硬件发展以及深度学习的发展，没有理由说无法在这上面取得突破。</p>
+<p>相比于<strong><em>TD-gammon的在线学习方式</em></strong>，Deepmind使用了<strong><em>experience replay的技巧</em></strong>。简单的说就是建立一个经验池，<strong><em>把每次的经验都存起来，要训练的时候就 随机 的拿出一个样本来训练</em></strong>。这样就可以<strong><em>解决状态state相关的问题</em></strong>。以此同时，动作的选择采用常规的<strong><em>ϵ-greedy policy</em></strong>。 就是<strong><em>小概率选择随机动作</em></strong>，<strong><em>大概率选择最优动作</em></strong>。</p>
+<p>然后输入的历史数据不可能是随机长度，这里就<strong><em>采用固定长度的历史数据</em></strong>，比如deepmind使用的4帧图像作为一个状态输入。</p>
+<p>整个算法就叫做<strong><em>Deep-Q-Learning</em></strong>。</p>
+<h2 id="deep-q-learning"><strong><em>Deep-Q-Learning</em></strong></h2>
+算法就是如下了：
+<p align="center">
+<img src="http://img.blog.csdn.net/20160318084423673" width="400" >
+</p>
+<blockquote>
+<p><strong><em>算法分析</em></strong>：</p>
+</blockquote>
+<ol style="list-style-type: decimal">
+<li><strong><em>训练分成M个episode，每个episode训练T次</em></strong>。我的理解就是比如玩游戏，一局是一个episode，一局里面有很多时间片，就训练多少次，次数不固定。重启新的episode主要是初始化state 作为新的第一个，而不是用上一局的最后的状态作为state输入。</li>
+<li>实际上每个循环分成两部分：<strong><em>一部分是输出动作并存储</em></strong>。<strong><em>一部分是随机从经验池里取出minibatch个transitions，然后计算target，根据loss function通过RMSProp更新参数</em></strong>。</li>
+<li>这里的算法我们可以看到，<strong><em>参数是一直更新的，而Nature的算法改进了，计算target用的是之前的参数</em></strong>。</li>
+</ol>
+<blockquote>
+<p><strong><em>算法优点对比standard online Q-learning</em></strong></p>
+</blockquote>
+<ol style="list-style-type: decimal">
+<li>每一步的经验都能带来很多<strong><em>权值的更新</em></strong>，拥有<strong><em>更高的数据效率</em></strong>（以前的算法就没有吗？）</li>
+<li>就是experience replay的优势，打破数据的相关性，<strong><em>降低数据更新的不确定性variance</em></strong>。</li>
+<li>experience replay的另一个优点就是<strong><em>不容易陷入局部最优解或者更糟糕的不收敛</em></strong>。</li>
+<li>如果是on-policy learning，也就是来一个新的经验就学一个。那么下一个动作就会受当前的影响，如果最大的动作是向左，那么就会一直向左。<strong><em>使用experience replay 获取的行为的分布就比较平均</em></strong>，就能防止大的波动和发散。也因此，这是一个off-policy的学习。</li>
+<li>实际应用中，只存储<strong><em>N个经验在经验池里（毕竟空间有限嘛）这个方法的局限性</em></strong>就是这个经验池并没有区分<strong><em>重要的转移transition</em></strong>，总是<strong><em>覆盖最新的transition</em></strong>。</li>
+<li>所以，采用有优先级的使用memory是一个更好的方式。这也就是<strong><em>阿蒙说的引导的经验池</em></strong>。</li>
+</ol>
+<blockquote>
+<p><strong><em>预处理与网络模型架构</em></strong></p>
+</blockquote>
+<p>因为输入是RGB，像素也高，因此，对图像进行初步的图像处理，<strong><em>变成灰度矩形84</em>84的图像作为输入</strong>*，有利于卷积。</p>
+<p>接下来就是模型的构建问题，毕竟<span class="math inline">\(Q(s,a)\)</span>包含<span class="math inline">\(s\)</span>和<span class="math inline">\(a\)</span>。</p>
+<ol style="list-style-type: decimal">
+<li>一种方法<strong><em>就是输入<span class="math inline">\(s\)</span>和<span class="math inline">\(a\)</span>，输出q值，这样并不方便，每个a都需要forward一遍网络</em></strong>。</li>
+<li>Deepmind的做法是<strong><em>神经网络只输入s，输出则是每个a对应的q</em></strong>。这种做法的优点就是<strong><em>只要输入s，forward前向传播一遍就可以获取所有a的q值，毕竟a的数量有限</em></strong>。</li>
+</ol>
+具体的模型架构如下：
+<p align="center">
+<img src="http://img.blog.csdn.net/20160318084503689" width="400" >
+</p>
+<h1 id="实验-1"><strong><em>实验</em></strong></h1>
+<ul>
+<li>测试<strong><em>7个游戏</em></strong></li>
+<li>统一不同游戏的reward，<strong><em>正的为1，负的为-1，其他为0</em></strong>。这样做<span class="math inline">\(a,R\)</span>的好处是<strong><em>限制误差的比例</em></strong>并且可以<strong><em>使用统一的训练速度来训练不同的游戏</em></strong></li>
+<li>使用<strong><em>RMSProp</em></strong>算法，就是minibatch gradient descent方法中的一种。Divide the gradient by a running average of its recent magnitude. 梯度下降有很多种方法包括（<strong><em>SGD,Momenturn,NAG,Adagrad,Adadelta,Rmsprop</em></strong>) 相关问题以后再分析。</li>
+<li><strong><em>ϵ-greedy</em></strong> 前1百万次从1 下降到0.1，然后保持不变。这样<strong><em>开始的时候就更多的是随机搜索</em></strong>，之后慢慢<strong><em>使用最优的方法</em></strong>。</li>
+<li>使用<strong><em>frame-skipping technique</em></strong>,意思就是<strong><em>每k frame才执行一次动作，而不是每帧都执行</em></strong>。在实际的研究中，如果每帧都输出一个动作，那么频率就太高，基本上会导致失败。在这里，<strong><em>中间跳过的帧使用的动作为之前最后的动作</em></strong>。</li>
+<li>这和人类的行为是一致的，人类的反应时间只有0.1，也是采用同样的做法。并且这样做可以提速明显的。<strong><em>那么这里Deepmind大部分是选择k=4，也就是每4帧输出一个动作</em></strong>。</li>
+</ul>
+<h2 id="训练"><strong><em>训练</em></strong></h2>
+<p>如何在训练的过程中估计训练的效果在RL上是个Challenge。毕竟不像监督学习，可以有training 和validation set。那么<strong><em>只能使用reward</em></strong>，或者说<strong><em>平均的reward</em></strong>来判定。也就是玩的好就是训练的好。</p>
+但是存在问题:<strong><em>就是reward的噪声很大，因为很小的权值改变都将导致策略输出的巨大变化</em></strong>，从文章的途中可以看出：
+<p align="center">
+<img src="http://img.blog.csdn.net/20160318084551581" width="400" >
+</p>
+以此同时，<strong><em>平均Q值的变化却是稳定的，这是必然的，因为每次的Target计算都是使用Q的最大值</em></strong>。：
+<p align="center">
+<img src="http://img.blog.csdn.net/20160318084626676" width="400" >
+</p>
+<p>而且很关键的是<strong><em>所有的实验都收敛了</em></strong>！！！</p>
+<p>虽然没有理论支持为什么保证收敛，但是就是实现了，Deepmind的方法可以<strong><em>在一个稳定的状态下使用大规模的深度神经网络结合增强学习</em></strong>。</p>
+<blockquote>
+<p><strong><em>Value Function</em></strong></p>
+</blockquote>
+就是看一下每一帧的Q值变化，看了之后答案是惊人的：
+<p align="center">
+<img src="http://img.blog.csdn.net/20160318084700941" width="400" >
+</p>
+在<strong><em>敌人出现时，Q值上升</em></strong>，<strong><em>快消灭敌人时，Q值到顶峰，敌人消失，Q值回到正常水平</em></strong>。这说明Q值确实代表了<strong><em>整个复杂的状态</em></strong>。实际上到后面发现，整个神经网络<strong><em>可以同时跟踪多个图上的目标</em></strong>：
+<p align="center">
+<img src="http://img.blog.csdn.net/20160318084732691" width="400" >
+</p>
+<h2 id="算法评估"><strong><em>算法评估</em></strong></h2>
+<ul>
+<li><strong><em>Sarsa算法</em></strong>。使用Sarsa算法学习一个线性的policy，采用手工获取的特征。</li>
+<li><strong><em>Contingency算法</em></strong>。 采用和Sarsa相同的方法，但是通过学习部分屏幕的表达增强了特征。</li>
+</ul>
+<p>上面的方法的特征提取都采用传统的图像处理方法比如背景减除。总之就是特征提取方式落后。Deepmind的算法是<strong><em>原始输入计算机需要自己去detect物体。（直接解决了detection和tracking的问题）</em></strong></p>
+<p>以此同时，当然是对比人类的水平了。人类的得分是人类玩两小时的结果，反正是蛮高的。但deepmind的方法有几个超过人类. 对比的列表就不复制了，总而言之就是方法好，原始输入，并且在使用ϵ 为0.05的得分还比其他方法强。</p>
+<h1 id="conclusion"><strong><em>Conclusion</em></strong></h1>
+<p>这篇文章采用了一个全新的方法结合深度学习和增强学习，可以说是deep reinforcement learning的开山之作。采用stochastic minibatch updates以及experience replay的技巧。 效果很强，具有通用性。</p>
+</body>
+</html>

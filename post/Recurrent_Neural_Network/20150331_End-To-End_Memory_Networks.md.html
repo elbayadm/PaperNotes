@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h3 id="end-to-end-memory-networks"><a href="http://arxiv.org/abs/1503.08895">End-To-End Memory Networks</a></h3>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/JnZ4fMd7Hz8" frameborder="0" allowfullscreen>
+</iframe>
+</center>
+<p>TLDR; The authors propose a <strong>recurrent memory-based model that can reason over multiple hops and be trained end to end with standard gradient descent</strong>. The authors evaluate the model on QA and Language Modeling Tasks. In the case of QA, the network inputs are a list of sentences, a query and (during training) an answer. The network then attends to the sentences at each time step, considering the next piece information relevant to the question. The network outperforms baseline approaches, but does not come close to a strongly supervised (relevant sentences are pre-selected) approach.</p>
+<h4 id="key-takeaways"><strong>Key Takeaways</strong></h4>
+<ul>
+<li><p><strong>Sentence Representation</strong>: 1. Word embeddings are averaged (BoW) 2. Positional Encoding (PE)</p></li>
+<li><p><strong>Synthetic dataset with vocabulary size of ~180</strong>. Version one has 1k training example, version 2 has 10k training examples.</p></li>
+<li><p>The model is similar to <strong>Bahdanau seq2seq attention model</strong>, only that it operates on sentences and does not output at every step and used a simpler scoring function.</p></li>
+</ul>
+<h4 id="questions-notes"><strong>Questions / Notes</strong></h4>
+<ul>
+<li><p>The positional encoding formula is not explained neither is it intutiive.</p></li>
+<li><p>There are <strong>so many hyperparameters and model variations</strong> (jittering, linear start) that it's easy to lose track of the essential.</p></li>
+<li><p><strong>No intuitive explanation of what the model does</strong>. The easiest way for me to understand this model was to look at it as a variation of Bahdanau's attention model, which is very intuitive. I don't understand the intuition behind the proposed weight constraints.</p></li>
+<li><p><strong>The LM results are not convincing</strong>. The model beats the baselines by a little bit, but probably only due to very time-intensive hyperparameter optimization.</p></li>
+<li><p><strong>What is the training complexity and training time?</strong></p></li>
+</ul>
+</body>
+</html>

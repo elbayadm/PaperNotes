@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="pixel-recurrent-neural-networks"><a href="https://arxiv.org/pdf/1601.06759v3.pdf">Pixel Recurrent Neural Networks</a></h1>
+<p>Generative image modeling is a central problem in unsupervised learning. Probabilistic density models can be used for a wide variety of tasks that range from image compression and forms of reconstruction such as image in painting and deblurring, to generation of new images.</p>
+<p>When the model is conditioned on <font style="color:red">external information</font>, possible applications also include creating images based on text descriptions or simulating future frames in a planning task. <font style="color:red">One of the great advantages in generative modeling is that there are practically endless amounts of image data available to learn from.</font></p>
+<center>
+<img src="https://pbs.twimg.com/media/CZprVAZW0AAWaB_.png"></img>
+</center>
+<h2 id="generating-an-image-pixel-by-pixel">Generating an Image Pixel by Pixel</h2>
+<p>We can write an image <span class="math inline">\(\mathbf{x}\)</span> as 1-D sequence <span class="math inline">\(x_1,\cdots, x_{n^2}\)</span>. To estimate the joint distribution <span class="math inline">\(p(\mathbf{x})\)</span> we write it as the product of the Conditional distribution over the pixels:</p>
+<p><span class="math display">\[
+p(\mathbf{x})=\prod_{i=1}^{n^2}p(x_i|x_1,\cdots, x_{i-1})
+\]</span> where <span class="math inline">\(p(x_i|x_1,\cdots, x_{i-1})\)</span> is the probability of the <span class="math inline">\(i\)</span>-th pixel <span class="math inline">\(x_i\)</span> given all the previous pixels <span class="math inline">\(x_1,\cdots,x_{i-1}\)</span>.</p>
+</body>
+</html>

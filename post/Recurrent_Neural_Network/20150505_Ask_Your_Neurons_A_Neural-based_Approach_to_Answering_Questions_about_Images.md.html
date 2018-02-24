@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="ask-your-neurons-a-neural-based-approach-to-answering-questions-about-images"><a href="http://arxiv.org/abs/1505.01121">Ask Your Neurons: A Neural-based Approach to Answering Questions about Images</a></h2>
+<p align="center">
+<img src="https://camo.githubusercontent.com/f8f40bf902311a4ddf0f1ecc7a1e6d520bdddf28/687474703a2f2f7333322e706f7374696d672e6f72672f736b397868396f39312f53637265656e5f53686f745f323031365f30355f30385f61745f335f33325f34355f504d2e706e67" width="500" >
+</p>
+<ul>
+<li><p>This is the first paper that tries to tackle the visual QA problem</p></li>
+<li><p>Doubles accuracy of existing none deep-learning approaches</p></li>
+<li><p>Uses a <strong>single LSTM network</strong>, responsible for both encoding and decoding the question and answer</p></li>
+<li><p>Input is the <strong>raw concatenation</strong> of the word embedding of a word with the representation from the last layer of ImageNet</p></li>
+<li><p>Tested on DAQUAR, measure using accuracy and <strong>WUPS</strong></p></li>
+<li><p>WUPS is like accuracy, but also accounts into similar words (e.g. cat, kitty)</p></li>
+<li><p>Introduced the idea of a blind model, so no looking at the picture</p></li>
+<li><p>Surprisingly, the <strong>blind model produces only slightly worse accuracy than with the CNN input</strong>. Meaning that the questions are biased and not diverse enough</p></li>
+</ul>
+</body>
+</html>

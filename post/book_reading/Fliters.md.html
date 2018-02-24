@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="fliters-for-image-processing">Fliters for image Processing</h1>
+<p>滤波器一般处理为，构成一个新的图像，图像块种的每个像素都是原始图像带权值的累计。然后用同样的权值每隔一点移动得到一个新的像素值。所谓<font style="color:red">线性滤波器</font>则是滤波器的输出是处理块中所有像素的线性组合。人眼就是一个天然的滤波器。</p>
+<p>在多媒体信号处理中滤波器一般是基于overlapping的，典型的应用如： - 平滑(smoothing): 在重采样前反锯齿(anti-aliasing)；去噪声(de-noising)，常见的噪声有(光波动-light fluctuation; 传感器噪声—sensory noise; 量化效果-quantization effect);压缩前的预处理；帮助检测场景中大物体。 - 增强或者后处理(Enhancement or post-processing): 锐化/去模糊；去块。 - 特征选择/检测：如边沿检测或方向检测</p>
+<h2 id="可分离滤波器">可分离滤波器</h2>
+<p>首先，用一个1D滤波器对每一行处理，然后在对列进行处理。一个2D滤波器可以表示为２个向量的乘积则表示是可分离的。 <span class="math display">\[
+\begin{bmatrix}
+c_{11} &amp; c_{12} &amp; \cdots &amp; c_{1n} \\
+c_{21} &amp; c_{22} &amp; \cdots &amp; c_{2n} \\
+\cdot &amp; \cdot &amp; \cdots &amp;\cdots \\
+c_{n1} &amp; c_{n2} &amp; \cdots &amp; c_{nn}
+\end{bmatrix}\rightarrow
+\begin{bmatrix}
+a_{1} \\
+a_{2} \\
+\cdots \\
+a_{n}
+\end{bmatrix}
+\begin{bmatrix}
+b_{1} &amp; b_{2} &amp; \cdots &amp; b_{n}
+\end{bmatrix}
+\]</span></p>
+<p>可分离滤波器会显著的降低运算量，假设我们有一个图像<span class="math inline">\(M\times N\)</span>, 滤波器大小为<span class="math inline">\(P\times Q\)</span>. 一般滤波器处理(不考虑fft的情况)则需要<span class="math inline">\(M\times N \times P \times Q\)</span>次相乘。如果一个滤波器是可分的，那么第一步需要<span class="math inline">\(MNP\)</span>, 第二步需要<span class="math inline">\(MNQ\)</span>. 总共需要<span class="math inline">\(MN(P+Q)\)</span>次计算。</p>
+<p><strong>滤波器可分离的条件</strong>：2D矩阵满足秩为1，也就是行和列是线性相关的。</p>
+<p>如果不满足可分离条件，也就是秩大于１，那么我们也可以找到２个1D向量，使得 <span class="math inline">\(\arg\min||F-UV||\)</span>.</p>
+<h2 id="常见滤波器">常见滤波器</h2>
+<ol style="list-style-type: decimal">
+<li><p><strong>Box滤波器</strong> <span class="math display">\[
+K =\frac{1}{K_{width}.K_{height}}
+\begin{bmatrix}
+1 &amp; 1 &amp; \cdots &amp; 1 \\
+1 &amp; 1 &amp; \cdots &amp; 1 \\
+\cdot &amp; \cdot &amp; \cdots &amp; 1 \\
+1 &amp; 1 &amp; \cdots &amp; 1
+\end{bmatrix}
+\]</span> 上面的通常叫滤波器核，主要作用是平滑块区域内像素。</p></li>
+<li><p><strong>shift移位(运动合成)滤波器</strong> 通常，对边缘像素，有４种做法：(1)补零; (2)复制; (3)只计算滤波器覆盖的部分; (4)对边缘不滤波。</p></li>
+<li><p><strong>Isotropic(各向同性)高斯滤波器</strong> 高斯滤波器用来做平滑，且具有旋转对称性，离中心越近，权值越大。一维高斯滤波器有一个归一化的脉冲响应：<span class="math inline">\(g(x)=\frac{1}{\sqrt{2\pi}\exp({-\frac{x^2}{2\sigma^2}})}\)</span>，　对于2D情况，<span class="math inline">\(g(x,y)=\frac{1}{2\pi\sigma^2}\exp(-\frac{x^2+y^2}{2\sigma^2})\)</span>, 其中x是水平坐标的，y是垂直坐标。</br> 高斯滤波器一般用作低通滤波器(平滑)作用，但是天下没有免费午餐，平滑的过程中也丢失了细节。<font style="color:red">Content-aware高斯滤波器</font>是一个不错的研究点。</p></li>
+<li><strong>Sobel 滤波器</strong> 边沿检测是指那些检测图像中颜色过渡明显的or不连续的边缘的算法。这里讲sobel滤波器检测２个方向：水平和垂直。</br> Sobel滤波器检测垂直的变化则采用：<span class="math inline">\(G_x=\begin{bmatrix} +1 &amp; 0 &amp; -1 \\ +2 &amp; 0 &amp; -2 \\ +1 &amp; 0 &amp; -1 \end{bmatrix}\)</span>, 该滤波器是可分离的，因为通过行消除，最后的秩为１。类似的，检测y方向滤波器：<span class="math inline">\(G_y=\begin{bmatrix} +1 &amp; +2 &amp; +1 \\ 0 &amp; 0 &amp; 0 \\ -1 &amp; -2 &amp; -1 \end{bmatrix}\)</span>.</br>
+<center>
+<img src="http://imrannazar.com/content/img/android-sobel-example.png" alt="Test Image" width="300"/>
+</center>
+</br> 如上图，通过x,y方向检测，合并得到整图的边沿检测。Sobel滤波器也可以检测方向： <span class="math display">\[
+\begin{cases}
+\text{Magnitude: } \mathbf{g}=[g_x,g_y]^T,g=\sqrt{g_x^2+g_y^2}\\
+\text{Orientation: } \theta=\tan^{-1}\frac{g_y}{g_x}
+\end{cases}
+\]</span> 该算子包含两组3x3的矩阵，分别为横向及纵向，将之与图像作平面卷积，即可分别得出横向及纵向的亮度差分近似值。如果以A代表原始图像，Gx及Gy分别代表经横向及纵向边缘检测的图像灰度值，其公式：<img src="http://hi.csdn.net/attachment/201006/11/0_1276230683DIgE.gif" /></br> 图像的每一个像素的横向及纵向灰度值通过以下公式结合，来计算该点灰度的大小：<span class="math inline">\(G=\sqrt{G_x^2+G_y^2}\)</span>, <font style="color:red">如果梯度G大于某一阀值 则认为该点(x,y)为边缘点。</font></br> Sobel算子根据像素点上下、左右邻点灰度加权差，在边缘处达到极值这一现象检测边缘。对噪声具有平滑作用，提供较为精确的边缘方向信息，<u>边缘定位精度不够高</u>。当对精度要求不是很高时，是一种较为常用的边缘检测方法。</br> Sobel滤波器检测到的边缘信息可以用在图像检索中，流程为： ```</li>
+<li>应用sobel滤波器得到每个像素点在x,y方向的梯度；</li>
+<li>然后计算幅度和相角，得到边缘map，这里幅度可以看出归一化的，所以只对方向做统计</li>
+<li>计算每个边界点的方向，并且量化到n bins，然后构建直方图。 ```</li>
+<li><p><strong>Gabor　滤波器</strong> Gabor滤波器是一个用于边缘检测的线性滤波器。在空域，一个2维的Gabor滤波器是一个<u><span class="math inline">\(\cos(\cdot)\)</span></u>和<u>高斯核函数</u>的乘积,具有在<u>空间域和频率域同时取得最优局部化</u>的特性，与人类生物视觉特性很相似，因此能够很好地描述对应于空间频率(尺度)、空间位置及方向选择性的局部结构信息。</p></li>
+</ol>
+<center>
+<img src="http://img.blog.csdn.net/20140103210129203" alt="Test Image" width="500"/>
+</center>
+<p></br></p>
+<p>Gabor滤波器定义： <span class="math display">\[
+g_{\lambda,\theta,\varphi,\sigma}(x,y)=\exp{-\frac{{x&#39;}^2+\gamma^2 {y&#39;}^2}{2\sigma^2}}\cos(2\pi\frac{x&#39;}{\lambda}+\varphi)
+\]</span> 其中，<span class="math inline">\(\begin{cases}x&#39;=x\cos\theta+y\sin\theta\\y&#39;=-x\sin\theta+y\cos\theta\end{cases}\)</span>, <span class="math inline">\(\lambda\)</span>是正弦波波长，<span class="math inline">\(\theta\)</span>是Gabor核函数相角，<span class="math inline">\(\varphi\)</span>是相位偏移，<span class="math inline">\(\sigma\)</span>是高斯函数的标准差，<span class="math inline">\(\gamma\)</span>是宽高比。</br> 不同方向下的Gabor滤波器:<img src="http://pic002.cnblogs.com/images/2012/383933/2012040919195833.jpg" /></br> 不同频率下的滤波器：<img src="http://pic002.cnblogs.com/images/2012/383933/2012040919242351.jpg" />. 可以看出随着的变化，Gabor滤波器中出现了很多宽窄与纹理不同的明暗条纹。当滤波器纹理与图像作用时，滤波器覆盖下的<u>局部纹理频率与滤波器的频率越接近</u>响应就越大，反之越小。</br> <font style="color:red">在实际应用时，可以根据检测对象的方向趋势，选择合适的方向参数进行滤波。如在检测人脸的五官时，可以根据人脸的偏转角度进行滤波，可以使特征点的定位更加准确。</font></p>
+<center>
+Gabor 滤波器应用
+</center>
+<ul>
+<li><font style="color:red">目标和行为识别 - 人脸光照之Gabor滤波</font> 在“人脸光照调整之DCT变换”随笔中，原始图像经过DCT变换处理后，并不能完全去除光照在人脸上<u>分布不均</u>的影响，而且<u>人脸的本真信息</u>也难以被全部表达。为此在DCT变换的基础上，用Gabor滤波对其进行再处理，可以达到更好的结果。</br>
+<center>
+<img src="http://pic002.cnblogs.com/images/2012/383933/2012040919290925.jpg" />
+</center>
+</br>
+<center>
+<img src="http://pic002.cnblogs.com/images/2012/383933/2012040919305229.jpg" />
+</center>
+</br></li>
+<li><font style="color:red">Visual attention models</font> 方向特征，方向特征主要是使用Gabor滤波器对图像的亮度特征在0°，45°，90°，135°四个主要方向上进行滤波得到的。因此，<u>Gabor滤波器可以很好地模拟人类视皮层简单细胞的信号处理特点，其结果直接体现了图像局部方向特征的信息</u>。在Gabor滤波器某个方向的滤波结果中，给定区域的能量可以反映该区域灰度图在该方向的特征是否强烈，即反映了区域内的该方向的直线或者规则纹理的朝向特征是否明显。因此方向特征的提取可以直接使用几个方向的Gabor滤波器进行滤波获得。</br> 对attention model来说，第三组特征maps是２４个方向图：采用方向Gabor金字塔得到局部方向信息，采用4角度和6尺度来表示角度和方向。最后得到<u>方向特征图</u>：<span class="math inline">\(O(c,s,\theta)=|O(c,\theta)\odot O(s,\theta)|\)</span>;
+<center>
+<img src="http://yugnaynehc.github.io/img/Itti_1.png" alt="Test Image" width="300"/>
+</center>
+</br> 实现步骤：</br> （1）将输入图像分为3×3（9块）和4×4（16块）的图像块；</br> （2）建立Gabor滤波器组：选择4个尺度，6个方向，这样组成了24个Gabor滤波器；</br> （3）Gabor滤波器组与每个图像块在空域卷积，每个图像块可以得到24个滤波器输出，这些输出是图像块大小的图像，如果直接将其作为特征向量，特征空间的维数会很大，所以需要“浓缩”；</br> （4）每个图像块经过Gabor滤波器组的24个输出，要“浓缩”（文中提到“average filter responses within the block”我的理解是取灰度均值）为一个24×1的列向量作为该图像块的纹理特征。查阅相关文献，发现也可以用方差。</br>
+<center>
+<img src="http://img.blog.csdn.net/20140103211804468" alt="Test Image" width="300"/>
+</center>
+</br></li>
+<li><font style="color:red">纹理分析</font> Gabor滤波方法的主要思想是：不同<u>纹理</u>一般具有不同的中心频率及带宽，根据这些频率和带宽可以设计一组Gabor滤波器对<u>纹理</u>理图像进行滤波，每个Gabor滤波器只允许与其频率相对应的<u>纹理</u>顺利通过，而使其他<u>纹理</u>的能量受到抑制，从各滤波器的输出结果中分析和提取<u>纹理</u>特征，用于之后的分类或分割任务。Gabor滤波器提取纹理特征主要包括两个过程：①设计滤波器(例如函数、数目、方向和间隔)；②从滤波器的输出结果中提取有效<u>纹理</u>特征集。Gabor滤波器是带通滤波器，它的单位冲激响应函数(Gabor函数)是高斯函数与复指数函的乘积。它是达到时频测不准关系下界的函数，具有最好地兼顾信号在时频域的分辨能力。</li>
+<li><font style="color:red">图像检索</font> 为了较好的提取Gabor纹理，我们分别在4种不同的尺度和6个不同的方向上对图像进行滤波。滤波以后就可以得到在各个尺度和各个方向的能量值。我们用所有滤波结果能量值的均值和均方差表述纹理信息。假设滤波器与图像卷积以后的能量值<span class="math inline">\(E(\lambda,\theta)\)</span>则能量均值<span class="math inline">\(\mu\)</span>和均方差<span class="math inline">\(\sigma\)</span>为：<span class="math inline">\(\begin{cases}\mu=\frac{\sum\sum E(\lambda, \theta)}{M\times N}\\\sigma=\frac{\sqrt{\sum\sum(E(\lambda,\theta)-\mu)^2}}{MN}\end{cases}\)</span> 典型例子有：http://www.voidcn.com/blog/u013266553/article/p-304406.html</li>
+</ul>
+<center>
+滤波和变换的区别
+</center>
+<p>在数字信号处理的理论中，卷给可以说是一种数学运算，而滤波是一种信号处理的方法。卷积就像加权乘法一样，你能说滤波和加权乘法是一样的吗，显然不行；但是滤波最终是有乘法来实现的。</p>
+<h2 id="图像金字塔">图像金字塔</h2>
+<p>对一个图像进行resize，会导致：（１）全局信息更加明细（２）局部信息丢失（３）获得多尺度表示（４）多次采样的图像。 高斯金字塔背后的理论基础是尺度空间理论。给定一张图像<span class="math inline">\(f(x,y)\)</span>, 其尺度空间表示为：<span class="math inline">\({\displaystyle L(x,y;t)\ =g(x,y;t)\star f(x,y),}\)</span>. 其中<span class="math inline">\({\displaystyle g(x,y;t)={\frac {1}{2{\pi }t}}e^{-(x^{2}+y^{2})/2t}\,}\)</span> <span class="math inline">\(t\)</span> 表示定义的尺度大小，当 <span class="math inline">\(t=0\)</span> 的时候我们可以把这项操作视为图片 <span class="math inline">\(f\)</span> 本身。 当 <span class="math inline">\(t\)</span> 增加时， <span class="math inline">\(L\)</span>代表将影像 <span class="math inline">\(f\)</span> 通过一个较大的高斯滤波器，从而使得影像的细节被去除更多。</p>
+<ol style="list-style-type: decimal">
+<li>使用高斯函数的原因 根据尺度空间理论，假如限定从较精密的尺度推展到较粗糙的尺度的过程中，不能有新的结构被创造出来， 那么高斯函数已经被证明出来为一个能够张成尺度空间的<u>正则（Canonical）函数</u>。</li>
+<li>建立高斯金字塔 在建立高斯金字塔的时候，我们首先会将影像转换为尺度空间的表示方式，亦即乘上不同大小的高斯函数，之后再依据取定的尺度向下取样。 乘上的高斯函数大小和向下取样的频率通常会选为2的幂次，也就是说，在每次迭代的过程中，影像都会被乘上一个固定大小的高斯函数，并且被以长宽各0.5的比率被向下取样。 如果将向下取样过程的图片一张一张叠在一起，会呈现一个金字塔的样子，因此这个过程称为高斯金字塔。</li>
+</ol>
+<h3 id="高斯金字塔的应用">高斯金字塔的应用</h3>
+<ol style="list-style-type: decimal">
+<li><font style="color:red">SIFT特征点检测</font> 高斯差可以简单的透过将在尺度空间相邻的图片进行相减得到。这个方法被用在著名的尺度不变特征转换中： 尺度不变特征转换借由寻找并描述不同尺度下的影像特征点，以进行不同影像之间的特征点比对。</li>
+<li><font style="color:red">层次表示</font></li>
+<li><font style="color:red">visual attention modeling</font></li>
+<li><font style="color:red">motion search</font></li>
+<li><font style="color:red">signal quality evaluation-- MS-SSIM</font></li>
+<li><font style="color:red">target retrieval</font></li>
+</ol>
+</body>
+</html>

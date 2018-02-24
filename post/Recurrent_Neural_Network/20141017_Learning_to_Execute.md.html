@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="learning-to-execute"><a href="http://arxiv.org/abs/1410.4615">Learning to Execute</a></h2>
+<p>TLDR; The authors show that seq2seq LSTM networks (2 layers, 400-dims) can learn to evaluate short Python programs (loops, conditionals, addition, subtraction, multiplication). The program code is fed one character at a time, and the LSTM is tasked with generating an output number (12 character vocab). The authors also present a new curriculum learning strategy, where the network is fed with a sensible mixture of easy and increasingly difficult examples, allowing it to gradually build up the concepts required to evaluate these programs.</p>
+<h4 id="key-points">Key Points</h4>
+<ul>
+<li>LSTM unrolled for 50 steps, 2 layer, 400 cells per layer, ~2.5M parameters. Gradient norm constrained to 5.</li>
+<li>3 Curriculum Learning strategies: 1. Naive (increase example difficulty) 2. Mixed: Randomly sample easy and hard problems, 3. Combined: Sample from Naive and Mixed strategy. Mixed or Combined almost always performs better.</li>
+<li>Output Vocabulary: 10 digits, minus, dot</li>
+<li>For evaluation teacher forcing is used: Feed correct output when generating target sequence</li>
+<li>Evaluation Tasks: Program Evaluation, Addition, Memorization</li>
+<li>Tricks: Reverse Input sequence, Double input sequence. Seem to make big difference.</li>
+<li>Nesting loops makes the tasks difficult since LSTMs can't deal with compositionality.</li>
+<li>Feeding easy examples and before hard examples may require the LSTM to restructure its memory.</li>
+</ul>
+<h4 id="notes-questions">Notes / Questions</h4>
+<ul>
+<li>I wonder if there's a relation between regularization/dropout and curriculum learning. The authors propose that mixing example difficulty forces a more general representation. Shouldn't dropout be doing a similar thing?</li>
+</ul>
+</body>
+</html>

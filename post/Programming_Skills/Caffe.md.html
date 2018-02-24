@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+</head>
+<body>
+<h2 id="caffe">Caffe</h2>
+<h2 id="深度学习软件比较的一个wikicomparison-of-deep-learning-software-可以从宏观的角度来看一下不同深度学习软件支持的库算法等有详细的索引信息方便根据应用场景选择合适的软件库">深度学习软件比较的一个wiki（Comparison of deep learning software）: 可以从宏观的角度来看一下不同深度学习软件支持的库、算法等，有详细的索引信息，方便根据应用场景选择合适的软件库。</h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Comparison_of_deep_learning_software">Comparison of deep learning software</a></li>
+<li><a href="http://www.csuldw.com/categories/ML/">ML</a></li>
+</ul>
+<h2 id="basic-idea">Basic Idea</h2>
+<ul>
+<li>EPOCH</li>
+</ul>
+<p><strong>one epoch = one forward pass and one backward pass of all the training examples</strong></p>
+<p>An epoch is a measure of the number of times all of the training vectors are used once to update the weights. For batch training all of the training samples pass through the learning algorithm simultaneously in one epoch before weights are updated.For sequential training all of the weights are updated after each training vector is sequentially passed through the training algorithm.</p>
+<ul>
+<li>PATCH</li>
+</ul>
+<p>Patch management is the process of using a strategy and plan of what patches should be applied to which systems at a specified time.</p>
+<ul>
+<li>BATCH</li>
+</ul>
+<p><strong>batch size = the number of training examples in one forward/backward pass. The higher the batch size, the more memory space you'll need.</strong></p>
+<p>Probably this is Mini-Batch Gradient Descent learning trick implementation. You put for example 1000 train example and setup batch_size as 100. That mean that you get first 100 train samples (1-100) and train network with them. Than you will use next 100 train samples (101-200) and train network with them (you will use updated weight) and so on. The idea that you minimize your gradient matrix and you will use less memory in your learning process which is very important for huge dataset.</p>
+<ul>
+<li>Iterations</li>
+</ul>
+<p><strong>number of iterations = number of passes, each pass using [batch size] number of examples. To be clear, one pass = one forward pass + one backward pass (we do not count the forward pass and backward pass as two different passes).</strong></p>
+<p><span style="color:red">Example: if you have 1000 training examples, and your batch size is 500, then it will take 2 iterations to complete 1 epoch.</span></p>
+<ul>
+<li>Loss</li>
+</ul>
+<p>Reference the caffe tutorial: <a href="http://caffe.berkeleyvision.org/tutorial/loss.html">Loss</a>. The loss in Caffe is computed by the Forward pass of the network.</p>
+<p>The final loss in Caffe, then, is computed by summing the total weighted loss over the network, as in the following pseudo-code:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">    loss :<span class="op">=</span> <span class="dv">0</span>
+    <span class="cf">for</span> layer <span class="op">in</span> layers:
+      <span class="cf">for</span> top, loss_weight <span class="op">in</span> layer.tops, layer.loss_weights:
+          loss <span class="op">+=</span> loss_weight <span class="op">*</span> <span class="bu">sum</span>(top)</code></pre></div>
+<ul>
+<li>Accuracy</li>
+</ul>
+<p>It depends on your exact model. Finding a good model is black magic. If your model is good enough, you'll be able to reach 0.99, of course. For imagenet models, you might expect an accuracy number like 70-80% (0.7-0.8) after several weeks of training.</p>
+<ul>
+<li>Blob</li>
+</ul>
+<p>Reference the caffe tutorial: <a href="http://caffe.berkeleyvision.org/tutorial/net_layer_blob.html">Blob</a>. A Blob is a wrapper over the actual data being processed and passed along by Caffe</p>
+<ul>
+<li><a href="http://www.cnblogs.com/dupuleng/articles/4244877.html">caffe Filter visualization</a></li>
+</ul>
+</body>
+</html>

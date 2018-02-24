@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="协方差矩阵"><span style="color:red"><strong><em>协方差矩阵</em></strong></span></h2>
+<h3 id="例子"><span style="color:red"><strong><em>例子１</em></strong></span></h3>
+<p>给定一个<span class="math inline">\(c\times n \times m\)</span>的数据库，其中<span class="math inline">\(c\)</span>是类别数，<span class="math inline">\(n\)</span>是每个类的训练样本，<span class="math inline">\(m\)</span>是每个样本的特征维度．</p>
+<p><span class="math inline">\(\begin{cases}k, \text{Index of class}\\ j, \text{Index of sample}\\ i, \text{Index of sample feature size} \end{cases}\)</span></p>
+<ol style="list-style-type: decimal">
+<li>计算类条件均值<span class="math inline">\(\mu_{ki}\)</span>,　和协方差矩阵的每个元素<span class="math inline">\(\sigma_{kpq}\)</span></li>
+</ol>
+<p>对第<span class="math inline">\(k\)</span>类，第<span class="math inline">\(i\)</span>维，类条件均值为：<span class="math inline">\(\mu_{ki}=\frac{1}{n}\sum_{a=1}^n x_{kij}\)</span> 对第<span class="math inline">\(k\)</span>类，协方差矩阵<span class="math inline">\(\mathbf{\Sigma}_k\)</span></p>
+<p>首先，我们固定<span class="math inline">\(k\)</span>,得到<span class="math inline">\(\mathbf{x}_k=\begin{bmatrix}x_{k11}&amp;x_{k11}&amp;...&amp;x_{k1n}\\ x_{k21}&amp;x_{k22}&amp;...&amp;x_{k2n}\\ ...&amp;...&amp;...&amp;...\\ x_{km1}&amp;x_{km2}&amp;...&amp;x_{kmn} \end{bmatrix}\)</span></p>
+<p>那么协方差矩阵<span class="math inline">\(\mathbf{\Sigma}_k=E(\mathbf{x_{kj}-\bar{\mathbf{\mu}_{ki}}})(\mathbf{x_{kj}-\bar{\mathbf{\mu}_{ki}}})^T=\frac{1}{n}\sum_{j=1}^n(\mathbf{x_{kj}-\bar{\mathbf{\mu}_{ki}}})(\mathbf{x_{kj}-\bar{\mathbf{\mu}_{ki}}})^T\)</span></p>
+<p>所以有：<span class="math inline">\(\mathbf{\Sigma}_k=\frac{1}{n}\begin{bmatrix} \sum_{j=1}^n (x_{k1j}-\mu_{k1})(x_{k1j}-\mu_{k1})&amp;\sum_{j=1}^n (x_{k1j}-\mu_{k1})(x_{k2j}-\mu_{k2})&amp;...&amp;\sum_{j=1}^n (x_{k1j}-\mu_{k1})(x_{kmj}-\mu_{km})\\ \sum_{j=1}^n (x_{k2j}-\mu_{k2})(x_{k1j}-\mu_{k1})&amp;\sum_{j=1}^n (x_{k2j}-\mu_{k2})(x_{k2j}-\mu_{k2})&amp;...&amp;\sum_{j=1}^n (x_{k2j}-\mu_{k2})(x_{kmj}-\mu_{km})\\ ...&amp;...&amp;...&amp;...\\ \sum_{j=1}^n (x_{kmj}-\mu_{km})(x_{k1j}-\mu_{k1})&amp;\sum_{j=1}^n (x_{kmj}-\mu_{km})(x_{k2j}-\mu_{k2})&amp;...&amp;\sum_{j=1}^n (x_{kmj}-\mu_{km})(x_{kmj}-\mu_{km}) \end{bmatrix}\)</span></p>
+<p>所以协方差矩阵元素:<span class="math inline">\(\sigma_{kpq}=\frac{1}{n}\sum_{j=1}^mx_{kqj}x_{kqj}\)</span></p>
+<ol start="2" style="list-style-type: decimal">
+<li>构建列特征向量<span class="math inline">\(\mathbf{x}_{kj}=\{x_{kj1},x_{k2},...,x_{km}\}\)</span>, 计算类条件均值向量<span class="math inline">\(\mathbf{\mu}_k\)</span>和协方差矩阵<span class="math inline">\(\mathbf{\Sigma}_k\)</span></li>
+</ol>
+<p><span class="math inline">\(\mathbf{\mu}_k=\frac{1}{n}\sum_{j=1}^n\mathbf{x}_{kj}\)</span></p>
+<p>那么协方差矩阵<span class="math inline">\(\mathbf{\Sigma}_k=E(\mathbf{x_{kj}-\bar{\mathbf{\mu}_{k}}})(\mathbf{x_{kj}-\bar{\mathbf{\mu}_{k}}})^T=\frac{1}{n}\sum_{j=1}^n(\mathbf{x_{kj}-\bar{\mathbf{\mu}_{k}}})(\mathbf{x_{kj}-\bar{\mathbf{\mu}_{k}}})^T\)</span></p>
+<ol start="3" style="list-style-type: decimal">
+<li>利用<span class="math inline">\(\mathbf{x}_{kj}\)</span>和<span class="math inline">\(\mathbf{\mu}_k\)</span>构建数据矩阵<span class="math inline">\(\mathbf{X}_k\)</span>，计算协方差矩阵<span class="math inline">\(\mathbf{\Sigma}_k\)</span>.</li>
+</ol>
+<p>一个<span class="math inline">\(m\)</span>维的数据<span class="math inline">\(\mathbf{x_{kj}},j=1,...,n\)</span>. 我们可以通过一个特征向量<span class="math inline">\(\mathbf{a_i}^T|_{1\times m}\)</span>将<span class="math inline">\(\mathbf{x_{kj}}|_{m\times 1}\)</span>映射到一维数据．</p>
+<p><span class="math display">\[
+ a_{ki}=\mathbf{a_i}^T \mathbf{x}_{ki}
+\]</span></p>
+<p>所以类条件方差为:$Var(_k)=^T_k $</p>
+<!-- 所以，根据最小化重构误差原则．我们有：$\varepsilon^2=\sum_{i=1}^n ||\mathbf{x}_{ki}-a_{ki}\phi||$
+
+$$\varepsilon^2=\sum_{i=1}^n ||\mathbf{x}_{ki}-a_{ki}\phi||=\sum_{i=1}^n(\mathbf{x}_{ki}-a_{ki}\phi)(\mathbf{x}_{ki}-a_{ki}\phi)^T=\sum_{i=1}^n ||\mathbf{x}_{ki}||^2-\sum_{i=1}^n a_{ki}^2$$ -->
+<!-- 协方差矩阵$\mathbf{X}_k$和特征值，特征向量的关系有：$\mathbf{X}_k\phi_i=\lambda_i\phi_i$ -->
+<h3 id="例子-1"><span style="color:red"><strong><em>例子２</em></strong></span></h3>
+<p>给定一个<span class="math inline">\(m\times n\)</span>的数据矩阵<span class="math inline">\(\mathbf{X}\)</span>, 它包含<span class="math inline">\(n\)</span>个已经中心化的训练样本(<span style="color:red"><strong><em>中心化即保证每个维度的均值为零，只需让矩阵的每一列除以减去对应的均值即可</em></strong></span>). 1. 计算关于训练数据的协方差矩阵<span class="math inline">\(\mathbf{\Sigma}\)</span>，然后写出协方差矩阵<span class="math inline">\(\mathbf{\Sigma}\)</span>的特征值的定义<span class="math inline">\(\lambda_i\)</span>和特征向量<span class="math inline">\(\phi_i\)</span>．并说明映射到单位长度特征向量<span class="math inline">\(\phi_i\)</span>的训练数据等于特征值．</p>
+<p><span class="math inline">\(\mathbf{\Sigma}=\frac{1}{n}XX^T\)</span></p>
+<p>协方差矩阵特征值和特征向量关系：<span class="math inline">\(\mathbf{\Sigma}\phi_i=\lambda_i\phi_i\)</span></p>
+<p>投影到特征向量的数据为：<span class="math inline">\(\mathbf{a}_i=\phi^T\mathbf{x}_i\)</span>,这同样也是中心化的． 所以方差为：<span class="math inline">\(\sigma_i^2=\frac{1}{n}\sum_{i=1}^n \phi^T \mathbf{x}_i[\phi^T \mathbf{x}_i]^T=\frac{1}{n}\sum_{i=1}^n\phi^T\mathbf{x}_i\mathbf{x}_i^T\phi^T=\phi^T\{\frac{1}{n}\sum_{i=1}^n\mathbf{x}_i\mathbf{x}_i^T\}\phi^T=\phi^T\mathbf{\Sigma}\phi\)</span> 由于<span class="math inline">\(\mathbf{\Sigma}\phi=\lambda\phi\)</span>，所以有<span class="math inline">\(\phi^T\mathbf{\Sigma}\phi=\lambda\phi\phi^T\)</span>, 我们知道特征向量是归一化的，所以<span class="math inline">\(\phi\phi^T=1\)</span> 然后，我们有<span class="math inline">\(\sigma_i^2=\lambda_i\)</span></p>
+<ol start="2" style="list-style-type: decimal">
+<li>证明对应特征值<span class="math inline">\(\lambda_k,\lambda_j\)</span>的２个特征向量<span class="math inline">\(\phi_k,\phi_j\)</span>是正交的．</li>
+</ol>
+<p>我们已知：<span class="math inline">\(\begin{cases}\mathbf{\Sigma}\phi_j=\lambda_j\phi_j \rightarrow \phi_k^T\mathbf{\Sigma}\phi_j=\phi_k^T(\lambda_j\phi_j)\\ \mathbf{\Sigma}\phi_k=\lambda_j\phi_j \rightarrow \phi_j^T\mathbf{\Sigma}\phi_k=\phi_j^T(\lambda_k\phi_k)\rightarrow \phi_k^T\mathbf{\Sigma}^T\phi_j=\lambda_k\phi_k^T\phi_j \end{cases}\)</span></p>
+<p>令上式相等，得到:<span class="math inline">\(\phi_k^T\mathbf{\Sigma}^T\phi_j=\lambda_k\phi_k^T\phi_j \leftrightarrow \phi_k^T\mathbf{\Sigma}\phi_j=\phi_k^T(\lambda_j\phi_j)\)</span>(因为<span class="math inline">\(\mathbf{\Sigma}=\mathbf{\Sigma}^T\)</span>)</p>
+<p>所以：<span class="math inline">\((\lambda_k-\lambda_j)\phi_k^T\phi_j=0\Rightarrow \phi_k^T\phi_j=0\)</span></p>
+<p>所以证明得到２个特征向量是正交的(orthogonal)</p>
+<ol start="3" style="list-style-type: decimal">
+<li>写出投影在特征向量<span class="math inline">\(\phi_k\)</span>和<span class="math inline">\(\phi_j\)</span>的训练数据之间的协方差．</li>
+</ol>
+<p>训练数据投影到<span class="math inline">\(\phi_j\)</span>方向为：<span class="math inline">\(\mathbf{Y_j}=\phi_j^T\mathbf{X}\)</span> 训练数据投影到<span class="math inline">\(\phi_k\)</span>方向为：<span class="math inline">\(\mathbf{Y_k}=\phi_k^T\mathbf{X}\)</span></p>
+<p>一般化有：<span class="math inline">\(\mathbf{Y}=\Phi^T\mathbf{X}\)</span></p>
+<p>所以协方差为：<span class="math inline">\(\mathbf{\Sigma}_y=\frac{1}{n}\mathbf{Y}\mathbf{Y}^T=\frac{1}{n}\Phi^T\mathbf{X}(\Phi^T\mathbf{X})^T=\frac{1}{n}\Phi^T\mathbf{X}\mathbf{X}^T\Phi=\Phi^T\mathbf{\Sigma}_x\Phi\)</span></p>
+<p>由于已知：<span class="math inline">\(\mathbf{\Sigma}_x\Phi=\Phi\Lambda\Rightarrow \Lambda=\Phi^t\mathbf{\Sigma}_x\Phi\)</span></p>
+<p>所以投影到２个方向的协方差<span class="math inline">\(\sigma_{kj}^2=0\)</span></p>
+<h3 id="补充特征值与特征向量"><span style="color:red"><strong><em>补充（特征值与特征向量）</em></strong></span></h3>
+<p><span style="color:red"><strong><em>特征值与特征向量</em></strong></span>: A是<span class="math inline">\(n \times n\)</span>矩阵，<span class="math inline">\(\mathbf{x}\)</span>为非零向量，若存在数<span class="math inline">\(\lambda\)</span>使<span class="math inline">\(\mathbf{A}\mathbf{x}=\lambda \mathbf{x}\)</span>成立，则称<span class="math inline">\(\lambda\)</span>为<span class="math inline">\(\mathbf{A}\)</span>的特征值，<span class="math inline">\(\mathbf{x}\)</span>称为对应于<span class="math inline">\(\lambda\)</span>的特征向量。</p>
+<p><span style="color:red"><strong><em>特征向量与线性无关性</em></strong></span>: <span class="math inline">\(\lambda_1,...,\lambda_r\)</span>是<span class="math inline">\(n \times n\)</span>矩阵<span class="math inline">\(\mathbf{A}\)</span>相异的特征值, <span class="math inline">\(v_1,...,v_r\)</span>是与 <span class="math inline">\(\lambda_1,...,\lambda_r\)</span>对应的特征向量，那么向量集合<span class="math inline">\(v_1,...,v_r\)</span>线性无关(也就是正交)．</p>
+<p>令<span class="math inline">\(\mathbf{v_1}=\begin{bmatrix}v_{11}\\v_{12}\\...\\v_{1n}\end{bmatrix},...,\mathbf{v_n}=\begin{bmatrix}v_{n1}\\v_{n2}\\...\\v_{nn}\end{bmatrix}\)</span></p>
+<p>有<span class="math inline">\(\begin{cases}\mathbf{A}\mathbf{v_1}=\lambda_1 \mathbf{v_1}\\ \mathbf{A}\mathbf{v_2}=\lambda_2 \mathbf{v_2}\\ ...\\ \mathbf{A}\mathbf{v_n}=\lambda_n \mathbf{v_n} \end{cases}\Rightarrow \mathbf{A}\begin{bmatrix}\mathbf{v_1}&amp;\mathbf{v_2}&amp;...&amp;\mathbf{v_n}\end{bmatrix}=\begin{bmatrix}\mathbf{v_1}&amp;\mathbf{v_2}&amp;...&amp;\mathbf{v_n}\end{bmatrix}\begin{bmatrix}\lambda_1&amp;0&amp;...&amp;0\\ 0&amp;\lambda_1&amp;...&amp;0\\ ...&amp;...&amp;...&amp;...\\ 0&amp;0&amp;...&amp;\lambda_n \end{bmatrix}\)</span> 则方阵A可直接通过特征值和特征向量进行唯一的表示: <span class="math inline">\(\mathbf{A}=\mathbf{Q}\begin{bmatrix}\lambda_1&amp;0&amp;...&amp;0\\ 0&amp;\lambda_1&amp;...&amp;0\\ ...&amp;...&amp;...&amp;...\\ 0&amp;0&amp;...&amp;\lambda_n \end{bmatrix}\mathbf{Q}^{-1}=\mathbf{Q}\mathbf{\Sigma}\mathbf{Q}^{-1}\)</span> 该表达式称为方阵的特征值分解，这样方阵<span class="math inline">\(\mathbf{A}\)</span>就被特征值和特征向量唯一表示。</p>
+<p>一个变换方阵的所有特征向量组成了这个变换矩阵的一组基。所谓基，<span style="color:red"><strong><em>可以理解为坐标系的轴。我们平常用到的大多是直角坐标系，在线性代数中可以把这个坐标系扭曲、拉伸、旋转，称为基变换</em></strong></span>。我们可以按需求去设定基，但是基的轴之间必须是线性无关的，也就是保证坐标系的不同轴不要指向同一个方向或可以被别的轴组合而成，否则的话原来的空间就“撑”不起来了。</p>
+<p>从线性空间的角度看，在一个定义了内积的线性空间里，对一个N阶对称方阵进行特征分解，就是产生了该空间的N个标准正交基，然后把矩阵投影到这N个基上。N个特征向量就是N个标准正交基，而特征值的模则代表矩阵在每个基上的投影长度。<span style="color:red"><strong><em>特征值越大，说明矩阵在对应的特征向量上的方差越大，功率越大，信息量越多</em></strong></span>。不过，特征值分解也有很多的局限，比如说变换的矩阵必须是方阵。</p>
+<p>在机器学习特征提取中，<span style="color:red"><strong><em>意思就是最大特征值对应的特征向量方向上包含最多的信息量，如果某几个特征值很小，说明这几个方向信息量很小，可以用来降维，也就是删除小特征值对应方向的数据，只保留大特征值方向对应的数据，这样做以后数据量减小，但有用信息量变化不大，PCA降维就是基于这种思路</em></strong></span>。</p>
+<p>要明确的是，一个矩阵其实就是一个线性变换，因为一个矩阵乘以一个向量后得到的向量，其实就相当于将这个向量进行了线性变换。比如说下面的一个矩阵：<span class="math inline">\(\mathbf{M}=\begin{bmatrix}3&amp;0\\0&amp;1\end{bmatrix}\)</span></p>
+它其实对应的线性变换是下面的形式：
+<p align="center">
+<img src="http://images.cnblogs.com/cnblogs_com/LeftNotEasy/201101/201101192226323913.png" width="400" >
+</p>
+<p>因为这个矩阵M乘以一个向量<span class="math inline">\((x,y)\)</span>的结果是：<span class="math inline">\(\mathbf{M}\begin{bmatrix}x\\y\end{bmatrix}=\begin{bmatrix}3x\\y\end{bmatrix}\)</span></p>
+<p>上面的<span style="color:red"><strong><em>矩阵是对称的，所以这个变换是一个对x，y轴的方向一个拉伸变换（每一个对角线上的元素将会对一个维度进行拉伸变换</em></strong></span>，当值&gt;1时，是拉长，当值&lt;1时时缩短），当矩阵不是对称的时候，假如说矩阵是下面的样子：<span class="math inline">\(\mathbf{M}=\begin{bmatrix}1&amp;1\\0&amp;1\end{bmatrix}\)</span></p>
+它所描述的变换是下面的样子：
+<p align="center">
+<img src="http://images.cnblogs.com/cnblogs_com/LeftNotEasy/201101/201101192226334536.png" width="400" >
+</p>
+<p>这其实是在平面上<span style="color:red"><strong><em>对一个轴进行的拉伸变换（如蓝色的箭头所示）</em></strong></span>，在图中，蓝色的箭头是一个最主要的变化方向（变化方向可能有不止一个），如果我们<span style="color:red"><strong><em>想要描述好一个变换，那我们就描述好这个变换主要的变化方向就好了</em></strong></span>。反过头来看看之前特征值分解的式子，分解得到的<span class="math inline">\(\mathbf{\Sigma}\)</span>矩阵是一个对角阵，里面的特征值是由大到小排列的，这些<span style="color:red"><strong><em>特征值所对应的特征向量就是描述这个矩阵变化方向（从主要的变化到次要的变化排列）</em></strong></span>.</p>
+<p>当矩阵是高维的情况下，那么这个矩阵就是高维空间下的一个线性变换，这个线性变化可能没法通过图片来表示，但是可以想象，这个变换也同样有很多的变换方向，我们通过<span style="color:red"><strong><em>特征值分解得到的前N个特征向量，那么就对应了这个矩阵最主要的N个变化方向</em></strong></span>。我们<span style="color:red"><strong><em>利用这前N个变化方向，就可以近似这个矩阵（变换</em></strong></span>）。也就是之前说的：<span style="color:red"><strong><em>提取这个矩阵最重要的特征</em></strong></span>。总结一下，特征值分解可以得到<span style="color:red"><strong><em>特征值与特征向量</em></strong></span>，<span style="color:red"><strong><em>特征值表示的是这个特征到底有多重要</em></strong></span>，而特征向量表示这个特征是什么，<span style="color:red"><strong><em>可以将每一个特征向量理解为一个线性的子空间，我们可以利用这些线性的子空间干很多的事情</em></strong></span>。不过，特征值分解也有很多的局限，比如说变换的矩阵必须是方阵。</p>
+<h3 id="矩阵解释"><span style="color:red"><strong><em>矩阵解释</em></strong></span></h3>
+<p><span class="math inline">\(\text{Class c Training Data}=\begin{bmatrix} x_{c11} &amp; x_{c12} &amp; ... &amp; x_{c1m} \\ x_{c21} &amp; x_{c22} &amp; ... &amp; x_{c2m} \\ ... &amp; ... &amp; ... &amp; ... \\ x_{cn1} &amp; x_{cn2} &amp; ... &amp; x_{cnm} \end{bmatrix}\)</span>, 有<span class="math inline">\({n\times m}\)</span>维度的训练数据,<span class="math inline">\(m\)</span>是当前类<span class="math inline">\(c\)</span>的样本数目，<span class="math inline">\(n\)</span>是样本的维度．</p>
+<ol style="list-style-type: decimal">
+<li><p>首先，求每个样本特征的均值：<span class="math inline">\(\mathbf{X}=\begin{bmatrix} x_{c11} &amp; x_{c12} &amp; ... &amp; x_{c1m} \\ x_{c21} &amp; x_{c22} &amp; ... &amp; x_{c2m} \\ ... &amp; ... &amp; ... &amp; ... \\ x_{cn1} &amp; x_{cn2} &amp; ... &amp; x_{cnm} \end{bmatrix}\)</span> <span class="math inline">\(\Rightarrow\mathbf{\mu}=\begin{bmatrix} \mu_{c1:}=\frac{1}{m}\sum_{i=1}^m x_{c1i} \\ \mu_{c2:}=\frac{1}{m}\sum_{i=1}^m x_{c2i} &amp;\\ ... \\ \mu_{cn:}=\frac{1}{m}\sum_{i=1}^m x_{cni} \end{bmatrix}\)</span></p></li>
+<li><p>然后，中心化数据．对于每个样本，减去对应特征上的均值。（即在<span style="color:red"><strong><em>高维空间中将数据平移到它的“中心”,注意：所谓的移动中心，是对每一个维度求均值，然后对每个维度的数据减去均值</em></strong></span>）。 <span class="math inline">\(\mathbf{\tilde{X}}=\begin{bmatrix} x_{c11}-\mu_{c1:} &amp; x_{c12}-\mu_{c1:} &amp; ... &amp; x_{c1m}-\mu_{c1:} \\ x_{c21}-\mu_{c2:} &amp; x_{c22}-\mu_{c2:} &amp; ... &amp; x_{cnm}-\mu_{c2:} \\ ... &amp; ... &amp; ... &amp; ... \\ x_{cn1}-\mu_{cn:} &amp; x_{cn2}-\mu_{cn:} &amp; ... &amp; x_{cnm}-\mu_{cn:} \end{bmatrix}\)</span>,<span class="math inline">\(\mathbf{\tilde{X}}^T=\begin{bmatrix} x_{c11}-\mu_{c1:} &amp; x_{c21}-\mu_{c2:} &amp; ... &amp; x_{cm1}-\mu_{cn:} \\ x_{c12}-\mu_{c1:} &amp; x_{c22}-\mu_{c2:} &amp; ... &amp; x_{cm2}-\mu_{cn:} \\ ... &amp; ... &amp; ... &amp; ... \\ x_{c1m}-\mu_{c1:} &amp; x_{c2n}-\mu_{c2:} &amp; ... &amp; x_{cmn}-\mu_{cn:} \end{bmatrix}\)</span></p></li>
+<li><span style="color:red"><strong><em>求特征的协方差矩阵</em></strong></span>: <span class="math inline">\(\mathbf{\Sigma}=\frac{1}{m}\mathbf{\tilde{X}}\mathbf{\tilde{X}}^T\)</span>=$\begin{bmatrix} <em>{a=1}<sup>m(x_{c1i}-<em>{ci:})(x</em>{c1i}-<em>{ci:}) &amp; </em>{a=1}</sup>m(x</em>{c1i}-<em>{ci:})(x</em>{c2i}-<em>{ci:}) &amp; ... &amp; </em>{a=1}<sup>m(x_{c1i}-<em>{ci:})(x</em>{cni}-<em>{ci:}) \ </em>{a=1}</sup>m(x_{c2i}-<em>{ci:})(x</em>{c1i}-<em>{ci:}) &amp; </em>{a=1}<sup>m(x_{c2i}-<em>{ci:})(x</em>{c2i}-<em>{ci:}) &amp; ... &amp; </em>{a=1}</sup>m(x_{c2i}-<em>{ci:})(x</em>{cni}-<em>{ci:}) \ ... &amp; ... &amp; ... &amp; ... \ </em>{a=1}<sup>m(x_{cni}-<em>{ci:})(x</em>{c1i}-<em>{c:i}) &amp; </em>{a=1}</sup>m(x_{cni}-<em>{ci:})(x</em>{c2i}-<em>{c:i}) &amp; ... &amp; </em>{a=1}^m(x_{cni}-<em>{ci:})(x</em>{cni}-_{c:i}) \end{bmatrix} <span class="math inline">\(, 得到一个\)</span>nn$的协方差矩阵．</li>
+<li><span style="color:red"><strong><em>求协方差矩阵的特征值和归一化特征向量</em></strong></span> <span class="math inline">\(\mathbf{\Sigma}\begin{bmatrix}\mathbf{\phi_1}&amp;\mathbf{\phi_2}&amp;...&amp;\mathbf{\phi_n}\end{bmatrix}=\begin{bmatrix}\lambda_1 \mathbf{\phi_1}&amp;\lambda_2 \mathbf{\phi_2}&amp;...&amp;\lambda_n \mathbf{\phi_n}\end{bmatrix}\)</span> 一个矩阵可能可以拉长（缩短）多个向量，因此它就可能有多个特征值。对于实对称矩阵来说，不同特征值对应的特征向量必定正交。</li>
+<li><span style="color:red"><strong><em>对特征值从大到小排序，选取最大的K个特征值对应的特征向量，组成<span class="math inline">\(n\times k\)</span>阶矩阵</em></strong></span>。 <span class="math inline">\(\mathbf{\Sigma}\Phi=\mathbf{\Sigma}\begin{bmatrix}\mathbf{\phi_1}&amp;\mathbf{\phi_2}&amp;...&amp;\mathbf{\phi_k}\end{bmatrix}=\begin{bmatrix}\lambda_1 \mathbf{\phi_1}&amp;\lambda_2 \mathbf{\phi_2}&amp;...&amp;\lambda_k \mathbf{\phi_k}\end{bmatrix}=\Phi\begin{bmatrix}\lambda_1 \\\lambda_2\\..\\\lambda_k\end{bmatrix}=\Phi\Lambda\)</span></li>
+<li><p><span style="color:red"><strong><em>用第一步“减去均值后的<span class="math inline">\(m\times n\)</span>阶样本矩阵乘以<span class="math inline">\(n\times k\)</span>阶特征向量矩阵,得到降维后的<span class="math inline">\(m\times k\)</span>阶矩阵，该矩阵的每一行为一个降维后的样本</em></strong></span>。 <span class="math inline">\(\mathbf{Y}=\Phi^T\mathbf{\tilde{X}}\)</span>, 也就是<span class="math inline">\(n\times k\)</span>转置得到<span class="math inline">\(k\times n\)</span>与原始数据<span class="math inline">\(n\times m\)</span>得到<span class="math inline">\(k\times n\)</span>的数据，越就将维度从<span class="math inline">\(n\)</span>降到<span class="math inline">\(k\)</span>维度． 一个变换矩阵的所有特征向量组成了这个变换矩阵的一组基。所谓基，可以理解为坐标系的轴。我们平常用到的大多是直角坐标系，在线性代数中可以把这个坐标系扭曲、拉伸、旋转，称为基变换。我们可以按需求去设定基，但是基的轴之间必须是线性无关的，也就是保证坐标系的不同轴不要指向同一个方向或可以被别的轴组合而成，否则的话原来的空间就“撑”不起来了。 我们通过在拉伸最大的方向设置基，忽略一些小的量，可以极大的压缩数据而减小失真。变换矩阵的所有特征向量作为空间的基之所以重要，是因为在这些方向上变换矩阵可以拉伸向量而不必扭曲它，使得计算大为简单。因此特征值固然重要，但我们的终极目标却是特征向量。 在物理意义上，一个高维空间的线性变换可以想象是在对一个向量在各个方向上进行了不同程度的变换，<span style="color:red"><strong><em>而特征向量之间是线性无关的，它们对应了最主要的变换方向，同时特征值表达了相应的变换程度</em></strong></span>。 具体的说，求特征向量，<span style="color:red"><strong><em>就是把矩阵A所代表的空间进行正交分解</em></strong></span>，使得A的向量集合可以表示为每个向量a在各个特征向量上的投影长度。我们通常求特征值和特征向量即为求出这个矩阵能使哪些向量<span style="color:red"><strong><em>只发生拉伸，而方向不发生变化</em></strong></span>，观察其发生拉伸的程度。这样做的意义在于，看清一个矩阵在哪些方面能产生<span style="color:red"><strong><em>最大的分散度（scatter）</em></strong></span>，减少重叠，意味着更多的信息被保留下来。 ### <span style="color:red"><strong><em>实际例子</em></strong></span></p></li>
+</ol>
+<p><span style="color:red"><strong><em>例1</em></strong></span>： 求<span class="math inline">\(A=\begin{bmatrix} 5 &amp; -2 &amp; 6 &amp; -1 \\ 0 &amp; 3 &amp; -8 &amp; 0 \\ 0 &amp; 0 &amp; 5 &amp; 4 \\ 0 &amp; 0 &amp; 0 &amp; 1 \end{bmatrix}\)</span>的特征方程。</p>
+$det(A-I)=det
+\begin{bmatrix}
+5-\lambda &amp; -2 &amp; 6 &amp; -1 \\
+0 &amp; 3-\lambda &amp; -8 &amp; 0 \\
+0 &amp; 0 &amp; 5-\lambda &amp; 4 \\
+0 &amp; 0 &amp; 0 &amp; 1-\lambda
+\end{bmatrix}
+<p>=(5-)(3-)(5-)(1-) $</p>
+<span style="color:red"><strong><em>例２</em></strong></span>：对角化定理 对角化矩阵$
+\begin{bmatrix}
+1 &amp; 3 &amp; 3  \\
+-3 &amp; -5 &amp; -3 \\
+3 &amp; 3 &amp; 1
+\end{bmatrix}
+<p>$</p>
+<p>首先，求出Ａ的特征值<span class="math inline">\(0=det(A-\lambda I)=-\lambda^3-3\lambda^2+4=-(\lambda-1)(\lambda+2)^2\)</span>, 得到特征值<span class="math inline">\(\lambda_1=1,\lambda_2=-2\)</span>.</p>
+<p>求A的3个线性无关的特征向量。对于<span class="math inline">\(\lambda=1\)</span>的基是：<span class="math inline">\(v_1=\begin{bmatrix} 1 \\ -1 \\ 1 \end{bmatrix}\)</span>, 对<span class="math inline">\(\lambda=-2\)</span>基是：<span class="math inline">\(v_2=\begin{bmatrix} -1 \\ 1 \\ 0 \end{bmatrix},v_3=\begin{bmatrix} -1 \\ 0 \\ 1 \end{bmatrix}\)</span></p>
+用特征向量构造<span style="color:red"><strong><em>特征矩阵<span class="math inline">\(P\)</span></em></strong></span>：$p=[v_1   v_2   v_3]=
+\begin{bmatrix}
+1 &amp; -1 &amp; -1  \\
+-1 &amp; 1 &amp; 0 \\
+1 &amp; 0 &amp; 1
+\end{bmatrix}
+<p>$</p>
+用对应的特征值构造<span style="color:red"><strong><em>对角矩阵D</em></strong></span>，特征值的次序必须和矩阵P选择的特征向量的次序一致　$
+\begin{bmatrix}
+1 &amp; 0 &amp; 0  \\
+0 &amp; -2 &amp; 0 \\
+0 &amp; 0 &amp; -2
+\end{bmatrix}
+<p>$.</p>
+得到：$ AP=
+\begin{bmatrix}
+1 &amp; 3 &amp; 3  \\
+-3 &amp; -5 &amp; -3 \\
+3 &amp; 3 &amp; 1
+\end{bmatrix}
+\begin{bmatrix}
+1 &amp; -1 &amp; -1  \\
+-1 &amp; 1 &amp; 0 \\
+1 &amp; 0 &amp; 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 &amp; 2 &amp; 2  \\
+-1 &amp; -2 &amp; 0 \\
+1 &amp; 0 &amp; -2
+\end{bmatrix}
+,PD=
+\begin{bmatrix}
+1 &amp; -1 &amp; -1  \\
+-1 &amp; 1 &amp; 0 \\
+1 &amp; 0 &amp; 1
+\end{bmatrix}
+\begin{bmatrix}
+1 &amp; 0 &amp; 0  \\
+0 &amp; -2 &amp; 0 \\
+0 &amp; 0 &amp; -2
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 &amp; 2 &amp; 2  \\
+-1 &amp; -2 &amp; 0 \\
+1 &amp; 0 &amp; -2
+\end{bmatrix}
+<p>$</p>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="text-understanding-from-scratch-2015-02"><a href="http://arxiv.org/abs/1502.01710">Text Understanding from Scratch (2015-02)</a></h2>
+<p>TLDR; Authors apply 6-layer and 9-layer (+3 affine) convolutional nets to character-level input and evaluate their models on Sentiment Analysis and Categorization tasks using (new) large-scale data sets. The authors don't use pre-trained word-embeddings, or any notion of words, and instead learn directly from character-level input with characters being encoded as one-hot vetors. This means the same model can be applied to any language (provided the vocabulary is small enough). The models presented in this paper beat BoW and word2vec baseline models.</p>
+<h2 id="data-and-model-performance">Data and model performance</h2>
+<p>Because existing ones were too small the authors collected several new datasets that don't have standard benchmarks.</p>
+<ul>
+<li>DBpedia Ontology Classification: 560k training, 70k test.</li>
+<li>Amazon Reviews 5-class: 3M train, 650k test</li>
+<li>Amazon Reviews polar: 3.6M train, 400k test</li>
+<li>Yahoo! Answer topics 10-class: 1.4M train, 60k test</li>
+<li>AG news classification 4-class: 120k train, 1.9k test</li>
+<li>Sogou Chinese News 5-class: 450k train, 60k test</li>
+</ul>
+<p>Model accuracy for small and large models:</p>
+<ul>
+<li>DBpedia: 98.02 / 98.27</li>
+<li>Amazon 5-class: 59.47 / 58.69</li>
+<li>Amazon 2-class: 94.50 / 94.49</li>
+<li>Yahoo 10-class: 70.16 / 70.45</li>
+<li>AG 4-class: 84.35 / 87.18</li>
+<li>Chinese 5-class: 91.35 / 95.12</li>
+</ul>
+<h4 id="key-takeaways">Key Takeaways</h4>
+<ul>
+<li>Pretty Standard CNN architecture applied to characters. Conv, ReLU, Maxppol, fully-connected. Filter sizes of 7 and 3. See paper for parameter details.</li>
+<li>Training takes a long time, presumably due to the size of the data. The authors quote 5 days per epoch on the large Amazon data set and large model.</li>
+<li>Authors can't handle large vocabularies, they romanize Chinese.</li>
+<li>Authors experiment with randomly replacing words with synonyms, seems to give a small improvements:</li>
+</ul>
+<h4 id="notes-questions">Notes / Questions</h4>
+<ul>
+<li>The authors claim to do &quot;text understanding&quot; and learn representations, but all experiments are on simple classification tasks. There is no evidence that the network actually learns meaningful high-level representations, and doesn't just memorize n-grams for example.</li>
+<li>These data sets are large, and the authors claim that they need large data sets, but there are no experiments in the paper that show this. How does performance vary with data size?</li>
+<li>The comparision with other models is lacking. I would have liked to see some of the other state-of-the-art model being compared, e.g. Kim's CNN. Comparing with BoW doesn't show much. As these models are openly available the comparison should have been easy.</li>
+<li>The romanization of Chinese is an ugly &quot;hack&quot; that goes against what the authors claim: Being language-independent and learning &quot;from scratch&quot;.</li>
+<li>It's strange that the authors use a thesaurus as a means for training example augmentation, as a theraus is word-level and language-specific, something that the authors explicitly argue against in this paper. Perhaps could have used word (character-level) dropout instead.</li>
+<li>Are there any hyperparameters that were optimized? Authors don't mention any dev sets.</li>
+<li>Have the datasets been made publicly available? The authors complain that &quot;the unfortunate fact in literature is that there are no large openly accessible datasets&quot;, but fail to publish their own.</li>
+<li>I'd expect the confustion matrix for the 5-star Amazon reviews to show mistakes coming from negations, but it doesn't, which suggests that the model really learns meaningful representations (such as negation).</li>
+</ul>
+</body>
+</html>

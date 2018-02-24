@@ -1,0 +1,9 @@
+./genall.sh 1
+git add --all
+git commit -m "update"
+git push -u origin master
+
+cd ~/github/gujiuxiang.github.io/
+git add --all
+git commit -m "update blog"
+git push -u origin master

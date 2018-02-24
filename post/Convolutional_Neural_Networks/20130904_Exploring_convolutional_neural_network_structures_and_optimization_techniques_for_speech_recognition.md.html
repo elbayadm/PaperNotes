@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h1 id="exploring-convolutional-neural-network-structures-and-optimization-techniques-for-speech-recognition"><a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/CNN-Interspeech2013_pub.pdf">Exploring convolutional neural network structures and optimization techniques for speech recognition</a></h1>
+<p><b> 2010 年以前，最先进的语音识别系统通常采用基于HMM的高斯模型混合模型（HMM-GMM模型）技术。这些模型采用的特征通常是梅尔频率倒谱系数 (MFCC).DNN解决了用高斯混合模型进行数据表示的低效问题，能够直接取代高斯混合模型。深度学习还能用于为传统HMM语音识别系统学习强大的判别性特征</b></p>
+<center>
+<img src="https://ai2-s2-public.s3.amazonaws.com/figures/2016-11-08/655ae6f82c24e3e01b2b27c56512b06ba36d49c1/1-Figure2-1.png" />
+</center>
+<h2 id="asr组成">ASR组成</h2>
+<p>语音识别系统主要有四部分组成，预处理系统，特征提取系统，声学模型和语言模型。一些文章只用声学模型和语言模型来定义一个语音识别系统，但我认为预处理系统和特征提取的步骤同样重要。</p>
+<h2 id="pre-processing">Pre-processing</h2>
+<p>对语音素材进行预处理是语音识别系统中经常采用的措施，但是大多数情况下人们将其视为优化实验结果的辅助措施来采用。近年来，随着语音识别在高精度（90%以上）识别以及鲁棒性上面临瓶颈，开始有越来越多的人将关注点放在优化预处理方式上面。F Gemmeke等人利用耦合词典作为DNN的预处理阶段，对5和15 dB的信噪比之间的不同添加餐厅和机场噪声的语音识别错误率仅为11.9%</p>
+<h2 id="feature-extraction">Feature extraction</h2>
+<p>语音识别的特征提取是通过分析频域和倒谱域。传统的方法包括Mel频率倒谱系数（MFCC）和滤波器组。</p>
+<p>特征提取步骤的目的是模仿人的耳朵一样提取频率成分。深层神经网络在特征提取中起到重要作用。约翰霍普金斯大学语言和语音处理研究中心（CLSP）和芝加哥丰田技术学院（TTIC）应用瓶颈的功能训练方法提高声学特征.</p>
+<p>Quoc Bao Nguyen等人在DNN基础上使用混合特征进行英文语音识别，错误率比MFCC基线系统降低了33%.</p>
+<p>Yongbin You等提出了一种节点剪枝方法重构DNN生成一个新的深层瓶颈特征类型，经过节点修建之后的拓扑结构减少了冗余，得到新的DNN派生特征，其对干净语音的最优识别错误率为7.3%，对带噪语音识别错误率为23.8%.</p>
+<p>Yanmin Qian等人证明，这种节点重构方法处理的DNN网络比原有的网络大小减少了85%，训练速度提高了4.2倍.</p>
+<p>Yuan Liu以DNN和DBN作为GMM-UBM说话人确认系统中的特征提取器，将DNN或DBN的隐藏层输出的大量的语音识别数据作为深层特征, 实验结果显示当采用4个隐层的DBN进行测试时识别错误率仅为9.75%.</p>
+<p>Ying-Wei Tan等人将DNN和HMM汉语语音识别的节点信息和声音特征整合，在中文大词汇语音识别任务实现CER相对减少22.75%.</p>
+<p>Lukas Mateju 等人讨论了各种语音特征对捷克语识别的影响，实验结果显示FBANK特征各方面表现均优于MFCC，对Dictate数据集的最小识别错误率为11.52%.</p>
+<h2 id="acoustic-modeling">Acoustic modeling</h2>
+<p><font style="color:red">与其它分类器相比，DNNs最主要的优点是其合理使用了语音帧之间的关系。</font></p>
+<p>Andrew L. Maas等人提供了一个关于“在语音识别系统中DNN声学模型设计的哪一方面最重要”的实证调查，讨论了DNN分类器的性能对最终的语音识别的词错误率的影响，并用几个指标来比较不同的DNN从而量化影响性能的因素。实验中发现，整个网络的大小是最重要的因素。到了某个点，增加DNN的层数不仅对性能没有提高，还会降低性能，<u>3个隐层到5个隐层的DNN架构是足够的</u>.</p>
+<p>Dong Yu（开创在ASR中使用DL的大牛）用一个单独的DNN估计较强和较弱的说话人语音每一帧的语素后验概率，并用一个加权有限状态的传感器（WFST）为基础的解码器来估计分析相关的说话人和语音，在不同的信噪比下系统的最佳设置平均词错误率为18.8%，比现在最先进的IBM系统降低2.8%.</p>
+<h2 id="problems-to-be-solved">Problems to be solved</h2>
+<p>目前DNN网络面临的主要问题，首先，培训通常需要解决一个高度非线性优化问题，这个过程中会产生许多局部极小;</p>
+<p>其次，如果训练时间过长会使结果倾向于过度拟合。Shi-Xiong Zhang等人提出了一种新型的DNN模型，在顶层使用支持向量机（SVM），在帧水平上的训练中，新模型表现出与携带DNN特征的多类SVM有关；在序列水平的训练中，新模型表现出与携带DNN特征和HMM状态转移特征的结构性SVM有关，新模型比传统DNN模型误差率降低8%以上.</p>
+<p>Meixu Song等人针对在大数据训练时容易导致训练算法收敛到局部最优的问题，提出了一种重采样技术，在传统DNN模型上添加这种技术比不添加错误率降低了4.9%.</p>
+<h2 id="future">Future</h2>
+<p>不难看出，利用深度神经网络解决鲁棒性问题是语音识别领域时下最热门的话题，至今仍没有一个稳定、高效、普适的系统可以对带噪语音的识别率达到90%以上，而在实际应用中的带噪语音识别率仅为60%-70%。另外，训练数据的不平衡是大多数机器学习算法的一个问题。而对于未来语音识别的方向，仿脑和类脑计算无疑是最好的发展方向，只有逐步贴近人脑语音识别的特性才能将正确率提高到令人满意的程度，现有的深度学习技术是远远达不到这一点的。</p>
+</body>
+</html>

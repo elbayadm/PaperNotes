@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="mpeg-7">MPEG-7</h1>
+<p>MPEG-7的正式名称是“多媒体内容描述接口”(Multimedia Content Description Interface)，是由运动图像专家组(MPEG, Moving Picture Experts Group)提出的一个用于描述多媒体内容的ISO/IEC标准。简单而言，MPEG-7其实就是一个规定如何来描述多媒体内容的特征的标准。</p>
+<p>明确一点：MPEG-7跟MPEG-2、MPEG-4等除了名字有点像以外没有更多的相同点。MPEG-2、MPEG-4关注的是多媒体本身的编码压缩，而MPEG-7关注的是多媒体内容特征的描述。</p>
+<h2 id="mpeg-7标准的范围">MPEG-7标准的范围</h2>
+<p>MPEG-7标准仅仅规定了如何描述，组织特征。特征的提取、特征的使用不属于MPEG-7标准的范围。</p>
+<p>以图片内容搜索引擎为例，图片特征的提取算法不属于MPEG-7标准范围（提取算法也没有标准化的必要），同样搜索引擎如何使用图片特征也不在MPEG-7范围，只有特征的描述（下文将介绍如何描述特征）是MPEG-7标准范围内的。</p>
+<div class="figure">
+<img src="http://pic002.cnblogs.com/images/2011/63234/2011011817170890.gif" />
+
+</div>
+<h2 id="mpeg-7描述子颜色空间">MPEG-7描述子——颜色空间</h2>
+<ol style="list-style-type: decimal">
+<li>RGB 计算机颜色显示器显示颜色的原理与彩色电视机一样，都是采用R、G、B相加混色的原理，通过发射出三种不同强度的电子束，使屏幕内侧覆盖的红、绿、蓝磷光材料发光而产生颜色的。这种颜色的表示方法称为RGB颜色空间表示。在多媒体计算机技术中，用得最多的是RGB颜色空间表示。一幅RGB图像就是M×N×3大小的彩色像素的数组，其中的每个彩色像素点都是在特定空间位置的彩色图像所对应的红、绿、蓝三个分量。RGB图像也可以看作由三个灰度图像形成的”堆栈”，当发送到彩色监视器的红、绿、蓝输入端时，就在屏幕上产生彩色图像。根据三基色原理，用基色光单位来表示光的量，则在RGB颜色空间，任意色光F都可以用R、G、B三色不同分量的相加混合而成：F＝r [ R ] + g [ G ] + b [ B ]</li>
+<li>HSV HSV(hue,saturation,value)颜色空间的模型对应于圆柱坐标系中的一个圆锥形子集，圆锥的顶面对应于V=1。它包含RGB模型中的R=1，G=1，B=1三个面，所代表的颜色较亮。色彩H由绕V轴的旋转角给定。红色对应角度0°，绿色对应角度120°，蓝色对应角度240°。在HSV颜色模型中，每一种颜色和它的补色相差180°。饱和度S取值从0到1，所以圆锥顶面的半径为１。HSV颜色模型所代表的颜色域是CIE色度图的一个子集，这个模型中饱和度为百分之百的颜色，其纯度一般小于百分之百。在圆锥的顶点(即原点)处，V=0,H和S无定义，代表黑色。圆锥的顶面中心处S=0，V=1,H无定义，代表白色。从该点到原点代表亮度渐暗的灰色，即具有不同灰度的灰色。对于这些点，S=0,H的值无定义。可以说，HSV模型中的V轴对应于RGB颜色空间中的主对角线。在圆锥顶面的圆周上的颜色，V=1，S=1,这种颜色是纯色。HSV模型对应于画家配色的方法。画家用改变色浓和色深的方法从某种纯色获得不同色调的颜色，在一种纯色中加入白色以改变色浓，加入黑色以改变色深，同时加入不同比例的白色，黑色即可获得各种不同的色调。</li>
+<li>YCbCr 在常用的几种颜色空间中，YCbCr颜色空间在学术论文中出现的频率是相当高的，常用于肤色检测等等。 YCbCr 则是在世界数字组织视频标准研制过程中作为ITU - R BT.601 建议的一部分，其实是YUV经过缩放和偏移的翻版。YCbCr其中Y是指亮度分量，Cb指蓝色色度分量，而Cr指红色色度分量。人的肉眼对视频的Y分量更敏感，因此在通过对色度分量进行子采样来减少色度分量后，肉眼将察觉不到的图像质量的变化。主要的子采样格式有 YCbCr 4:2:0、YCbCr 4:2:2 和 YCbCr 4:4:4。</li>
+<li>HMMD HMMD颜色空间是Mpeg—7中一种新的颜色空间，它在本质上和HSV颜色空间有很多相同之处。H就是HSV的hue(色度)，Max，Min分别是RGB颜色空间中(R,G,B)的最大值和最小值。D定义为Max与Min的差。</li>
+</ol>
+<h2 id="mpeg-7描述子可伸缩颜色描述子scd">MPEG-7描述子——可伸缩颜色描述子SCD</h2>
+<h3 id="haar小波变换基本原理">Haar小波变换基本原理</h3>
+<ol style="list-style-type: decimal">
+<li>采用Haar变换的根据 Haar变换编码的作用是减少表示图像颜色所用的bit数,同时尽可能多地保留图像颜色内容的信息。Haar变换的基本单元包括一个和操作和一个差分操作，所以Haar变换是一种比较简单的变换。另外Haar变换的差分操作可以将某些直方图中的直方条值变换为0(高通系数,经过取整后)，从而可以用较少的系数来描述图像,因此在图像检索时有较高的效率。Haar变换是正交变换，但正交变换做不到将高通系数变换为0，因为它是精确变换而且完全可逆的，即经过逆变换后得到的结果仍为原始值。可伸缩颜色描述符使用Haar变换的前提是近似，即先用Haar变换将大多数高通系数变换为很小的数，取整后为0，将所有的系数取整，用近似的结果代表原始值，结果带来了检索时的高效率(因为值为0的系数可以不予考虑)。当然,从近似的结果经过Haar逆变换得到的结果通常与原始值不同，但误差在允许的范围内。这就是采用Haar变换的根据。</li>
+<li>Haar变换详述 Haar变换的基本单元包括一个和操作和一个差分操作，如图1所示。将一直方图中相邻的直方条值两两相加等价于将直方图的bins值减半。即如果原来直方图的bins为256，则经过一次和操作后直方图的bins变为128；如果将这一过程迭代则依次得到64、32个直方条的直方图。Haar变换的高通(差分)系数包含具有较多直方条数的直方图的图像细节信息。在自然图像信号的直方图中，相邻的直方条值表现了大量的冗余，颜色的杂质(轻微的变动)由不定的照明和阴影效果所致。因此，相邻的直方条值的差分应该有较小的值，从而高通系数整数表示时仅需很少的bit数。 <img src="http://img.blog.csdn.net/20160219140228649" /> ``` 例：有a[8]，要进行一维Haar小波变换，结果保存在b[8]中则一级Haar小波变换的结果为:</li>
+</ol>
+<p>b[0]=(a[0]+a[1])/2, b[4]=(a[0]-a[1])/2 b[1]=(a[2]+a[3])/2, b[5]=(a[2]-a[3])/2 b[2]=(a[4]+a[5])/2, b[6]=(a[4-a[5]])/2 b[3]=(a[6]+a[7])/2, b[7]=(a[6]-a[7])/2 如果需要进行二级Haar小波变换的时候，只需要对b[0]-b[3]进行Haar小波变换。</p>
+<pre><code>对于二维的矩阵来讲，每一级Haar小波变换需要先后进行水平方向和竖直方向上的两次一维小波变换，行和列的先后次序对结果不影响。
+
+### SCD原理
+SCD的实现依赖Haar变换的过程，由于Haar小波变换可以产生多分辨率，所以经过Haar变换之后，产生了不同尺度的描述符。
+图2描述了SCD的实现过程解释如下:在Haar变换前，需进行非均匀量化，即将每个用11bit表示的直方条值非均匀映射为4bit，给较高可能性出现的小数值以较高的权值。然后是Haar变换，再经过线性量化得到256个系数。使用时可以根据实现需要从第一个系数开始选择16、32、64、128、256个系数，每个系数代表直方图的一个bin值。由于总的趋势是从第一个系数开始，越往后其值越小(高通系数)，而且整数化后多为0，因此可以每次从第一个系数开始根据需要依次选择128、64、32、16个系数来进行匹配。由于匹配总是近似的，因此减少所用的系数个数可以获得更快的检索速度，同时检索性能(查全率和查准率)基本不变。
+
+![](http://img.blog.csdn.net/20160219140330935)
+
+## MPEG-7描述子——颜色布局描述子CLD
+### DCT原理
+
+DCT变换利用傅立叶变换的性质。采用图像边界褶翻将像变换为偶函数形式， 然后对图像进行二维傅立叶变换，变换后仅包含余弦项，所以称之为离散余弦 变换。DCT编码属于正交变换编码方式，用于去除图像数据的空间冗余。变换 编码就是将图像光强矩阵(时域信号)变换到系数空间(频域信号)上进行处理的 方法。在空间上具有强相关的信号，反映在频域上是在某些特定的区域内能量 常常被集中在一起，或者是系数矩阵的分布具有某些规律。图像经DCT变换以 后，DCT系数之间的相关性就会变小，而且大部分能量集中在少数的系数上。
+
+1. 二维离散余弦变换
+
+在傅里叶级数展开式中，如果展开的函数是实偶函数，那么，其傅里叶技术中只包含余弦项，在将其离散化由此可导出余弦变换。
+![](http://img.blog.csdn.net/20160222142557927)
+
+2. 离散余弦变换的矩阵算法
+![](http://img.blog.csdn.net/20160222142638052)
+
+### CLD原理
+该描述符指定颜色的空间分布，用于高速的检索和浏览。它的目标不仅在于图像与图像的匹配以及视频片段与视频片段的匹配，还包括基于颜色分布的检索，该描述符可以用于整幅图像或图像的一部分。
+获取颜色描述符的方法如下：</code></pre>
+<ol style="list-style-type: decimal">
+<li>将图像从RGB空间映射到YCbCr空间。并把整幅图像或图像的一部分分成64块（每块的尺寸为（W/8）*（H/8），其中W为图像的宽度，H为图像的高度），计算每一块中多有像素各颜色分量（Y、Cb、Cr）的平均值，并以此作为该块的代表颜色。</li>
+<li>对8<em>8块的平均值数据进行DCT变换（其中N=8），得到一系列系数。这里，8</em>8的DCT系数矩阵c[8][8]可以从8*8的代表颜色矩阵d[8][8]计算得到。经过变换，得到对应Y、Cb、Cr颜色分量的三组DCT系数矩阵c[8][8]，分别是：yc[8][8]、cbc[8][8]、crc[8][8]。</li>
+<li>对系数矩阵进行量化，量化后的系数通过“之”字形扫描，得到颜色布局描述符的值YCoeff、CbCoeff和CrCoeff。 ``` <img src="http://img.blog.csdn.net/20160222142748147" /></li>
+</ol>
+<p>实际上，DCT将8*8图像块变换为频率域时数值集中在矩阵的左上角（其中，第0行第0列的系数为DC系数，其余63个系数为AC系数），低频分量包含了图像的主要信息，而高频与之相比就不那么重要了。</p>
+<ol start="4" style="list-style-type: decimal">
+<li>根据设定的系数个数，提取相应数据。</li>
+</ol>
+<h2 id="mpeg-7描述子颜色结构描述子csd">MPEG-7描述子——颜色结构描述子CSD</h2>
+<p>颜色结构描述符是一个颜色特征描述符，它既包括颜色内容信息（类似于颜色直方图），又包括内容的结构信息。其主要功能是图像与图像的匹配，一般用于静态图像检索。它通过由几个图像采样组成的结构元素，表达了一幅图像中局部颜色结构信息，虽然它与颜色直方图相关，但并不相同：不是突出某种颜色个别图像采样的相对频数，而是突出包含某种颜色图像采样的结构化元素的相对频数。所以，与图像直方图不同，该描述符能够区别如图所示的(a)和(b)两幅图像，给定的颜色Cm以同样的数目存在，但是具有给定颜色的像素组的结构却是不同：(a)是高度结构化的颜色，(b)是高度非结构化的颜色。 ### CSD原理</p>
+<p>1 颜色量化</p>
+<p>颜色结构描述符使用HMMD颜色空间定义，允许将颜色空间量化成256，128，64和32维。对HMMD颜色空间的量化是在5个颜色子空间上进行的。首先，将HMMD颜色空间沿着Diff轴划分成5个子空间：0、1、2、3和4，Diff的范围从0到255，子空间划分的分割点是6、20、60、110。接着，对每个颜色子空间沿着Hue和Sum轴进行非均匀量化，不同直方图位数对应的量化技术参见下表，下图给出了128维的量化示意图。</p>
+<p>2 结构化元素空间确定</p>
+<p>值得注意的是，该描述符对图像的采样数固定为64。结构化元素的空间范围随着图像分辨率的大小进行调整。下面的规则用于确定结构化元素的空间范围：</p>
+<p><span class="math display">\[
+p=max( 0, round( 0.5 , log2(width*height) - 8 ))
+\]</span> <span class="math display">\[
+K=2^p
+\]</span> <span class="math display">\[
+E=8*k
+\]</span> 其中，width和height分别为图像的宽和高，E<em>E为结构化元素的空间范围，K是子采样要素，取值可以是K={1，2，4，8，••••}，K=1表示没有子采样，K=2表示水平和垂直方向的子采样数目为2。例如对于320</em>240的图像，K=1,E=8,结构化元素是8<em>8的像素，没有子采样。而对于640</em>480的图像，K=2，E=16，结构化元素的空间范围是16<em>16，子采样是2</em>2。下图给出了上述两种情况下的采样示意，只显示了图像的一部分，结构化元素的出事位置位于图像的左上角。</p>
+<p>构量化直方图</p>
+<p>使用8<em>8的结构化元素内的量化直方图，来表达结构化元素内的颜色信息，同时保留了一定程度上的颜色含量，累加后得到结构化直方图。 具体实现如下： 1. 用8</em>8的结构化元素扫描图像，统计包含在其中的某种量化颜色的数目，得到结构化元素内的颜色直方图。 2. 根据结构化元素内的颜色直方图，对结构量化直方图相应的维数进行累加。</p>
+<ol start="3" style="list-style-type: decimal">
+<li>重复（1）～（2）直至结构化元素遍历整幅图像，得到结构量化直方图并进行非线性量化。 简单的说，首先，量化颜色空间，设定直方图维数为256，确定子采样个数。用8<em>8的窗口扫描的时候，所关心的是在该窗口中是否包含某种颜色，而不关心出现在8</em>8的窗口中相同颜色的个数（根据，结构量化直方图累加示意图也可以看出来，三种颜色在8*8窗口的数目并不相同，然而都执行了加一的操作）。最后，根据映射表（256-&gt;128，256-&gt;64，256-&gt;32）得到最后的直方图。</li>
+</ol>
+<h2 id="mpeg-7-context">MPEG-7 context</h2>
+<ul>
+<li>Audiovisual information used to be consumed directly by human beings</li>
+<li>Increasingly created, exchanged, retrieved, re-used by computational systems</li>
+<li>Representations that allow some degree of interpretation of the information’s meaning can be accessed and processed by computer</li>
+</ul>
+<h2 id="mpeg-7-structure">MPEG-7 structure</h2>
+<ul>
+<li>Comprehensive AV Description Tools Library</li>
+<li>Control and Compression</li>
+<li>Interoperability</li>
+</ul>
+<h2 id="benefits-of-mpeg-7">Benefits of MPEG-7</h2>
+<ul>
+<li>New strategies for Multimedia information Access</li>
+<li>Multimodal Interaction and Search (not just text based)</li>
+<li>Adaptation to User Preferences</li>
+<li>MPEG-7 provides Generic Description of AudioVisual and Multimedia Content</li>
+<li>Systematic Access to audiovisual information sources.</li>
+<li>Re-usability of descriptions and annotations.</li>
+<li>Management and Linking of Content, Events and User Interaction.</li>
+</ul>
+<h2 id="mpeg-7-applications">MPEG-7 applications</h2>
+<ul>
+<li>Support and facilitate : Media portals/Content broadcasting/Ubiquitous multimedia</li>
+<li>Multimedia processing important to end user</li>
+<li>Multimedia processing important to providers of service and content</li>
+</ul>
+<h2 id="mpeg-7应用领域">MPEG-7应用领域</h2>
+<p>MPEG-7比不针对特定的应用领域。就目前来看，适合应用MPEG-7的领域包括： 1. 基于内容的多媒体搜索（包括图像搜索、哼唱搜索、语音搜索等） 2. 图像理解 3. 其他需要使用大量多媒体特征的应用</p>
+<h2 id="applications-domains">Applications Domains</h2>
+<ul>
+<li>Digital Libraries</li>
+<li>Image catalog, musical dictionary, biomedical imaging</li>
+<li>Multimedia editing</li>
+<li>Media authoring, personal electronic news service</li>
+<li>Cultural Services</li>
+<li>History museums, art galleries</li>
+<li>Multimedia directory services</li>
+<li>Yellow pages, tourist geographical information services</li>
+<li>Broadcast media selection</li>
+<li>Radio channel, TV channel</li>
+</ul>
+<h2 id="color-feature">Color Feature</h2>
+<ul>
+<li>Color histogram</li>
+<li>Average of frequency components » Motion field</li>
+<li>Text of the title</li>
+</ul>
+<h2 id="shape-descriptors">Shape Descriptors</h2>
+<ul>
+<li>Contour shape</li>
+<li>Region shape</li>
+</ul>
+<h2 id="motion-descriptors">Motion Descriptors</h2>
+<ul>
+<li>MPEG-7 Visual Descriptors</li>
+<li>Colour – Colour Histogram, Dominant Colour</li>
+<li>Texture – Freq Layout, Edge Histogram</li>
+<li>Motion – Motion Trajectory, Parametric Motion ˃ Shape – Zernike Moments, Curvature Peaks</li>
+<li>MPEG-7 Visual Description Schemes</li>
+<li>Still Region</li>
+<li>Moving Region</li>
+<li>Video Segment</li>
+<li>MPEG-7 Audio Descriptors</li>
+<li>Instrument – Timbre, Spectrum</li>
+<li>Music Structure – Melody, Rhythm</li>
+<li>Sound Effects – Reverberation, Pitch, Contour, Noise ˃ Speech – Phoneme, Articulation, Language</li>
+<li>MPEG-7 Audio Description Schemes</li>
+<li>Music Piece</li>
+<li>Musical Genre</li>
+<li>Audio Segment</li>
+</ul>
+<h2 id="terminology-description-scheme">Terminology : Description scheme</h2>
+<ul>
+<li>Specifies structure and semantics of relationships between its components</li>
+<li>Components may be both Descriptors and Description Schemes</li>
+<li>A Descriptor contains only basic data types, provided by the Description Definition Language</li>
+<li>A Descriptor does not refer to another Descriptor</li>
+<li>Movie, temporally structured as scenes and shots</li>
+<li>Including textual descriptors at the scene level</li>
+<li>Including color, motion and audio descriptors at the shot level</li>
+<li>Creation and Production</li>
+<li>Title, creator, classification, purpose of creation</li>
+<li>Usage</li>
+<li>Rights holders, access rights, publication, financial info</li>
+<li>Media</li>
+<li>Storage format, AV content encoding, media identification</li>
+<li>Structural Aspects -Color, texture, shape, motion, audio</li>
+<li>Conceptual Aspects</li>
+<li>AV conceptual notions</li>
+<li>Basic Elements</li>
+<li>Data types, math structures, schema tools</li>
+</ul>
+<h2 id="ddl-logical-components">DDL: Logical components</h2>
+<ul>
+<li>XML Schema structural language components</li>
+<li>XML Schema structural datatype components</li>
+<li>MPEG-7 specific extensions: Datatypes for matrices and arrays; Datatypes for time point and duration; Data value propagation (HeaderType).</li>
+<li>Specifies functionalities such as preparation of MPEG-7 Descriptions: Efficient transport/storage; Synchronization of content and description; Development of conformant decoders.</li>
+<li>Mechanism for providing multimedia content is considered part of a complete application and lies outside the scope of the standard</li>
+</ul>
+<h2 id="mpeg-7-terminal">MPEG-7 terminal</h2>
+<ul>
+<li>Obtains MPEG-7 data from transport</li>
+<li>Extracts elementary streams from delivery layer</li>
+<li>Undo transport/storage specific framing/multiplexing</li>
+<li>Retain synchronization timing</li>
+<li>Forwards elementary streams of individual access units to compression layer</li>
+<li>Decodes</li>
+<li>Schema streams describing data structure</li>
+<li>Full or partial content description streams</li>
+<li>Generates user requested multimedia streams</li>
+<li>Feeds back via delivery layer for transmission/storage</li>
+</ul>
+<h2 id="mpeg-7-ddl">MPEG-7 DDL</h2>
+<p>With extensions, XML meets key requirements - Datatype definition - D and DS declaration - Attribute declaration - Typed reference - Content model - Inheritance/subclassing mechanism - Abstract D and DS - DS inclusion</p>
+<h2 id="imagevideo-retrieval">Image/Video Retrieval</h2>
+<ul>
+<li>Text-based Retrieval</li>
+<li>Content-based Retrieval</li>
+</ul>
+<p>MPEG-7: An international standard for descriptions and description systems; Goal: To search, identify, filter and browse audiovisual content.</p>
+</body>
+</html>

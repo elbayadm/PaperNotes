@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="边值问题的数值解求法">边值问题的数值解求法</h2>
+<p>１. “打靶”方法</p>
+<p>打靶法的工作原理是：把边界条件考虑为<strong><em>在某些点的初始条件</em></strong>的多变量函数，把边值问题简化为<strong><em>寻找给出一个根的初始条件</em></strong>. 打靶法的优点:是它对于<strong><em>初值问题的速度</em></strong>和<strong><em>自适应性</em></strong>优势的利用. 该方法的缺点是它<strong><em>并不像有限差分法或者配置法（collocation method）那么稳健</em></strong>：具有增长模式的一些初值问题本来就不稳定，即使边界问题本身可能是适定的且很稳定.</p>
+<p>考虑 BVP 系统 :<span class="math inline">\(\begin{cases}X&#39;(t)=F(t,X(t)) \\ G(X(t_1),X(t_2),...,X(t_n))=0 \end{cases} , t_1&lt;t_2&lt;...&lt;t_n\)</span></p>
+<p>打靶法寻找初始条件<span class="math inline">\(X(t_0)=c\)</span>以使得<span class="math inline">\(G=0\)</span>. 由于用户改变这些初始条件，所以把<span class="math inline">\(X=X_c\)</span>考虑为它们的一个函数是有意义的，因此，打靶法可以被视为寻找<span class="math inline">\(c\)</span>使得:<span class="math inline">\(\begin{cases}X_c&#39;(t)=F(t,X_c(t)) \\ X_c(t_0)=0\\ G(X_c(t_1),X_c(t_2),...,X_c(t_n))=0\end{cases}\)</span></p>
+<p>在对<span class="math inline">\(G\)</span>建立函数后，问题实际上被传递给 FindRoot 以找到给出根的初始条件<span class="math inline">\(c\)</span>. 默认方法是采用牛顿法，其中涉及雅可比的计算. 虽然雅可比可以采用有限差分计算，一个初值问题（IVP）的解对初始条件太过敏感以致难以获得合理精确的导数值，所以把雅可比作为常微分方程的一个解来计算是有利的.</p>
+<blockquote>
+<p>实例</p>
+</blockquote>
+<p><span class="math inline">\(x&#39;&#39;(t)=(1-t/5)x+t;x(1)=2,x(3)=-1\)</span> 上面的BVP可以分解成2个IVP问题：<span class="math inline">\(\begin{cases}x_1&#39;&#39;(t)=(1-t/5)x_1+t;x_1(1)=2, x_1&#39;(t)=0 \\ x_2&#39;&#39;(t)=(1-t/5)x_2;x_2(1)=0,x_2&#39;(1)=1\end{cases}\)</span></p>
+<p>再次，上面的<em>高阶IVP问题</em>进一步可以重新写作<strong><em>一对</em></strong>一阶IVP问题：</p>
+<p><span class="math inline">\(\begin{cases}w_1=x_1&#39;; \\ w_1&#39;=(1-t/5)x_1+t\end{cases}\)</span> <span class="math inline">\(w_1=x_1&#39;(1)=0 \text{ and  } x_1=2\)</span></p>
+<p><span class="math inline">\(\begin{cases}{c}w_2=x_2&#39;; \\ w_2&#39;=(1-t/5)x_2+t\end{cases}\)</span> <span class="math inline">\(w_2=x_2&#39;(1)=0 \text{ and  } x_2=2\)</span></p>
+<p>对于一阶IVP问题，我们可以通过改进欧拉方法：</p>
+<p><span class="math inline">\(x_{[1]}=x_{1,n};v_{[1]}=w_{1,n}\)</span> <span class="math inline">\(\frac{dv}{dt}_{[1]}=w_{1,n}&#39;=(1-t_n/5)x_{1,n}+t_n \Rightarrow \begin{cases}x^*_{[1]}=x_{1,n}+\Delta h w_{1,n} \text{ An estimate of } x_{1,n+1}\\ v^*_{[1]}=w_{1,n}+\Delta h w_{1,n}&#39;\text{ An estimate of } w_{1,n+1}\end{cases}\)</span> <span class="math inline">\(\frac{dv^*}{dt}_{[1]}=(1-t_{n+1}/5)x^*_{[1]}+t_{n+1}\)</span>, intital guess at n+1</p>
+<p><span class="math inline">\(\begin{cases}x_{1,n+1}=x_{1,n}+\Delta h (v_{[1]}+v^*_{[1]})/2 \\ w_{1,n+1}=w_{1,n}+\Delta h (\frac{dv}{dt}_{[1]}+\frac{dv^*}{dt}_{[1]})2\end{cases}\)</span></p>
+<p>类似。。。</p>
+<p><span class="math inline">\(x_{[2]}=x_{2,n};v_{[2]}=w_{2,n}\)</span></p>
+<p><span class="math inline">\(\frac{dv}{dt}_{[2]}=w_{2,n}&#39;=(1-t_n/5)x_{2,n}+t_n \Rightarrow \begin{cases}{c}x^*[2]=x_{1,n}+\Delta h w_{1,n} \text{ an estimate of} x_{2,n+1}\\ v^{*}[2]=w_{2,n}+\Delta h w_{2,n}&#39;\text{ an estimate of} w_{2,n+1}\end{cases}\)</span></p>
+<p><span class="math inline">\(\frac{dv^{*}}{dt}_{[2]}=(1-t_{n+1}/5)x^*[2]+t_{n+1}\)</span>,</p>
+<p>intital guess at n+1</p>
+<p><span class="math inline">\(\begin{cases}x_{2,n+1}=x_{2,n}+\Delta h (v_{[2]}+v^*_{[2]})/2 \\ w_{2,n+1}=w_{2,n}+\Delta h (dv/dt_{[2]}+dv^*/dt_{[2]})2\end{cases}\)</span></p>
+<ol start="2" style="list-style-type: decimal">
+<li>线性化和牛顿法</li>
+</ol>
+<p>线性问题可以描述为：<span class="math inline">\(\begin{cases}X_c&#39;(t)=J(t)X_c(t)+F_0(t) \\ X_c(t_0)=c \\ G(X_c(t_1),X_c(t_2),...,X_c(t_n))=B_0+B_1X_c(t_1)+B_2X_c(t_2)+..+B_nX_c(t_n)\end{cases}\)</span></p>
+<p>其中<span class="math inline">\(J(t)\)</span>是一个矩阵，而<span class="math inline">\(F_0(t)\)</span>是一个向量，它们都可能依赖于<span class="math inline">\(t\)</span>，<span class="math inline">\(B_0\)</span>是一个常量向量，而<span class="math inline">\(B_1,B_2,...,B_n\)</span>是常量矩阵.</p>
+<p><strong>Reference</strong>: <a href="http://reference.wolfram.com/language/tutorial/NDSolveBVP.zh.html">边值问题的数值解（BVP)</a></p>
+</body>
+</html>

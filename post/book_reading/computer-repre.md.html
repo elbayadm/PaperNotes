@@ -1,0 +1,426 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="微机原理之数值表示和误差分析">微机原理之数值表示和误差分析</h2>
+<p><span style="color:red"><strong><em>1. 数值表示</em></strong></span></p>
+<p><span style="color:red"><strong><em>IEEE 浮点数标准的由来</em></strong></span>: 话说 Intel 计划给最早的 8086 增加<strong><em>浮点运算单元 (FPU)</em></strong> 时，他们请来了最好的数值分析专家来为 8087 FPU 设计浮点数格式，这位专家接着又请来了该领域的另外两位专家，这三个人 (<strong><em>Kahn, coonan 与 Stone</em></strong>) 设计了 Intel 的浮点格式，即 KCS 浮点数标准。这个标准实在太出色了，<span style="color:red"><strong><em>因此 IEEE 组织将 KCS 选作为 IEEE 浮点数格式的基础，即 IEEE 标准 754</em></strong></span>。</p>
+<p><span style="color:red"><strong><em>(1)整数</em></strong></span></p>
+<p><span style="color:red"><strong><em>整数(Integer)是一个集合</em></strong></span>，通常可以分为正整数、零（0）和负整数。正整数即大于0的整数，是正数与整数的交集。而负整数即小于0的整数，是负数与整数的交集。</p>
+<p>这种基础资料型态只能表示有限的整数，<span style="color:red"><strong><em>其范围受制于电脑的一个字组所包含的位元数所能表示的组合总数。当运算结果超出范围时，即出现演算溢位</em></strong></span>，微处理器的状态暂存器中的溢位旗标（<span style="color:red"><strong><em>overflow flag</em></strong></span>）会被设定，而系统则会产生溢位例外（<span style="color:red"><strong><em>overflow exception</em></strong></span>）或溢位错误（<span style="color:red"><strong><em>overflow error</em></strong></span>）。</p>
+<p>字组位元数=8, <span class="math inline">\(\begin{cases} \text{unsigned int: } 0 \sim 255(2^{8}-1)\\ \text{signed int: } -128(-2^{8}) \sim 127(2^{8}-1) \end{cases}\)</span> 字组位元数=16, <span class="math inline">\(\begin{cases} \text{unsigned int: } 0 \sim 65535(2^{16}-1)\\ \text{signed int: } -32768(-2^{15}) \sim 32767(2^{15}-1) \end{cases}\)</span> 字组位元数=32, <span class="math inline">\(\begin{cases} \text{unsigned int: } 0 \sim 4294967295(2^{32}-1)\\ \text{signed int: } -2147483648(-2^{31}) \sim 2147483647(2^{31}-1) \end{cases}\)</span></p>
+<p>在计算机运算中，有符号数的表示需要将负数编码为二进制形式。当前有四种方法，用于扩展二进制数字系统，来表示有符号数：原码（sign-and-magnitude），反码（ones' complement），补码（two's complement），以及移码excess-N。</p>
+<p><span style="color:red"><strong><em>a. sign-and-magnitude</em></strong></span></p>
+<p>符号及值（sign &amp; magnitude）的处理办法是分配一个符号位（sign bit）来表示这个符号, 设置这个位（通常为最高有效位）为0表示一个正数，为1表示一个负数。其它位指示数值（或者绝对值）。</p>
+<p align="center">
+<img src="https://pic4.zhimg.com/596846625e45f9727da1defbbff22317_b.png" width="150" >
+</p>
+<p>但使用“原码”储存的方式，方便了看的人类，却苦了计算机: <img src="https://pic1.zhimg.com/7cec066778fbb42aa57598d64336f8b8_b.png" /> 我们希望 （+1）和（-1）相加是0，但计算机只能算出0001+1001=1010 (-2),这不是我们想要的结果.</p>
+<p><span style="color:red"><strong><em>另外一个问题，这里有一个（+0）和（-0）</em></strong></span></p>
+<p><span style="color:red"><strong><em>b. ones' complement</em></strong></span></p>
+<p>为了解决“正负相加等于0”的问题，在“原码”的基础上，人们发明了“反码”.</p>
+<p align="center">
+<img src="https://pic3.zhimg.com/891e6b746e9ef18adafc1f478c570326_b.png" width="300" >
+</p>
+<p>机器数的反码可由原码得到。如果机器数是正数，则该机器数的反码与原码一样；如果机器数是负数，则该机器数的反码是对它的原码（符号位除外）各位取反而得到的。</p>
+<p>反码的系统也可以用于表示负数（注：正数与原码形式一样，无需取反）。一个负数的二进制数反码形式为其绝对值部分按位取反（即符号位不变，其余各位按位取反）。</p>
+<p>当“原码”变成“反码”时，<strong><em>完美的解决了“正负相加等于0”的问题</em></strong>. 过去的（+1）和（-1）相加，变成了0001+1101=1111，刚好反码表示方式中，1111象征-0</p>
+<p><span style="color:red"><strong><em>缺点：有两个零存在，+0 和 -0</em></strong></span></p>
+<p>我们希望只有一个0，所以发明了&quot;补码&quot;，同样是针对&quot;负数&quot;做处理的. &quot;补码&quot;的意思是，从原来&quot;反码&quot;的基础上，补充一个新的代码，（+1）</p>
+<p><span style="color:red"><strong><em>c. two's complement</em></strong></span></p>
+<p>补码可由原码得到。如果机器数是正数，则该机器数的补码与原码一样；如果机器数是负数，则该机器数的补码是对它的原码（除符号位外）各位取反，并在未位加1而得到的。</p>
+<p align="center">
+<img src="https://pic3.zhimg.com/d3617d2ceb02f6129c9b41361804cbe2_b.png" width="400" >
+</p>
+<p>补码回避了0有多种表示的问题以及循环进位的需要。在补码表示中，负数以位模式表示为正值的反码加1（当作无符号数）。</p>
+<p>有得必有失，在补一位1的时候，要丢掉最高位 我们要处理&quot;反码&quot;中的&quot;-0&quot;,当1111再补上一个1之后，变成了10000，丢掉最高位就是0000，刚好和左边正数的0，完美融合掉了 这样就解决了+0和-0同时存在的问题 另外&quot;正负数相加等于0&quot;的问题，同样得到满足 举例，3和（-3）相加，0011 + 1101 =10000，丢掉最高位，就是0000（0） 同样有失必有得，我们失去了(-0) , 收获了（-8） 以上就是&quot;补码&quot;的存在方式</p>
+<p><em>补码的意义何在？-128的补码为什么是10000000？为什么补码有这么奇怪的运算规则？计算机算减法的时候都需要从源码到补码的计算吗？</em> - 计算机里面，只有加法器，没有减法器，所有的减法运算，都必须用加法进行。 - 用补数代替原数，可把减法转变为加法。出现的进位就是模，此时的进位，就应该忽略不 - 二进制下，有多少位数参加运算，模就是在 1 的后面加上多少个 0。 - 补码就是按照这个要求来定义的：正数不变，负数即用模减去绝对值。</p>
+<p><span style="color:red"><strong><em>(2)浮点数</em></strong></span></p>
+<p>浮点分单精度和双精度：<span style="color:red"><strong><em>IEEE单精度格式具有24位有效数字，并总共占用32 位。IEEE双精度格式具有53位有效数字精度，并总共占用64位。</em></strong></span> <span style="color:red"><strong><em>浮点</em></strong></span>的意思就是你可以把小数点放在这有效数字那么多个bit的中间、前面多少个0，或者后面多少个0那里。小数点是浮的，叫浮点。</p>
+<p align="center">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/General_floating_point_frac.svg/490px-General_floating_point_frac.svg.png" width="400" >
+</p>
+<p>IEEE 754浮点数的三个域为：<span style="color:red"><strong><em>符号位(sign)，指数(exponent)，尾数(mentissa)</em></strong></span> <span class="math display">\[\text{mentissa}\times \text{b}^{\text{exponent}}\]</span></p>
+<p>如果数以0开头，尾数通常要进行归一化处理 例如：<span class="math inline">\(0.0294\)</span>, 小数左边包含了无用的0,可以对该数进行归一化 <span class="math inline">\(0.2941\times 10^{-1}\)</span>, 归一化后，<span class="math inline">\(m\)</span>的绝对值需要满足一定的约束<span class="math inline">\(\frac{1}{b}&lt;m&lt;1\)</span>.</p>
+<p><span style="color:red"><strong><em>a. 规约形式的浮点数</em></strong></span> 如果浮点数中指数部分的编码值在<span class="math inline">\(0 &lt; exponent &lt; 2^e-1\)</span>之间，且尾数部分最高有效位（即整数字）是1，那么这个浮点数将被称为规约形式的浮点数。“规约”是指用唯一确定的浮点形式去表示一个值。 由于这种表示下的尾数有一位隐含的二进制有效数字，为了与二进制科学计数法的尾数（<span class="math inline">\(mentissa\)</span>）相区别，IEEE754称之为有效数（<span class="math inline">\(significant\)</span>）。</p>
+<p><span style="color:red"><strong><em>b. 非规约形式的浮点数</em></strong></span> 如果浮点数的指数部分的编码值是0，尾数为非零，那么这个浮点数将被称为非规约形式的浮点数。</p>
+<p><span style="color:red"><strong><em>单精度浮点数各种极值情况：</em></strong></span></p>
+<p align="center">
+<img src="../images/posts/2014-11-05/32float.png" width="800" >
+</p>
+<p><span style="color:red"><strong><em>为什么很大的浮点数与很小的浮点数相加会得不到正确的答案？</em></strong></span></p>
+<p>其实道理很简单，固有的数据类型存储空间总是有限的，先不考虑二进制的问题，如果double就是有10位的十进制存储空间，那它最多就能存10个数字，没办法让它存100000000000000001这样的数字。</p>
+<p>具体看实际double的情况，double一共有64bit，其中52bit用来存有效数字，也就是二进制的有效位数是52，<span style="color:red"><strong><em>对应十进制的有效位数是<span class="math inline">\(log10(2^52)\)</span> = 15.65</em></strong></span>。</p>
+<p>有效数字可以是 000...000 -&gt; 111...111 (二进制) 000...000 -&gt; 4.5035996e+15 （十进制）</p>
+<p>超出这个限度最后的的数字会被舍弃，当然就会产生误差。</p>
+<p><span style="color:red"><strong><em>c. 五种类型的IEEE 浮点异常，以及用于向用户指示发生这些类型异常的条件</em></strong></span> <span style="color:red"><strong><em>五种类型的浮点异常是：无效运算、被零除、上溢、下溢和不精确</em></strong></span>。</p>
+<p><span class="math inline">\(\text{IEEE 754 defines five basic types of floating point exceptions:}\begin{cases}\text{invalid operation}\\ \text{division by zero}\\ \text{overflow}\\ \text{underflow}\\ \text{inexact}\end{cases}\)</span><a href="https://docs.oracle.com/cd/E19957-01/806-3568/ncg_handle.html">ref</a></p>
+<p><span style="color:red"><strong><em>d. IEEE 754 浮点数的四种舍入方式</em></strong></span></p>
+$
+\begin{cases}
+\text{up}\\
+\text{down}\\
+\text{nearest}\\
+\text{towards zero}\end{cases}
+<p>$</p>
+<p><span style="color:red"><strong><em>向最接近的可表示的值</em></strong></span>。；当有两个最接近的可表示的值时首选“偶数”值；向负无穷大（向下）；向正无穷大（向上）以及向0（截断）。</p>
+<p>说明：舍入模式也是比较容易引起误解的地方之一。我们最熟悉的是四舍五入模式，但是，IEEE 754标准根本不支持，它的默认模式是最近舍入（Round to Nearest），它与四舍五入只有一点不同，对.5的舍入上，采用取偶数的方式。举例比较如下：</p>
+<p>例2：</p>
+<p><span style="color:red"><strong><em>最近舍入模式</em></strong></span>：Round(0.5) = 0; Round(1.5) = 2; Round(2.5) = 2; <span style="color:red"><strong><em>四舍五入模式</em></strong></span>：Round(0.5) = 1; Round(1.5) = 2; Round(2.5) = 3;</p>
+<p>主要理由：由于字长有限，浮点数能够精确表示的数是有限的，因而也是离散的。在两个可以精确表示的相邻浮点数之间，必定存在无穷多实数是IEEE浮点数所无法精确表示的。如何用浮点数表示这些数，IEEE 754的方法是用距离该实数最近的浮点数来近似表示。但是，对于.5，它到0和1的距离是一样近，偏向谁都不合适，四舍五入模式取1，虽然银行在计算利息时，愿意多给0.5分钱，但是，它并不合理。例如：如果在求和计算中使用四舍五入，一直算下去，误差有可能越来越大。机会均等才公平，也就是向上和向下各占一半才合理，在大量计算中，从统计角度来看，高一位分别是偶数和奇数的概率正好是50% : 50%。至于为什么取偶数而不是奇数，大师Knuth有一个例子说明偶数更好，于是一锤定音。最近舍入模式在C/C++中没有相应的函数，当然，IEEE754以及x86 FPU的默认舍入模式是最近舍入，也就是每次浮点计算结果都采用最近舍入模式，除非用程序显式设置为其它三种舍入模式。</p>
+<p>另外三种舍入模式，简要说明。</p>
+<p><span style="color:red"><strong><em>向0（截断）舍入</em></strong></span>：C/C++的类型转换。(int) 1.324 = 1，(int) -1.324 = -1;</p>
+<p><span style="color:red"><strong><em>向负无穷大（向下）舍入</em></strong></span>：C/C++函数floor()。例如：floor(1.324) = 1，floor(-1.324) = -2。</p>
+<p><span style="color:red"><strong><em>向正无穷大（向上）舍入</em></strong></span>：C/C++函数ceil()。ceil(1.324) = 2。Ceil(-1.324) = -1;</p>
+<p>后两种舍入方法据说是为了数值计算中的区间算法，但很少听说哪个商业软件使用区间算法。</p>
+<p><span style="color:red"><strong><em>d. 十进制小数与二进制小数的相互转换</em></strong></span> 先看看十进制数与二进制数如何互相转换。用下标表示数的基（base），即<span class="math inline">\(d_{10}\)</span>表示十进制数，<span class="math inline">\(b_2\)</span>二进制数。则一个具有n+1位整数m位小数的十进制数<span class="math inline">\(d_{10}\)</span>表示为：<span class="math inline">\((d)_{10}=(d_{m}d_{m-1}...d_1d_0d_{-1}...d_{-m+1}d_{-m})_{10}\)</span>.</p>
+<p>同理，一个具有n+ 1位整数m位小数的二进制数<span class="math inline">\(b_2\)</span>表示为：<span class="math inline">\(b_{d}\)</span>表示为：<span class="math inline">\((b)_{2}=(b_{m}b_{m-1}...b_1b_0b_{-1}...b_{-m+1}b_{-m})_{2}\)</span>.</p>
+<p><span style="color:red"><strong><em>一个十进制小数要能用浮点数精确表示，最后一位必须是5，因为1 除以2永远是0.5，当然这是必要条件，并非充分条件。</em></strong></span><a href="http://www.cnblogs.com/bossin/archive/2007/04/08/704567.html">ref</a></p>
+<p><span style="color:red"><strong><em>2. 符号运算</em></strong></span></p>
+<p>前缀、中缀、后缀表达式都是对表达式的记法，因此也被称为<span style="color:red"><strong><em>前缀记法、中缀记法和后缀记法。它们之间的区别在于运算符相对与操作数的位置不同：前缀表达式的运算符位于与其相关的操作数之前；中缀和后缀同理</em></strong></span>.</p>
+<p><span class="math inline">\(\begin{cases} (3+4)\times 5 -6 \Rightarrow \text{Infix Expression} \\ -\times + 3 4 5 6 \Rightarrow \text{Prefix Expression} \\ 3 4 + 5 \times 6 - \Rightarrow \text{Postfix Expression} \end{cases}\)</span></p>
+<p><span style="color:red"><strong><em>(1)中缀表达式（中缀记法）</em></strong></span> 中缀表达式是一种通用的算术或逻辑公式表示方法，操作符以中缀形式处于操作数的中间。中缀表达式是人们常用的算术表示方法。 虽然人的大脑很容易理解与分析中缀表达式，但对计算机来说中缀表达式却是很复杂的，因此计算表达式的值时，通常需要先将中缀表达式转换为前缀或后缀表达式，然后再进行求值。对计算机来说，计算前缀或后缀表达式的值非常简单。</p>
+<span style="color:red"><strong><em>(2)前缀表达式（前缀记法、波兰式）</em></strong></span> 前缀表达式的运算符位于操作数之前。
+<p align="center">
+<img src="http://interactivepython.org/runestone/static/pythonds/_images/moveleft.png" width="300" >
+</p>
+<p>将中缀表达式转换为前缀表达式<a href="http://blog.csdn.net/antineutrino/article/details/6763722">ref</a>： - Step1: 初始化两个栈：运算符栈S1和储存中间结果的栈S2； - Step2: 从右至左扫描中缀表达式； - Step3: 遇到操作数时，将其压入S2； - Step4：遇到运算符时，比较其与S1栈顶运算符的优先级： - Step4-1: 如果S1为空，或栈顶运算符为右括号“)”，则直接将此运算符入栈； - Step4-2: 否则，若优先级比栈顶运算符的较高或相等，也将运算符压入S1； - Step4-3: 否则，将S1栈顶的运算符弹出并压入到S2中，再次转到(4-1)与S1中新的栈顶运算符相比较； - Step5: 遇到括号时： - Step5-1: 如果是右括号“)”，则直接压入S1； - Step5-2: 如果是左括号“(”，则依次弹出S1栈顶的运算符，并压入S2，直到遇到右括号为止，此时将这一对括号丢弃； - Step6: 重复步骤(2)至(5)，直到表达式的最左边； - Step7: 将S1中剩余的运算符依次弹出并压入S2； - Step8: 依次弹出S2中的元素并输出，结果即为中缀表达式对应的前缀表达式。</p>
+<p><span style="color:red"><strong><em>(3)后缀表达式（后缀记法、逆波兰式）</em></strong></span></p>
+<p align="center">
+<img src="http://interactivepython.org/runestone/static/pythonds/_images/moveright.png" width="300" >
+</p>
+<p>将中缀表达式转换为后缀表达式<a href="http://blog.csdn.net/antineutrino/article/details/6763722">ref</a>： Step1: 初始化两个栈：运算符栈S1和储存中间结果的栈S2； Step2: 从左至右扫描中缀表达式 Step3: 遇到操作数时，将其压入S2； Step4：遇到运算符时，比较其与S1栈顶运算符的优先级： Step4-1: 如果S1为空，或栈顶运算符为左括号“(”，则直接将此运算符入栈； Step4-2: 否则，若优先级比栈顶运算符的高，也将运算符压入S1（注意转换为前缀表达式时是优先级较高或相同，而这里则不包括相同的情况）； Step4-3: 否则，将S1栈顶的运算符弹出并压入到S2中，再次转到(4-1)与S1中新的栈顶运算符相比较； Step5: 遇到括号时： Step5-1: 如果是左括号“(”，则直接压入S1； Step5-2: 如果是右括号“)”，则依次弹出S1栈顶的运算符，并压入S2，直到遇到左括号为止，此时将这一对括号丢弃； Step6: 重复步骤(2)至(5)，直到表达式的最右边； Step7: 将S1中剩余的运算符依次弹出并压入S2； Step8: 依次弹出S2中的元素并输出，结果即为中缀表达式对应的前缀表达式。</p>
+<p><span style="color:red"><strong><em>后缀表达式生成二叉树</em></strong></span> - Create a Stack - Read next input symbol - If the symbol is a numeric value or a variable, create a new expression tree with a single node representing the - value/variable and push it into the stack. - If the symbol is an operator, pop out two trees (T1 and T2) from the stack. Create a new tree with the operator as the root and T1 and T2 as two children. Push this new tree back into the stack. - Repeat this procedure until the whole input is read. - At the end, the stack will contain a single tree which would be the output.</p>
+<blockquote>
+<p>例子：表达式“X=A+B*(C-D)/E”的后缀表示形式可以为？</p>
+</blockquote>
+<p>按照操作符的优先级，其二叉树的生成过程： 1.括号的优先级最高，根为-,左孩子为C,右孩子为D 2.接下来是乘法，根为*,左孩子为B，右孩子为1的树 3.接下来是除法，跟为/，左孩子为2的树，右孩子为E 4.接下来是加法，根为+，左孩子为A,右孩子为3的树 5.接下来是=号，左孩子是X，右孩子是4的树</p>
+<p align="center">
+<img src="http://img.blog.csdn.net/20130906114951078?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvd3p5XzE5ODg=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" width="200" >
+</p>
+<p>剩下的就是前序和后序遍历二叉树即可</p>
+<p><span style="color:red"><strong><em>二叉树遍历</em></strong></span></p>
+<pre><code>Algorithm postfix (tree)
+/*Print the postfix expression for an expression tree.
+ Pre : tree is a pointer to an expression tree
+ Post: the postfix expression has been printed*/
+ if (tree not empty)
+    postfix (tree left subtree)
+    postfix (tree right subtree)
+    print (tree token)
+ end if
+end postfix</code></pre>
+二叉树的基本的遍历规则有三种：前序遍历，中序遍历和后序遍历。<span style="color:red"><strong><em>对于每一种遍历，树中每个结点都要经过3次。前序遍历在第一次遇到结点时立即访问，中序遍历第二次遇到结点时访问，后序遍历则到第三次遇到结点时才访问。</em></strong></span>
+<p align="center">
+<img src="http://www.itzhai.com/wp-content/uploads/2011/05/binary-tree-ergodic-01.jpg" width="200" >
+</p>
+<p>前序遍历：- + a * b – c d / e f 中序遍历：a + b * c – d – e / f 后序遍历：a b c d – * + e f / -</p>
+<p><span style="color:red"><strong><em>前序遍历算法：</em></strong></span></p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c">template&lt;class T&gt;
+<span class="dt">void</span> BinaryTree&lt;T&gt;::PreOrder(BinTreeNode&lt;T&gt; *subTree,
+               <span class="dt">void</span> (*visit)(BinTreeNode&lt;T&gt; *P)) {
+    <span class="co">//递归函数：此算法按照前序遍历以subTree为根的二叉树。</span>
+    <span class="kw">if</span>(subTree!=NULL){      <span class="co">//递归结束条件</span>
+        visit(subTree);     <span class="co">//访问根节点</span>
+        PreOrder(subTree-&gt;leftChild,visit); <span class="co">//前序遍历根的左子树</span>
+        PreOrder(subTree-&gt;rightChild,visit);    <span class="co">//前序遍历根的右子树</span>
+    }
+};</code></pre></div>
+<p><span style="color:red"><strong><em>中序遍历算法：</em></strong></span></p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c">template&lt;class T&gt;
+<span class="dt">void</span> BinaryTree&lt;T&gt;::InOrder(BinTreeNode&lt;T&gt; *subTree,
+               <span class="dt">void</span>(*visit)(BinTreeNode&lt;T&gt; *p)){
+    <span class="co">//递归函数：此算法按照中序次序遍历以subTree为根的子数</span>
+    <span class="kw">if</span>(subTree!=NULL) {     <span class="co">//如果subTree为NULL，则结束递归</span>
+        InOrder(subTree-&gt;leftChild,visit);  <span class="co">//中序遍历根的左子树</span>
+        visit(subTree); <span class="co">//访问根节点</span>
+        InOrder(subTree-&gt;rightChild,visit); <span class="co">//中序遍历根的右子数</span>
+    }
+};</code></pre></div>
+<p><span style="color:red"><strong><em>后序遍历算法：</em></strong></span></p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c">template&lt;class T&gt;
+<span class="dt">void</span> BinaryTree&lt;T&gt;::PostOrder(BinTreeNode&lt;T&gt; *subTree,
+            <span class="dt">void</span> (*visit)(BinTreeNode&lt;T&gt; *P)) {
+    <span class="co">//递归函数，此算法按照后序遍历以subTree为根的二叉树</span>
+    <span class="kw">if</span>(subTree!=NULL) {     <span class="co">//递归结束条件</span>
+        PostOrder(subTree-&gt;leftChild,visit);    <span class="co">//后序遍历根的左子树</span>
+        PostOrder(subTree-&gt;rightChild,visit);   <span class="co">//后序遍历根的右子树</span>
+        visit(subTree);     <span class="co">//访问根节点</span>
+    }
+};</code></pre></div>
+<p><span style="color:red"><strong><em>二叉树的非递归遍历</em></strong></span></p>
+<p>二叉树是一种非常重要的数据结构，很多其它数据结构都是基于二叉树的基础演变而来的。对于二叉树，有前序、中序以及后序三种遍历方法。因为树的定义本身就是递归定义，因此采用递归的方法去实现树的三种遍历不仅容易理解而且代码很简洁。而对于树的遍历若采用非递归的方法，就要采用栈去模拟实现。在三种遍历中，前序和中序遍历的非递归算法都很容易实现，非递归后序遍历实现起来相对来说要难一点。</p>
+<p><span style="color:red"><strong><em>(1) 前序遍历</em></strong></span> 前序遍历按照“根结点-左孩子-右孩子”的顺序进行访问。 <span style="color:red"><strong><em>a. 递归实现</em></strong></span></p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span> preOrder1(BinTree *root)     <span class="co">//递归前序遍历</span>
+{
+    <span class="kw">if</span>(root!=NULL)
+    {
+        cout&lt;&lt;root-&gt;data&lt;&lt;<span class="st">&quot; &quot;</span>;
+        preOrder1(root-&gt;lchild);
+        preOrder1(root-&gt;rchild);
+    }
+}</code></pre></div>
+<p><span style="color:red"><strong><em>b. 非递归实现</em></strong></span> 根据前序遍历访问的顺序，优先访问根结点，然后再分别访问左孩子和右孩子。即对于任一结点，其可看做是根结点，因此可以直接访问，访问完之后，若其左孩子不为空，按相同规则访问它的左子树；当访问其左子树时，再访问它的右子树。因此其处理过程如下：</p>
+<p>对于任一结点P：</p>
+<p>1)访问结点P，并将结点P入栈;</p>
+<p>2)判断结点P的左孩子是否为空，若为空，则取栈顶结点并进行出栈操作，并将栈顶结点的右孩子置为当前的结点P，循环至1);若不为空，则将P的左孩子置为当前的结点P;</p>
+<p>3)直到P为NULL并且栈为空，则遍历结束。</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span> preOrder2(BinTree *root)     <span class="co">//非递归前序遍历</span>
+{
+    stack&lt;BinTree*&gt; s;
+    BinTree *p=root;
+    <span class="kw">while</span>(p!=NULL||!s.empty())
+    {
+        <span class="kw">while</span>(p!=NULL)
+        {
+            cout&lt;&lt;p-&gt;data&lt;&lt;<span class="st">&quot; &quot;</span>;
+            s.push(p);
+            p=p-&gt;lchild;
+        }
+        <span class="kw">if</span>(!s.empty())
+        {
+            p=s.top();
+            s.pop();
+            p=p-&gt;rchild;
+        }
+    }
+}</code></pre></div>
+<p><span style="color:red"><strong><em>(2) 中序遍历</em></strong></span> 中序遍历按照“左孩子-根结点-右孩子”的顺序进行访问。 <span style="color:red"><strong><em>a. 递归实现</em></strong></span></p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span> inOrder1(BinTree *root)      <span class="co">//递归中序遍历</span>
+{
+    <span class="kw">if</span>(root!=NULL)
+    {
+        inOrder1(root-&gt;lchild);
+        cout&lt;&lt;root-&gt;data&lt;&lt;<span class="st">&quot; &quot;</span>;
+        inOrder1(root-&gt;rchild);
+    }
+}</code></pre></div>
+<p><span style="color:red"><strong><em>b. 非递归实现</em></strong></span> 根据中序遍历的顺序，对于任一结点，优先访问其左孩子，而左孩子结点又可以看做一根结点，然后继续访问其左孩子结点，直到遇到左孩子结点为空的结点才进行访问，然后按相同的规则访问其右子树。因此其处理过程如下：</p>
+<p>对于任一结点P，</p>
+<p>1)若其左孩子不为空，则将P入栈并将P的左孩子置为当前的P，然后对当前结点P再进行相同的处理；</p>
+<p>2)若其左孩子为空，则取栈顶元素并进行出栈操作，访问该栈顶结点，然后将当前的P置为栈顶结点的右孩子；</p>
+<p>3)直到P为NULL并且栈为空则遍历结束</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span> inOrder2(BinTree *root)      <span class="co">//非递归中序遍历</span>
+{
+    stack&lt;BinTree*&gt; s;
+    BinTree *p=root;
+    <span class="kw">while</span>(p!=NULL||!s.empty())
+    {
+        <span class="kw">while</span>(p!=NULL)
+        {
+            s.push(p);
+            p=p-&gt;lchild;
+        }
+        <span class="kw">if</span>(!s.empty())
+        {
+            p=s.top();
+            cout&lt;&lt;p-&gt;data&lt;&lt;<span class="st">&quot; &quot;</span>;
+            s.pop();
+            p=p-&gt;rchild;
+        }
+    }
+}</code></pre></div>
+<p><span style="color:red"><strong><em>c. 后序遍历</em></strong></span></p>
+<p>后序遍历按照“左孩子-右孩子-根结点”的顺序进行访问。</p>
+<p><span style="color:red"><strong><em>a. 递归实现</em></strong></span></p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span> postOrder1(BinTree *root)    <span class="co">//递归后序遍历</span>
+{
+    <span class="kw">if</span>(root!=NULL)
+    {
+        postOrder1(root-&gt;lchild);
+        postOrder1(root-&gt;rchild);
+        cout&lt;&lt;root-&gt;data&lt;&lt;<span class="st">&quot; &quot;</span>;
+    }
+}</code></pre></div>
+<p><span style="color:red"><strong><em>b. 非递归实现</em></strong></span></p>
+<p>后序遍历的非递归实现是三种遍历方式中最难的一种。因为在后序遍历中，要保证左孩子和右孩子都已被访问并且左孩子在右孩子前访问才能访问根结点，这就为流程的控制带来了难题。下面介绍两种思路。</p>
+<p>第一种思路：对于任一结点P，将其入栈，然后沿其左子树一直往下搜索，直到搜索到没有左孩子的结点，此时该结点出现在栈顶，但是此时不能将其出栈并访问，因此其右孩子还为被访问。所以接下来按照相同的规则对其右子树进行相同的处理，当访问完其右孩子时，该结点又出现在栈顶，此时可以将其出栈并访问。这样就保证了正确的访问顺序。可以看出，在这个过程中，每个结点都两次出现在栈顶，只有在第二次出现在栈顶时，才能访问它。因此需要多设置一个变量标识该结点是否是第一次出现在栈顶。</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span> postOrder2(BinTree *root)    <span class="co">//非递归后序遍历</span>
+{
+    stack&lt;BTNode*&gt; s;
+    BinTree *p=root;
+    BTNode *temp;
+    <span class="kw">while</span>(p!=NULL||!s.empty())
+    {
+        <span class="kw">while</span>(p!=NULL)              <span class="co">//沿左子树一直往下搜索，直至出现没有左子树的结点</span>
+        {
+            BTNode *btn=(BTNode *)malloc(<span class="kw">sizeof</span>(BTNode));
+            btn-&gt;btnode=p;
+            btn-&gt;isFirst=true;
+            s.push(btn);
+            p=p-&gt;lchild;
+        }
+        <span class="kw">if</span>(!s.empty())
+        {
+            temp=s.top();
+            s.pop();
+            <span class="kw">if</span>(temp-&gt;isFirst==true)     <span class="co">//表示是第一次出现在栈顶</span>
+             {
+                temp-&gt;isFirst=false;
+                s.push(temp);
+                p=temp-&gt;btnode-&gt;rchild;
+            }
+            <span class="kw">else</span>                        <span class="co">//第二次出现在栈顶</span>
+             {
+                cout&lt;&lt;temp-&gt;btnode-&gt;data&lt;&lt;<span class="st">&quot; &quot;</span>;
+                p=NULL;
+            }
+        }
+    }
+}</code></pre></div>
+<p>第二种思路：要保证根结点在左孩子和右孩子访问之后才能访问，因此对于任一结点P，先将其入栈。如果P不存在左孩子和右孩子，则可以直接访问它；或者P存在左孩子或者右孩子，但是其左孩子和右孩子都已被访问过了，则同样可以直接访问该结点。若非上述两种情况，则将P的右孩子和左孩子依次入栈，这样就保证了每次取栈顶元素的时候，左孩子在右孩子前面被访问，左孩子和右孩子都在根结点前面被访问。</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span> postOrder3(BinTree *root)     <span class="co">//非递归后序遍历</span>
+{
+    stack&lt;BinTree*&gt; s;
+    BinTree *cur;                      <span class="co">//当前结点</span>
+    BinTree *pre=NULL;                 <span class="co">//前一次访问的结点</span>
+    s.push(root);
+    <span class="kw">while</span>(!s.empty())
+    {
+        cur=s.top();
+        <span class="kw">if</span>((cur-&gt;lchild==NULL&amp;&amp;cur-&gt;rchild==NULL)||
+           (pre!=NULL&amp;&amp;(pre==cur-&gt;lchild||pre==cur-&gt;rchild)))
+        {
+            cout&lt;&lt;cur-&gt;data&lt;&lt;<span class="st">&quot; &quot;</span>;  <span class="co">//如果当前结点没有孩子结点或者孩子节点都已被访问过</span>
+              s.pop();
+            pre=cur;
+        }
+        <span class="kw">else</span>
+        {
+            <span class="kw">if</span>(cur-&gt;rchild!=NULL)
+                s.push(cur-&gt;rchild);
+            <span class="kw">if</span>(cur-&gt;lchild!=NULL)
+                s.push(cur-&gt;lchild);
+        }
+    }
+}</code></pre></div>
+<p><span style="color:red"><strong><em>3. 误差分析</em></strong></span></p>
+<p>计算机中２种主要的误差：舍入误差(round-off error)，截断误差(truncation error). 舍入误差由计算机只能表示的有限位数表示的，截断误差是由于数值方法可能运用近似方法表示准确数值运算或数量引入的．</p>
+<p><span style="color:red"><strong><em>（１）有效数字</em></strong></span></p>
+<p>对于IEEE754 单精度和双精度浮点数，能够精确表示的整数的范围为： Floating point Range Single precision <span class="math inline">\([-2^{24}, 2^{24}]\)</span> Double precision <span class="math inline">\([-2^{53}, 2^{53}]\)</span></p>
+<p>我们知道了，对于float，实际有效的尾数是23位，对于double，实际有效的位数是53位。所以这里我们可以得到float的十进制表示有效数字个数为： <span class="math display">\[\begin{cases}
+10^n-1\ge 2^{23}-1\\
+n \ge log_{10}(2^{23})
+\end{cases}\]</span></p>
+<p>这里<span style="color:red"><strong><em>最小的n为7，对于double，最小的n为15</em></strong></span>。 有时我们在代码中可能会看到比较浮点数时，会使用一个epsilon，而这个epsilon = 1e-6，可能就是因为当浮点数绝对值 &gt;= 1时，小数点后有效位数为6位。</p>
+<p>对于IEEE754格式，具体的尾数的有效数字个数分2种，<span style="color:red"><strong><em>一种是规格化数的情况，另一种是非规格化数的情况</em></strong></span>。<span style="color:red"><strong><em>非规格化数的尾数的有效位数是23，而规格化数多一位，是24。对于绝对值&gt;=1的数，是由规格化数来表示的，也就是这里由24位，那么实际的十进制有效位数就是8。当然绝对值&lt;1的数，也可能是由规格化数来表示，所以此时小数点后应该最多是8位。</em></strong></span></p>
+<p><span style="color:red"><strong><em>4. 常见问题</em></strong></span></p>
+<p><span style="color:red"><strong><em>1) 认识解析解和数值解的差异</em></strong></span></p>
+<p>解细解(精确解)就是通过方程求解，然而有很多数学模型并不能精确求解，所以利用数值解来近似的表示精确解。数值方法就是对数学问题进行变换，使得它可以用算术运算来求解。</p>
+<p><span style="color:red"><strong><em>2) 认识截断误差和舍入误差的差异</em></strong></span></p>
+<p>当用近似方法表示准确的数学过程就会出现截断误差，当用有限个有小数字表示准确的数时就会引入舍入误差。</p>
+<p><span style="color:red"><strong><em>3) 理解有效数字、准确度和精确度这些概率</em></strong></span></p>
+<p>一个数的有效数字(significant digit)是指可以放心使用的那些数字。准确度是指计算值或测量值与真值接近的程度。精度是指各计算值或测量值相互之间的集中程度。</p>
+<p><span style="color:red"><strong><em>4) 认识相对误差，近似相对误差和容限误差，理解如何使用近似相对误差和容限误差终止迭代</em></strong></span></p>
+<p>相对误差<span class="math inline">\(\varepsilon_t\)</span>=(真误差/真值)*100%; 近似相对误差是<span class="math inline">\(\varepsilon_a\)</span>=(近似误差/近似值)×100%，容限误差是一个预先设置的值<span class="math inline">\(\varepsilon_s\)</span>.</p>
+<p><span style="color:red"><strong><em>5) 认识计算机算术在计算过程中如何引入舍入误差并使他增大的，尤其要深刻认识减性抵消问题</em></strong></span></p>
+<p>由于计算机用二进制数表示，所以他们不能精确的表示某些十进制数，由这种有效数字的省略而引入的误差称为<span style="color:red"><strong><em>舍入误差</em></strong></span>。 <span style="color:red"><strong><em>大数与小数相加</em></strong></span>：假设将小数0.0010与一个大数4000相加，由于舍入误差，小数部分可能会被省去，就好像没有执行这个方法一样，这个在计算无穷级数时，会发生这种类型的误差，初始项通常大于后面的项。这样，在加入少数项后，我们会遇到小数部分被舍入的问题。</p>
+<p>消除这种误差的方法是方向求和，也就是以升序而不是降序对技术求和，这样，每个新项将与累加和的大小相当。</p>
+<p>例子：设有a=123456;b=2.189；计算a+b。 方法：kahan求和算法能避免大数吃小数的情况。kahan求和算法是这样做的：sum=a+b（不准确）; temp= (a+b)-a-b;temp等于多少呢，初看这不就是0吗？不是的，计算机此时算的可不是0，而是等于-0.009，就是被截断的那个小数。通过一个临时变量我们就记住了这个误差，当计算下一个加法的时候，可以把这个误差补上，并且更新误差到sum。</p>
+<p><span style="color:red"><strong><em>减性想消</em></strong></span>：该术语指的是，当2个几乎相当的浮点数相减是所引入的舍入误差。</p>
+<p>例子：二次公式求二次方程或抛物线方程的根：<span class="math inline">\(x_{1,2}=\frac{-b+\sqrt{b^2-4ac}}{2a}\)</span>, 当<span class="math inline">\(b^2&gt;&gt;4ac\)</span>时，分子可能非常小。可以分子分母同时乘以<span class="math inline">\(-b-\sqrt{b^2-4ac}\)</span>.</p>
+<p><span style="color:red"><strong><em>6) 如何利用泰勒技术及其余项来表示连续函数</em></strong></span></p>
+<p>泰勒技术展开例子：<span class="math inline">\(e^x=1+x+\frac{x^2}{2}+\frac{x^3}{3!}+\frac{x^4}{4!}+...\)</span></p>
+<p>可能出现的情况是，随着次数增大，会出现某一项的值大于总和，这叫拖尾效应(smearing).</p>
+<p>如果用计算机求解，级数的计算结果与真值连符号可能都不同，而<span class="math inline">\(e^x\)</span>是不可能小雨0的。实际上我们在不断对大数进行加减法，并抵消了大量的有效数字--即减性抵消。在这种情况下可以试着用<span class="math inline">\(y=(e^{-1})^{10}\)</span>来计算<span class="math inline">\(y=e^{-10}\)</span></p>
+<p><span style="color:red"><strong><em>5. 常用公式</em></strong></span></p>
+<table style="width:11%;">
+<colgroup>
+<col width="5%" />
+<col width="5%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">误差的定义</th>
+<th align="left"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">真误差</td>
+<td align="left"><span class="math inline">\(E_t=\text{True - Approximation}\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">真百分比相对误差</td>
+<td align="left"><span class="math inline">\(\varepsilon_t=\text{(True - Approximation)/True }\times 100\%\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">近似百分比相对误差</td>
+<td align="left"><span class="math inline">\(\varepsilon_a=\text{(Current Approxiamtion - Previous Approximation)/Current Approxiamtion }\times 100\%\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">停止准则</td>
+<td align="left"><span class="math inline">\(\varepsilon_a&lt;\varepsilon_s\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left"><strong><em>泰勒级数</em></strong></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">泰勒级数展开</td>
+<td align="left"><span class="math inline">\(f(x_{i+1})=f(x_i)+f&#39;(x_i)h+\frac{f&#39;&#39;(x_i)}{2!}h^2+...+\frac{f&#39;&#39;(x_i)}{n!}h^n+R_n\)</span>, 其中<span class="math inline">\(R_n=O(h^{n+1})\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left"><strong><em>数值微分</em></strong></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">一阶前向有限差商</td>
+<td align="left"><span class="math inline">\(f&#39;(x_{i})=\frac{f(x_{i+1}-f(x_i))}{h}+O(h)\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left"><strong><em>误差传播</em></strong></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">对于具有误差<span class="math inline">\(\Delta x_1,\Delta x_2, ...,\Delta x_n\)</span>的n个自变量<span class="math inline">\(x_1,x_2,...,x_n\)</span>, 函数<span class="math inline">\(f\)</span>d的误差可以由下式进行估计：<span class="math inline">\(\Delta f=|\frac{\partial f}{\partial x_1}|\Delta x_1+\frac{\partial f}{\partial x_2}|\Delta x_2+...+\frac{\partial f}{\partial x_n}|\Delta x_n\)</span></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

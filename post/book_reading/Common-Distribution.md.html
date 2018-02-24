@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>统计中的简单比较实验</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<div id="header">
+<h1 class="title">统计中的简单比较实验</h1>
+</div>
+<h2 id="统计中的简单比较实验">统计中的简单比较实验</h2>
+<p>通常我们可以利用图示法来辅助分析所得到的数据：图示法有（点图，直方图，盒图）<img src="http://mathurl.com/gq36afh.png" />。<!--$\text{Graphic method } \begin{cases}\text{1. Dot diagram}\\
+\text{2. Histogram}\\
+\text{3. Box Diagram}
+\end{cases}$--></p>
+<p><strong><em>概率分布基本概念</em></strong></p>
+<p>一个随机变量<span class="math inline">\(y\)</span>的概率结构是它的概率分布(propability distribution).</p>
+<p>如果<span class="math inline">\(y\)</span>是<span style="color:red"><strong><em>离散的</em></strong></span>：用概率函数<span class="math inline">\(p(y)\)</span>的高度表示相应的概率<img src="http://mathurl.com/j3cfzwq.png" />;<!--$\begin{cases}0\le p(y_j)\le 1 \\ P(y=y_j)=p(y_j)\\\sum p(y_j)=1\end{cases}$--> 均值(mean): <span class="math inline">\(\mu=\sum yp(y)\)</span> 期望值算子(Expected value): <span class="math inline">\(\mu=E(y)=\sum yp(y)\)</span> 方差(variance): <span class="math inline">\(\delta^2=\sum(y-\mu)^2p(y)=E[(y-\mu)^2]=V(y)\)</span>, <span class="math inline">\(V\)</span>为方差算子。</p>
+<p>如果<span class="math inline">\(y\)</span>是<span style="color:red"><strong><em>连续的</em></strong></span>：用概率密度函数<span class="math inline">\(f(y)\)</span>来刻画概率分布。<img src="http://mathurl.com/hknbex8.png" /><!--$\begin{cases}f(y)\ge 0\\P(a\le y \le b)=\int_{a}^{b}f(y)dy\\\int_{-\infty}^{\infty}f(y)dy\end{cases}$--> 均值(mean): <span class="math inline">\(\mu=\int_{-\infty}^{\infty} yf(y)dy\)</span> 期望值算子(Expected value): <span class="math inline">\(\mu=E(y)=\int_{-\infty}^{\infty} yf(y)dy\)</span> 方差(variance): <span class="math inline">\(\delta^2=\int_{-\infty}^{\infty}(y-\mu)^2f(y)dy=E[(y-\mu)^2]=V(y)\)</span>, <span class="math inline">\(V\)</span>为方差算子。</p>
+<p><span style="color:red"><strong><em>抽样分布</em></strong></span></p>
+<p>若总体包含<span class="math inline">\(n\)</span>个元素，选取其中<span class="math inline">\(k\)</span>个元素作为样本，那么有<span class="math inline">\(C_k^n ={n \choose k} = \frac{P_k^n}{k!} = \frac{n!}{k!(n-k)!}\)</span>种组合。且每个组合被抽中的概率是等概率的。这种抽样方法叫做<span style="color:red"><strong><em>随机抽样</em></strong></span></p>
+<p>从样本推断总体称为统计推断，假设<span class="math inline">\(y_1,y_2,...,y_n\)</span>表示一个样本，则: <span style="color:red"><strong><em>样本均值(sample mean):</em></strong></span> <span class="math inline">\(\bar{y}=\frac{\sum y_i}{n}\)</span>, <span style="color:red"><strong><em>样本方差(sample variance)</em></strong></span>:$ s^2=$ <span style="color:red"><strong><em>样本标准方差(sample standard variance)</em></strong></span>:$ s==<span class="math inline">\(, 离中趋势的度量。 &lt;span style=&quot;color:red&quot;&gt;***自由度(degree of freedom/DOF)***&lt;/span&gt;: 上式中\)</span>n-1$便是自由度。<span style="color:red"><strong><em>平方和的自由度等于平方和中独立元素的个数</em></strong></span>。</p>
+<p>平方和 <!--$SS=\sum(y_i-\bar{y})^2$--><img src="http://mathurl.com/zzrz5gn.png" />由<span class="math inline">\(n\)</span>个元素<!--$y_1-\bar{y},y_2-\bar{y},..,y_n-\bar{y}$--><img src="http://mathurl.com/hqyvp7z.png" />的平方和组成，但是<span class="math inline">\(\sum(y_i-\bar{y})=0\)</span>, 所以这些元素并非独立的，实际上只有<span class="math inline">\(n-1\)</span>个是独立的，所以有<span class="math inline">\(n-1\)</span>个自由度。</p>
+<p><span style="color:red"><strong><em>下面介绍几种重要的分布：</em></strong></span></p>
+<p><span style="color:red"><strong><em>正态分布(Normal distribution)</em></strong></span></p>
+<p>正态分布的概率密度函数:<img src="http://mathurl.com/j5399xg.png" /> <!-- $$f(y)=\frac{1}{\delta \sqrt{2\pi}}e^{-\frac{1}{2}[\frac{y-\mu}{\delta}]^2}, \ \ -\infty<y<\infty$$ --></p>
+<p align="center">
+<img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcR6HMye38xVec0j5SkepSGDRy-6SsLoBDARi18UDV3rzmyhVxYG" width="300" >
+</p>
+<p>正态分布极为重要，许多重要的抽样分布都可以通过正态分布来定义，正态分布符号记为: <span class="math inline">\(y\sim N(\mu,\delta^2)\)</span></p>
+<p><span style="color:red"><strong><em>标准正态分布(Standard normal distribution)</em></strong></span></p>
+<p>正态分布的一个重要特殊情况是标准正态分布,即<span class="math inline">\(\mu=0,\delta^2=1\)</span>, 记为<span class="math inline">\(z=\frac{y-\mu}{\delta}\sim N(0,1)\)</span>.</p>
+<p><span style="color:red"><em>中心界限定理</em></span>：若<span class="math inline">\(y_1,y_2,...,y_n\)</span>是n个<span style="color:red"><em>独立同分布</em></span>的随机变量，具有：<span class="math inline">\(E(y_i)=\mu, V(y_i)=\delta^2\)</span>. 且<span class="math inline">\(x=y_1+y_2+...+y_n\)</span>, 则当<span class="math inline">\(n\rightarrow \infty\)</span>时，<span style="color:red"><em><span class="math inline">\(z_n=\frac{x-n\mu}{\sqrt{n\delta^2}}\)</span>服从标准正态分布。</em></span></p>
+<p>这个结果说明，<span class="math inline">\(n\)</span>的<strong><em>独立同分布( independent identically distributed,IID)</em></strong>随机变量的和是<strong><em>近似的正态分布</em></strong>。注意：这里没说独立随机分布服从什么分布！</p>
+<p><span style="color:red"><strong><em>卡方分布(<span class="math inline">\(\chi^2\)</span> distribution)</em></strong></span></p>
+<p>若<span class="math inline">\(z_1,z_2,..z_k\)</span>是<span style="color:red"><strong><em>独立的标准正态分布(Normally and Independently Distributed/NID)</em></strong></span>的随机变量，其均值为0,方差为1. 则随机变量<span class="math inline">\(x=z_1^2+z_2^2+...+z_k^2\)</span>服从自由度为<span class="math inline">\(k\)</span>的<span class="math inline">\(\chi^2\)</span>分布, <span class="math inline">\(X=\sum_{i=1}^k Z_i^2 \sim\ \chi^2(k) \,\)</span>.也叫<span style="color:red"><strong><em>chi-square distribution</em></strong></span>.</p>
+<p><span class="math inline">\(\chi^2\)</span>分布的概率密度函数是: <span class="math display">\[f(x)=\frac{1}{2^{k/2}\Gamma(\frac{k}{2})}x^{\frac{k}{2}-1}e^{-\frac{x}{2}}, \ x&gt;0\]</span> <span class="math inline">\(\chi^2\)</span>分布的累积分布函数为：<span class="math inline">\(F_k(x)=\frac{\gamma(k/2,x/2)}{\Gamma(k/2)}\)</span>.其中γ(k,z)为不完全Gamma函数 <span class="math inline">\(\chi^2\)</span>分布是非对称的或者偏锋的(skewed)</p>
+<p align="center">
+<img src="http://www.agron.ntu.edu.tw/biostat/images/06-10.jpg" width="300" >
+</p>
+<p>服从卡方分布的一个例子: 若<span class="math inline">\(y_1,y_2,...,y_n\)</span>是n个服从正态分布的随机样本<span class="math inline">\(y_i\sim N(\mu.\delta^2)\)</span>, 可以得知<span class="math inline">\(\frac{y_i-\mu}{\delta}\sim N(0,1)\)</span>. 所以有:<span class="math inline">\(\sum_{i=1}^n(\frac{y_i-\bar{y}}{\delta})\)</span>自由度为<span class="math inline">\(n-1\)</span>(因为<span class="math inline">\(\sum_{i=1}^n(y_i-\bar{y}))=0\)</span>，且 <span class="math inline">\(\sum_{i=1}^n(\frac{y_i-\bar{y}}{\delta})^2\sim \chi^2(n-1)\)</span>,</p>
+<p>所以有结论：<span style="color:red"><strong><em>如果总体是正态分布，那么样本方差的抽样分布是卡方分布的常数倍</em></strong></span>。</p>
+<p><span style="color:red"><strong><em><span class="math inline">\(t\)</span>分布(<span class="math inline">\(t\)</span> distribution)</em></strong></span></p>
+<p>若<span class="math inline">\(z\)</span>与<span class="math inline">\(\chi^2(k)\)</span>独立，分别是标准正态分布和卡方随机分布，则随机变量<span class="math inline">\(t_k=\frac{z}{\sqrt{\chi^2(k)/k}}\)</span>服从自由度为<span class="math inline">\(k\)</span>的<span class="math inline">\(t(k)\)</span>分布。</p>
+<p><span class="math inline">\(t_k\)</span>分布的概率密度是:<span class="math display">\[f(t)=\frac{\Gamma[(k+1)/2]}{\sqrt{k\pi}(k/2)}\frac{1}{[(t^2/k)+1]^{(k+1)/2}}, \ -\infty &lt; t &lt; \infty\]</span></p>
+当<span class="math inline">\(k&gt;2\)</span>时，<span class="math inline">\(t\)</span>的均值和方差分别是<span class="math inline">\(\mu=0,\delta^2=k/(k-2)\)</span>, 当<span class="math inline">\(k\rightarrow \infty\)</span>时，<span class="math inline">\(t\)</span>的均值和方差分别是<span class="math inline">\(\mu=0,\delta^2=1\)</span>, 也就是正态分布。
+<p align="center">
+<img src="http://dec3.jlu.edu.cn/webcourse/T000177/files/images/chapter10/05_05.jpg" width="300" >
+</p>
+<p>若<span class="math inline">\(y_1,y_2,...,y_n\)</span>是n个服从正态分布的随机样本<span class="math inline">\(y_i\sim N(\mu.\delta^2)\)</span>, 则<span class="math inline">\(t=\frac{\bar{y}-\mu}{S/\sqrt{n}}\sim t_{n-1}\)</span></p>
+<p><span style="color:red"><strong><em>(5) <span class="math inline">\(F\)</span>分布(<span class="math inline">\(F\)</span> distribution)</em></strong></span></p>
+若<span class="math inline">\(\chi_u^2,\chi_v^2\)</span>是2个独立的卡方随机变量，其自由度分别为<span class="math inline">\(u,v\)</span>， 则比值<span class="math display">\[F_{u,v}=\frac{\chi_u^2/u}{\chi_v^2/v}\]</span> 服从分子(numerator)自由度为<span class="math inline">\(u\)</span>,分母自由度为<span class="math inline">\(v\)</span>的<span class="math inline">\(F\)</span>随机变量，且<span class="math inline">\(x\)</span>的概率分布是: <span class="math display">\[
+h(x)=\frac{\Gamma((u+v)/2)(u/v)^{u/2}x^{(u/2)-1}}{\Gamma (u/2)\Gamma(v/2)[(u/v)x+1]^{(u+v)/2}}
+\]</span>
+<p align="center">
+<img src="http://dshw.nenu.edu.cn/Courseware/%E5%BF%83%E7%90%86%E7%BB%9F%E8%AE%A1%E5%AD%A6/chapter4/4-1-4.files/image005.gif" width="300" >
+</p>
+<p>考虑2个具有共同方差<span class="math inline">\(\delta^2\)</span>的独立正态总体，若<span class="math inline">\(y_{11},y_{12},...,y_{1n_1}\)</span>是第1个<span class="math inline">\(n_1\)</span>个观测值，<span class="math inline">\(y_{21},y_{22},...,y_{2n_2}\)</span>是第1个<span class="math inline">\(n_2\)</span>个观测值。则<span class="math inline">\(\frac{S_1^2}{S_2^2}\sim F_{n_1-1,n_2-1}\)</span>.</p>
+<p>证明：<img src="http://mathurl.com/j8swp67.png" /><img src="http://mathurl.com/jbnnlee.png" /> <!--$\begin{cases}S_1^2\sim \frac{\delta^2}{n_1-1}\chi^2(n_1-1)\\
+S_2^2\sim \frac{\delta^2}{n_2-1}\chi^2(n_2-1)\end{cases} \Rightarrow \frac{S_1^2}{S_2^2}\sim F_{n_1-1,n_2-1}$--></p>
+<p><span style="color:red"><strong><em>假设检验</em></strong></span></p>
+<p>直白的例子是，工程师研究水泥配方。然后搜集了10个观测值和改良配方的10个观测值。当固化实验完成后，发现改良配方确实好，然后看强度，如果强度小了，那么就会影响使用。</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"><span class="math inline">\(j\)</span></th>
+<th align="left">改良砂浆<span class="math inline">\(y_{1j}\)</span></th>
+<th align="left">未改良砂浆<span class="math inline">\(y_{1j}\)</span></th>
+<th align="left"><span class="math inline">\(j\)</span></th>
+<th align="left">改良砂浆<span class="math inline">\(y_{1j}\)</span></th>
+<th align="left">未改良砂浆<span class="math inline">\(y_{1j}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">16.85</td>
+<td align="left">16.62</td>
+<td align="left">6</td>
+<td align="left">17.04</td>
+<td align="left">16.87</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">16.40</td>
+<td align="left">16.75</td>
+<td align="left">7</td>
+<td align="left">16.96</td>
+<td align="left">17.34</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">17.21</td>
+<td align="left">17.37</td>
+<td align="left">8</td>
+<td align="left">17.15</td>
+<td align="left">17.02</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">16.35</td>
+<td align="left">17.12</td>
+<td align="left">9</td>
+<td align="left">16.59</td>
+<td align="left">17.08</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">16.52</td>
+<td align="left">16.98</td>
+<td align="left">10</td>
+<td align="left">16.57</td>
+<td align="left">17.27</td>
+</tr>
+</tbody>
+</table>
+<p><span style="color:red"><strong><em>假设检验(significance testing)</em></strong></span>可以帮助我们来比较2种配方。令<span class="math inline">\(y_{11},y_{12},...,y_{1n_1}\)</span>是第1个<span class="math inline">\(n_1\)</span>个观测值，<span class="math inline">\(y_{21},y_{22},...,y_{2n_2}\)</span>是第1个<span class="math inline">\(n_2\)</span>个观测值。</p>
+<p>我们用模型来描述实验结果： <!--$y_{ij}=\mu_i+\varepsilon_{ij}\begin{cases}i=1,2\\j=1,2,...,n_i\end{cases}$--><img src="http://mathurl.com/jx234p8.png" />，其中<span class="math inline">\(y_{ij}\)</span>是第<span class="math inline">\(i\)</span>个因子水平的第<span class="math inline">\(j\)</span>次观测，<span class="math inline">\(\mu_i\)</span>是第<span class="math inline">\(i\)</span>个因子水平的响应均值，<span class="math inline">\(\varepsilon_{ij}\)</span>是与第<span class="math inline">\(ij\)</span>个观测值相关联的正态随机变量(<span class="math inline">\(\varepsilon_{ij}\sim NID(0,\delta_i^2),i=1,2\)</span>), 通常该分量视为随机误差成分。</p>
+<p>我们假设2中配方平均粘结强度一样，那么假设为:<!--$\begin{cases}H_0: \mu_1=\mu_2\\H_1:\mu_1\ne \mu_2\end{cases}$--><img src="http://mathurl.com/gm4cadg.png" /><span style="color:red"><strong><em><span class="math inline">\(H_0\)</span>是零假设(null hypothesis); <span class="math inline">\(H_1\)</span>是备择假设(alternative hypothesis)/双边假设。因为<span class="math inline">\(\mu_1&gt;\mu_2, \mu_1&lt;\mu_2\)</span>时命题都为真</em></strong></span></p>
+<p>假设检验有2类错误： <span class="math inline">\(\alpha\)</span>=P(第I类错误)=P(拒绝H_0|H_0为真)， 这也叫做<span style="color:red"><strong><em>检验的显著性水平(significance level)</em></strong></span>; <span class="math inline">\(\beta\)</span>=P(第II类错误)=P(接受H_0|H_0为假) 检验的势=1-<span class="math inline">\(\beta\)</span>=P(解决H_0|H_0为假)</p>
+<p>检验的一般程序是：规定显著性水平，也就是规定第一类错误概率;然后设计程序，使得第二类错误最小。</p>
+<blockquote>
+<p><span style="color:red"><strong><em>2样本t检验</em></strong></span></p>
+</blockquote>
+<p>假设<span style="color:red"><strong><em>2种配方的方差一样</em></strong></span>，那么在完全随机话设计中用于<span style="color:red"><strong><em>比较2个处理均值</em></strong></span>的强当检验统计量是: <span class="math display">\[t_0=\frac{\bar{y_1}-\bar{y_2}}{S_p\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}\]</span> 其中，<span class="math inline">\(\bar{y_1},\bar{y_2}\)</span>是样本均值，<span class="math inline">\(n_1,n_2\)</span>是样本量，<span class="math inline">\(S_p^2\)</span>是公公方差(public variance)<span class="math inline">\(\delta_1^2=\delta_2^2=\delta^2\)</span>的一个估计量： <span class="math inline">\(S_p^2=\frac{(n_1-1)S_1^2+(n_2-1)S_2^2}{n_1+n_2-2}\)</span>. <span class="math inline">\(S_1^2,S_2^2\)</span>是2个总体各自的样本方差。</p>
+<p>为了决定是否拒绝<span class="math inline">\(H_0\)</span>, 将<span class="math inline">\(t_0\)</span>与自由度为<span class="math inline">\(n_1+n_2-2\)</span>的<span class="math inline">\(t\)</span>分布比较，<span class="math inline">\(\begin{cases} |t_0|&gt;t_{\alpha/2,n_1+n_2-2}, \text{Reject }H_0 \\ |t_0|\le t_{\alpha/2,n_1+n_2-2}, \text{Accept }H_0\end{cases}\)</span>, 这是一个2样本<span class="math inline">\(t\)</span>检验。</p>
+我们期望<span class="math inline">\(t_0\)</span>的<span class="math inline">\(100(1-\alpha)\%\)</span>落在<span class="math inline">\(-t_{\alpha/2,n_1+n_2-2}\sim t_{\alpha/2,n_1+n_2-2}\)</span>, 若落在外面，则不正常，表明<span class="math inline">\(H_0\)</span>应该拒绝。
+<p align="center">
+<img src="../images/posts/2016-04-17/t_dis.png" width="300" >
+</p>
+<p>上面的方法只给出拒绝或接受，但是不够重复。<span style="color:red"><strong><em>决策者需要知道检验统计量的计算值是恰好落在拒绝域还是远离拒绝域<span style="color:red"></em></strong>。所以，在实践中，往往采用P值方法，P值是当零假设<span class="math inline">\(H_0\)</span>为真时检验统计量至少取到像统计量观测值一样极端的概率。</p>
+<p>实际定义<span class="math inline">\(P\)</span>值是拒绝<span class="math inline">\(H_0\)</span>的最小显著性水平。从上面看，P值小于0.5.</p>
+<blockquote>
+<p><span style="color:red"><strong><em>t检验样本量的选取</em></strong></span></p>
+</blockquote>
+<p>样本量的选择与第II类错误概率<span class="math inline">\(\beta\)</span>密切相关，假如要检验假设:<span class="math inline">\(\begin{cases}H_0:\mu_1=\mu_2\\H_1:\mu_1\ne\mu_2\end{cases}\)</span> 且均值不等，令<span class="math inline">\(\delta=\mu_1-\mu_2\)</span>，所以我们关心不拒绝<span class="math inline">\(H_0\)</span>的错误。也就是<span class="math inline">\(\beta\)</span>（第二类错误）.</p>
+<p>第二类错误的概率<span class="math inline">\(\beta\)</span>依赖于均值的实际差<span class="math inline">\(\delta\)</span>, <span class="math inline">\(\beta, \delta\)</span>的图像叫检验法的抽检特性曲线(operating characteristic curve,OC).一般来说，给定<span class="math inline">\(\delta\)</span>，<span class="math inline">\(\beta\)</span>随样本量增大而减小。</p>
+<p>对于2个总体的方差<span class="math inline">\(\sigma_1^2,\sigma_2^2\)</span>未知但相等(<span class="math inline">\(\delta_1^2=\delta_2^2=\delta^2\)</span>), 显著性水平为0.05的情况，假设：<span class="math inline">\(\begin{cases}H_0:\mu_1=\mu_2\\H_1:\mu_1\ne\mu_2\end{cases}\)</span></p>
+<p>水平轴参数：<span class="math inline">\(d=\frac{|\mu_1-\mu_2|}{2\sigma}=\frac{|\delta|}{\sigma}\)</span></p>
+<p>求解此问题一般采用计算机，故不详解。</p>
+<blockquote>
+<p><span style="color:red"><strong><em>t检验置信区间</em></strong></span></p>
+</blockquote>
+<p>若已经知道<span class="math inline">\(\mu_1\ne\mu_2\)</span>， <span style="color:red"><strong><em>实验者则更关心均值差<span class="math inline">\(\mu_1-\mu_2\)</span>的置信区间</em></strong></span>。 使得命题：<span class="math inline">\(P(L\le\theta\le U)=1-\alpha\)</span>为真，区间<span class="math inline">\(L\le\theta\le U\)</span>叫作参数<span class="math inline">\(\theta\)</span>的<span class="math inline">\(100(1-\alpha)\%\)</span>置信区间。 <span class="math inline">\(L\)</span>下置信限（lower confidence limit）; <span class="math inline">\(U\)</span>上置信限(upper confidence limit), <span class="math inline">\(1-\alpha\)</span>叫置信系数(confidence coefficient).</p>
+<p>假设对<span style="color:red"><strong><em><span class="math inline">\(\mu_1-\mu_2\)</span>找一个<span class="math inline">\(100(1-\alpha)\%\)</span>置信区间</em></strong></span>,统计:量<span class="math inline">\(\frac{\bar{y_1}-\bar{y_2}}{S_p\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}\)</span>服从<span class="math inline">\(t\)</span>分布，有： <span class="math display">\[P[-t_{\alpha/2,n_1+n_2-2}\le \frac{\bar{y_1}-\bar{y_2}-(\mu_1-\mu_2)}{S_p\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}\le t_{\alpha/2,n_1+n_2-2}]=1-\alpha\]</span> <span class="math display">\[P[\bar{y_1}-\bar{y_2}-t_{\alpha/2,n_1+n_2-2}S_p\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}\le \mu_1-\mu_2\le \bar{y_1}-\bar{y_2}+ t_{\alpha/2,n_1+n_2-2}S_p\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}]=1-\alpha\]</span> <span style="color:red"><strong><em><span class="math inline">\(\bar{y_1}-\bar{y_2}-t_{\alpha/2,n_1+n_2-2}S_p\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}\le \mu_1-\mu_2\le \bar{y_1}-\bar{y_2}+ t_{\alpha/2,n_1+n_2-2}S_p\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}\)</span></em></strong></span>是<span class="math inline">\(\mu_1-\mu_2\)</span>的一个<span class="math inline">\(100(1-\alpha)\%\)</span>置信区间。</p>
+<blockquote>
+<p><span style="color:red"><strong><em><span class="math inline">\(\sigma_1^2\ne \sigma_2^2\)</span>的情况</em></strong></span></p>
+</blockquote>
+<p>假如检验假设:<span class="math inline">\(\begin{cases}H_0:\mu_1=\mu_2\\H_1:\mu_1\ne\mu_2\end{cases}\)</span>不能确定方差<span class="math inline">\(\sigma_1^2, \sigma_2^2\)</span>是否相等。 则2样本<span class="math inline">\(t\)</span>分布需要修改，这时的统计量<span class="math inline">\(t_0=\frac{\bar{y_1}-\bar{y_2}}{\sqrt{\frac{S_1^2}{n_1}+\frac{S_2^2}{n_2}}}\)</span>不再精确服从<span class="math inline">\(t\)</span>分布，如果用<span class="math inline">\(v=\frac{\bar{y_1}-\bar{y_2}}{\sqrt{\frac{(S_1^2/n_1)^2}{n_1-1}+\frac{(S_2^2/n_2)^2}{n_2-1}}}\)</span>作为自由度,则<span class="math inline">\(t_0\)</span>分布相当接近<span class="math inline">\(t\)</span>分布。</p>
+<blockquote>
+<p><span style="color:red"><strong><em><span class="math inline">\(\delta_1^2,\delta_2^2\)</span>已知的情况</em></strong></span></p>
+</blockquote>
+<p><span style="color:red"><strong><em>若2个总体的方差已知</em></strong></span>，则检验假设:<span class="math inline">\(\begin{cases}H_0:\mu_1=\mu_2\\H_1:\mu_1\ne\mu_2\end{cases}\)</span>可用统计量<span class="math inline">\(z_0=\frac{\bar{y_1}-\bar{y_2}}{\sqrt{\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}}}\)</span>。</p>
+<p>若2个总体是正态分布，或样本足够大，则利用中心极限定理，<span style="color:red"><strong><em>当<span class="math inline">\(H_0\)</span>假设为真时，<span class="math inline">\(z_0\)</span>的分布是<span class="math inline">\(N(0,1)\)</span></em></strong></span>.</p>
+<p>这样我们用正态分布而不用<span class="math inline">\(t\)</span>分布来求拒绝域，当<span class="math inline">\(|z_0|&gt;z_{\alpha/2}\)</span>是，我们就拒绝<span class="math inline">\(H_0\)</span>,其中<span class="math inline">\(z_{\alpha/2}\)</span>是标准正态分布的上<span class="math inline">\(\alpha/2\)</span>百分位数。</p>
+<p>方差已知时<span class="math inline">\(\mu_1-\mu_2\)</span>的<span class="math inline">\(100(1-\alpha)\%\)</span>置信区： <span class="math inline">\(\bar{y_1}-\bar{y_2}-z_{\alpha/2}\sqrt{\frac{\delta_1^2}{n_1}+\frac{\delta_2^2}{n_2}}\le \mu_1-\mu_2\le \bar{y_1}-\bar{y_2}+ z_{\alpha/2}\sqrt{\frac{\delta_1^2}{n_1}+\frac{\delta_2^2}{n_2}}\)</span>.</p>
+<p>置信区间通常是假设检验的一个有用的补充。</p>
+<blockquote>
+<p><span style="color:red"><strong><em>均值与已知值的比较</em></strong></span></p>
+</blockquote>
+<p>有些实验仅仅<span style="color:red"><strong><em>比较一个总体的均值<span class="math inline">\(\mu\)</span>和一个已知值<span class="math inline">\(\mu_0\)</span></em></strong></span>,这假设是:<span class="math inline">\(\begin{cases}H_0:\mu=\mu_0\\H_1:\mu\ne \mu_0\end{cases}\)</span></p>
+<p>如果总体是正态的，其方差已知。或者总体非正态，但是样本量足够大可以用中心极限定理，则这一假设可以直接用正态分布来检验，检验统计量是:<span class="math inline">\(z_0=\frac{\bar{y}-\mu_0}{\sigma/\sqrt{n}}\)</span></p>
+<p>如果<span class="math inline">\(H_0\)</span>为真，则<span class="math inline">\(z_0\)</span>的分布为<span class="math inline">\(N(0,1)\)</span>. 因此，对<span class="math inline">\(H_0\)</span>:<span class="math inline">\(\mu=\mu_0\)</span>的判别法则是，如果<span class="math inline">\(|z_0|&gt;z_{\alpha/2}\)</span>，则拒绝<span class="math inline">\(H_0\)</span>。</p>
+<blockquote>
+<p><span style="color:red"><strong><em>正态分布方差的判断</em></strong></span></p>
+</blockquote>
+<p>有时，<span style="color:red"><strong><em>我们想要知道2中处理的平均响应的可能差别</em></strong></span>。但是，在某些试验中，比较数据中的变异性更重要。加入要检验假设：一个正态分布的方差等于常数，就是要检验:<span class="math inline">\(\begin{cases}H_0:\sigma^2=\sigma_0\\H_1: \sigma^2\ne \sigma_0^2\end{cases}\)</span></p>
+<p>上式的统计量是：<span class="math inline">\(\chi_0^2=\frac{SS}{\sigma_0^2}=\frac{(n-1)S^2}{\sigma_0^2}\)</span></p>
+<p>其中，<span class="math inline">\(SS=\sum(y_i-\bar{y})^2\)</span>是样本观测值的矫正平方和，<span class="math inline">\(\chi_o^2\)</span>的合理推断分布是自由度为n-1的卡方分布。当<span class="math inline">\(\chi_0^2&gt;\chi_{\alpha/2,n-1}^2\)</span>或者<span class="math inline">\(\chi_0^2&lt;\chi_{1-\alpha/2,n-1}^2\)</span>时，拒绝<span class="math inline">\(H_0\)</span>.</p>
+<p><span class="math inline">\(\sigma^2\)</span>的<span class="math inline">\(100(1-\alpha)\%\)</span>置信区间是： <span class="math display">\[
+\frac{(n-1)S^2}{\chi_{\alpha/2,n-1}}\le \sigma^2 \le \frac{(n-1)S^2}{\chi_{1-\alpha/2,n-1}}
+\]</span></p>
+<blockquote>
+<p><span style="color:red"><strong><em>2个正态分布方差是否相等</em></strong></span></p>
+</blockquote>
+<p><span class="math inline">\(\begin{cases}H_0:\sigma_1^2=\sigma_2^2\\H_1:\sigma_1^2\ne \sigma_2^2\end{cases}\)</span>的检验统计量就是样本方差的比值:<span class="math inline">\(F_0=\frac{S_1^2}{S_2^2}\)</span></p>
+<p><span style="color:red"><strong><em><span class="math inline">\(F_0\)</span>的合理推断分布是分子，分母自由度分别为<span class="math inline">\(n_1-1,n_2-1\)</span>的F分布</em></strong></span>。</p>
+<p>当<span class="math inline">\(F_0&gt;F_{\alpha/2,n_1-1,n_2-1}\)</span>或者<span class="math inline">\(F_0&lt;F_{1-\alpha/2,n_1-1,n_2-1}\)</span>时，拒绝<span class="math inline">\(H_0\)</span>.</p>
+<p>且有：<span class="math inline">\(F_{1-\alpha, v_1,v_2}=\frac{1}{F_{\alpha,v_2,v_1}}\)</span></p>
+<p><span style="color:red"><strong><em>4. RCBD（Randomized Complete Block design , RCBD）统计分析</em></strong></span></p>
+<p>随机话完全区组设计的思想是。假定有4个不同压头，每只压头取4个观测值，那么需要16个样本。但是如果样本取自不同炉次，可能造成他们硬度略有不同，所以这里实验误差不仅仅反应随机误差，还有试件间的变异性。</p>
+<p>所以我们希望误差尽可能小，也就是希望从实验误差中消除试件间的变异性，为了做到这点，在4块试件的每一块上对每只压头检验一次。完全是指每一区组包含了所有的处理。</p>
+<p>使用这种方法，区组或试件幸存了较齐性的实验但愿。</p>
+<p>机化区组设计（randomized block design）是指先按一定规则将试验单元划分为若干同质组，称为“区组”（block），然后再将各种处理随机地指派给各个区组的一种设计。</p>
+<p>随机化区组设计，又叫组内设计，相关组设计。是按被试的某些特征进行分组，保持组内同质（组间是否异质视实验性质而定），使每个区组接受所有的实验处理。这样就控制了实验中的个体差异，但是无法解决处理间的污染问题。一般采用平衡法加以平衡处理间的相互影响。如ABBA设计、拉丁方设计等。</p>
+<p>与随机化区组设计对应的是完全随机化设计，又叫组间设计、独立组设计。<span style="color:red"><strong><em>实验中每个被试只接受一个处理，不存在处理间的污染问题，但无法排除个体差异，一般采用匹配法加以控制。</em></strong></span></p>
+</body>
+</html>

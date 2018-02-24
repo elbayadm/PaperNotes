@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h2 id="skip-thought-vectors"><a href="http://arxiv.org/abs/1506.06726">Skip-Thought Vectors</a></h2>
+<p>TLDR; The authors apply the skip-thoguth word2vec model to the sentence level, training auto-encoders that predict the previous and next sentences. The resulting general-purpose vector representations are called skip-thought vectors. The authors evaluate the performance of these vectors as features on semantic relatedness and classification tasks, achieving competitive results, but not beating fine-tuned models.</p>
+<h4 id="key-points">Key Points</h4>
+<ul>
+<li>Code at https://github.com/ryankiros/skip-thoughts</li>
+<li>Training is done on large book corpus (74M sentences, 1B tokens), takes 2 weeks.</li>
+<li>Two variations: Bidirectional encoder and unidirectional encoder with 1200 and 2400 units per encoder respectively. GRU cell, Adam optimizer, gradient clipping norm 10.</li>
+<li>Vocabulary can be expanded by learning a mapping from a large word2vec voab to the smaller skip-thought vocab. Could also used sampling/hierarchical softmax during training for larger vocab, or train on characters.</li>
+</ul>
+<h4 id="questionsnotes">Questions/Notes</h4>
+<ul>
+<li>Authors clearly state that this is not the goal of the paper, though I'd be curious how more sophisticated (non-linear) classifiers perform with skip-thought vectors. Authors probably tried this but it didn't do well ;)</li>
+<li>The fact that the story generation doesn't seem work well shows that the model has problems learning or understanding long-term dependencies. I wonder if this can be solved by deeper encoders or attention.</li>
+</ul>
+</body>
+</html>
