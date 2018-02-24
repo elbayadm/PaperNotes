@@ -10,6 +10,6 @@
 - [CNN codes](https://rawgit.com/elbayadm/PaperNotes/master/codes/cnn.html)
 - [RL codes](https://rawgit.com/elbayadm/PaperNotes/master/codes/rl.html)
 - [GAN & VAE codes](https://rawgit.com/elbayadm/PaperNotes/master/codes/gan.html)
-- [Miscellaneous codes](https://rawgit.com/elbayadm/PaperNotes/master/codes/codes.html)
+- [Miscellaneous codes](https://rawgit.com/elbayadm/PaperNotes/master/codes/misc.html)
 - [Utility codes](https://rawgit.com/elbayadm/PaperNotes/master/codes/utils.html)
 
