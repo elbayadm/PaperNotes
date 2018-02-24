@@ -5,4 +5,4 @@
 - [Reinforcement Learning](https://rawgit.com/elbayadm/PaperNotes/master/rl/rl.html)
 
 # Publicly available codes:
-- [Codes](https://rawgit.com/elbayadm/PaperNotes/cods.html)
+- [Codes](https://rawgit.com/elbayadm/PaperNotes/codes.html)
