@@ -28,4 +28,4 @@ build_section (){
 build_section "cnn" "basic" "Basics"
 build_section "cnn" "regularization" "Regularization"
 build_section "cnn" "applications" "Applications"
-
+pandoc cnn.md -t html -F pandoc-mermaid -s -o cnn.html --mathjax=https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML

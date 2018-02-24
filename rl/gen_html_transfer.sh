@@ -27,4 +27,4 @@ build_section (){
 }
 build_section "rl" "basic" "Basics"
 build_section "rl" "sequence_models" "Sequence prediction models"
-
+pandoc rl.md -t html -F pandoc-mermaid -s -o rl.html --mathjax=https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML

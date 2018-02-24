@@ -10,7 +10,7 @@ tags: [Deep learning]
 - [JM_S Reading](http://tsong.me/reading/)
 
 
-<center> Update: 24/02/2018_20:59:44</center>
+<center> Update: 24/02/2018_21:06:19</center>
 
   	
   	
