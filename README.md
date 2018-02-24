@@ -7,7 +7,7 @@
 # Publicly available codes:
 - [Image2Text codes](https://rawgit.com/elbayadm/PaperNotes/master/codes/image-text.html)
 - [NLP & Seq2Seq codes](https://rawgit.com/elbayadm/PaperNotes/master/codes/nlp-seq.html)
-- [CNN codes](https://rawgit.com/elbayadm/PaperNotes/master/codes/cnn.html)
+- [CNN codes](https://rawgit.com/elbayadm/PaperNotes/master/codes/vision.html)
 - [RL codes](https://rawgit.com/elbayadm/PaperNotes/master/codes/rl.html)
 - [GAN & VAE codes](https://rawgit.com/elbayadm/PaperNotes/master/codes/gan.html)
 - [Miscellaneous codes](https://rawgit.com/elbayadm/PaperNotes/master/codes/misc.html)
