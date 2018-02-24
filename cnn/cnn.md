@@ -5,12 +5,7 @@ category: Deep learning
 tags: [Deep learning]
 ---
 
-# References
-- [Robert Dionne Neural Network Paper Notes](https://github.com/gujiuxiang/neural-network-papers)
-- [JM_S Reading](http://tsong.me/reading/)
-
-
-<center> Update: 24/02/2018_21:06:19</center>
+<center> Update: 24/02/2018_21:08:13</center>
 
   	
   	
