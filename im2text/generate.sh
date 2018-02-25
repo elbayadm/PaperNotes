@@ -1,10 +1,10 @@
 #!/bin/bash
 cp -rf im2text.md.head im2text.md
 UpdateTime=`date '+%d/%m/%Y_%H:%M:%S'`
-echo "<center> Update: $UpdateTime</center>"$'\n' >> g.md
-echo "  	" >> g.md
+echo "<center> Update: $UpdateTime</center>"$'\n' >> im2text.md
+echo "  	" >> im2text.md
 
-echo "  	" >> g.md
+echo "  	" >> im2text.md
 rm -rf *.html
 rm -rf *.txt
 build_section (){
@@ -22,10 +22,10 @@ build_section (){
         echo "Processing for file - $html_filename"
         pandoc $f -t html -F pandoc-mermaid -s -o $html_filename --mathjax=https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
         var=$((var+1))
-        echo $md_str >> g.md
+        echo $md_str >> im2text.md
     done
 }
 build_section "im2text" "image" "Image captioning"
 build_section "im2text" "video" "Video captioning"
 build_section "im2text" "vqa" "VQA"
-pandoc g.md -t html -F pandoc-mermaid -s -o im2text.html --mathjax=https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+pandoc im2text.md -t html -F pandoc-mermaid -s -o im2text.html --mathjax=https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
