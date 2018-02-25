@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 cd nlp
 ./generate.sh
 cd ../vision
@@ -10,3 +11,4 @@ cd ../im2text
 cd ../rl
 ./generate.sh
 cd ..
+
