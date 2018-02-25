@@ -1,8 +1,9 @@
 # PaperNotes
 
 - [Image2Text](https://rawgit.com/elbayadm/PaperNotes/master/im2text/im2text.html)
-- [Vision](https://rawgit.com/elbayadm/PaperNotes/master/vision/vision.html)
+- [Recuurent Neural Networks](https://rawgit.com/elbayadm/PaperNotes/master/rnn/rnn.html)
 - [NLP and Seq2Seq](https://rawgit.com/elbayadm/PaperNotes/master/nlp/nlp.html)
+- [Vision](https://rawgit.com/elbayadm/PaperNotes/master/vision/vision.html)
 - [Reinforcement Learning](https://rawgit.com/elbayadm/PaperNotes/master/rl/rl.html)
 
 # Awesome codes (mainly in PyTorch)
