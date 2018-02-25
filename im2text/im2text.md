@@ -9,7 +9,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 25/02/2018_09:33:43</center>
+<center> Update: 25/02/2018_09:38:16</center>
 
   	
   	
