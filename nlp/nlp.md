@@ -9,13 +9,15 @@ tags: [DL, NLP, CL]
 
 
 
-<center> Update: 25/02/2018_09:38:16</center>
+<center> Update: 25/02/2018_09:59:37</center>
 
   	
   	
   	
-# Basics  	
+# Word & Sentence embeddings  	
   	
-# Regularization  	
+# Modeling  	
   	
-# Applications  	
+# Improvements & Optimization  	
+  	
+# Taks & applications  	

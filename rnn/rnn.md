@@ -1,9 +1,13 @@
 ---
 layout: post
-title:  "Reinforcement Learning"
+title:  "Recurrent Neural Networks"
 category: Deep learning
-tags: [Deep learning]
+tags: [DL, NLP, CL]
 ---
+
+
+
+
 
 <center> Update: 25/02/2018_09:59:37</center>
 
@@ -12,4 +16,6 @@ tags: [Deep learning]
   	
 # Basics  	
   	
-# Sequence prediction models  	
+# Regularization  	
+  	
+# Improvements  	

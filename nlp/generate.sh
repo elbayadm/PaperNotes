@@ -7,6 +7,10 @@ echo "  	" >> nlp.md
 echo "  	" >> nlp.md
 rm -rf *.html
 rm -rf *.txt
+
+md2html () {
+pandoc $1 -t html -F pandoc-mermaid -s -o $2 --mathjax=https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML --css pandoc.css
+}
 build_section (){
     echo "  	" >> $1.md
     echo "# "$3"  	" >> $1.md
@@ -20,13 +24,15 @@ build_section (){
         data=${md_filename:0:8}
         md_str="$var. $data | [${md_filename_space:8}](https://rawgit.com/elbayadm/PaperNotes/master/$1/$md_filename.html) "$'\n'
         echo "Processing for file - $html_filename"
-        pandoc $f -t html -F pandoc-mermaid -s -o $html_filename --mathjax=https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML  --css pandoc.css
-
+        md2html $f $html_filename
         var=$((var+1))
-        echo $md_str >> nlp.md
+        echo $md_str >> $1.md
     done
 }
-build_section "nlp" "basic" "Basics"
-build_section "nlp" "regularization" "Regularization"
-build_section "nlp" "applications" "Applications"
-pandoc nlp.md -t html -F pandoc-mermaid -s -o nlp.html --mathjax=https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+
+build_section "nlp" "embeddings" "Word & Sentence embeddings"
+build_section "nlp" "modeling" "Modeling"
+build_section "nlp" "optimization" "Improvements & Optimization"
+build_section "nlp" "tasks" "Taks & applications"
+
+md2html nlp.md nlp.html

@@ -1,10 +1,10 @@
 #!/bin/bash
-cp -rf vision.md.head vision.md
+cp -rf rnn.md.head rnn.md
 UpdateTime=`date '+%d/%m/%Y_%H:%M:%S'`
-echo "<center> Update: $UpdateTime</center>"$'\n' >> vision.md
-echo "  	" >> vision.md
+echo "<center> Update: $UpdateTime</center>"$'\n' >> rnn.md
+echo "  	" >> rnn.md
 
-echo "  	" >> vision.md
+echo "  	" >> rnn.md
 rm -rf *.html
 rm -rf *.txt
 
@@ -29,8 +29,8 @@ build_section (){
         echo $md_str >> $1.md
     done
 }
+build_section "rnn" "basics" "Basics"
+build_section "rnn" "regularization" "Regularization"
+build_section "rnn" "Improvements" "Improvements"
 
-build_section "vision" "basic" "Basics"
-build_section "vision" "regularization" "Regularization"
-build_section "vision" "applications" "Applications"
-md2html vision.md vision.html
+md2html rnn.md rnn.html
