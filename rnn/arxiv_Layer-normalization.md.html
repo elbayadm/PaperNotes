@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+</head>
+<body>
+<p>ArXiv | <a href="https://arxiv.org/pdf/1607.06450.pdf?utm_source=sciontist.com&amp;utm_medium=refer&amp;utm_campaign=promote">pdf</a></p>
+<p>Reddit | <a href="https://www.reddit.com/r/MachineLearning/comments/4u0a74/160706450_layer_normalization/">thread</a></p>
+<p>Implementation | <a href="https://github.com/pytorch/pytorch/issues/1959">PyTorch</a></p>
+<h2 id="tldr">TLDR</h2>
+<p>The authors propose a new normalization scheme called &quot;Layer Normalization&quot; that works especially well for recurrent networks. Layer Normalization is similar to Batch Normalization, but only depends on a single training case. As such, it's well suited for variable length sequences or small batches. In Layer Normalization each hidden unit shares the same normalization term. The authors show through experiments that Layer Normalization converges faster, and sometimes to better solutions, than batch- or unnormalized RNNs. Batch normalization still performs better for CNNs.</p>
+<h2 id="bibtex">Bibtex</h2>
+<pre><code>@article{ba2016layer,
+  title={Layer normalization},
+  author={Ba, Jimmy Lei and Kiros, Jamie Ryan and Hinton, Geoffrey E},
+  journal={arXiv preprint arXiv:1607.06450},
+  year={2016}
+}</code></pre>
+</body>
+</html>

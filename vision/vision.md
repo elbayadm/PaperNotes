@@ -5,7 +5,7 @@ category: Deep learning
 tags: [DL, CV]
 ---
 
-<center> Update: 25/02/2018_10:31:39</center>
+<center> Update: 25/02/2018_10:46:02</center>
 
   	
   	
@@ -13,7 +13,6 @@ tags: [DL, CV]
 # Basics  	
   	
 # Regularization  	
-1. iclr2018 | [batch-normlization](https://rawgit.com/elbayadm/PaperNotes/master/vision/iclr2018_batch-normlization.md.html)
-2. acl2018 | [batch-normlization](https://rawgit.com/elbayadm/PaperNotes/master/vision/acl2018_batch-normlization.md.html)
+1. icml2015 | [batch-normlization](https://rawgit.com/elbayadm/PaperNotes/master/vision/icml2015_batch-normlization.md.html)
   	
 # Applications  	
