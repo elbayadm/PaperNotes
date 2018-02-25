@@ -11,6 +11,6 @@ rm -rf *.txt
 
 build_section "rnn" "basics" "Basics"
 build_section "rnn" "regularization" "Regularization"
-build_section "rnn" "Improvements" "Improvements"
+build_section "rnn" "improvements" "Improvements"
 
 md2html rnn.md rnn.html
