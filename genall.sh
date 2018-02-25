@@ -1,7 +1,7 @@
 #!/bin/bash
-cd rnn
+cd nlp
 ./gen_html_transfer.sh
-cd ../cnn
+cd ../vision
 ./gen_html_transfer.sh
 cd ../rl
 ./gen_html_transfer.sh

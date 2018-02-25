@@ -1,10 +1,10 @@
 #!/bin/bash
-cp -rf cnn.md.head cnn.md
+cp -rf vision.md.head vision.md
 UpdateTime=`date '+%d/%m/%Y_%H:%M:%S'`
-echo "<center> Update: $UpdateTime</center>"$'\n' >> cnn.md
-echo "  	" >> cnn.md
+echo "<center> Update: $UpdateTime</center>"$'\n' >> vision.md
+echo "  	" >> vision.md
 
-echo "  	" >> cnn.md
+echo "  	" >> vision.md
 rm -rf *.html
 rm -rf *.txt
 build_section (){
@@ -22,10 +22,10 @@ build_section (){
         echo "Processing for file - $html_filename"
         pandoc $f -t html -F pandoc-mermaid -s -o $html_filename --mathjax=https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
         var=$((var+1))
-        echo $md_str >> cnn.md
+        echo $md_str >> vision.md
     done
 }
-build_section "cnn" "basic" "Basics"
-build_section "cnn" "regularization" "Regularization"
-build_section "cnn" "applications" "Applications"
-pandoc cnn.md -t html -F pandoc-mermaid -s -o cnn.html --mathjax=https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+build_section "vision" "basic" "Basics"
+build_section "vision" "regularization" "Regularization"
+build_section "vision" "applications" "Applications"
+pandoc vision.md -t html -F pandoc-mermaid -s -o vision.html --mathjax=https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML

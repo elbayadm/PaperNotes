@@ -1,7 +1,7 @@
 # PaperNotes
 
-- [Convolutional Neural Networks](https://rawgit.com/elbayadm/PaperNotes/master/cnn/cnn.html)
-- [Recurrent Neural Networks](https://rawgit.com/elbayadm/PaperNotes/master/rnn/rnn.html)
+- [Vision](https://rawgit.com/elbayadm/PaperNotes/master/vision/vision.html)
+- [NLP and Seq2Seq](https://rawgit.com/elbayadm/PaperNotes/master/nlp/nlp.html)
 - [Reinforcement Learning](https://rawgit.com/elbayadm/PaperNotes/master/rl/rl.html)
 
 # Awesome codes (mainly in PyTorch)

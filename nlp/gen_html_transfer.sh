@@ -1,10 +1,10 @@
 #!/bin/bash
-cp -rf rnn.md.head rnn.md
+cp -rf nlp.md.head nlp.md
 UpdateTime=`date '+%d/%m/%Y_%H:%M:%S'`
-echo "<center> Update: $UpdateTime</center>"$'\n' >> rnn.md
-echo "  	" >> rnn.md
+echo "<center> Update: $UpdateTime</center>"$'\n' >> nlp.md
+echo "  	" >> nlp.md
 
-echo "  	" >> rnn.md
+echo "  	" >> nlp.md
 rm -rf *.html
 rm -rf *.txt
 build_section (){
@@ -22,10 +22,10 @@ build_section (){
         echo "Processing for file - $html_filename"
         pandoc $f -t html -F pandoc-mermaid -s -o $html_filename --mathjax=https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
         var=$((var+1))
-        echo $md_str >> rnn.md
+        echo $md_str >> nlp.md
     done
 }
-build_section "rnn" "basic" "Basics"
-build_section "rnn" "regularization" "Regularization"
-build_section "rnn" "applications" "Applications"
-pandoc rnn.md -t html -F pandoc-mermaid -s -o rnn.html --mathjax=https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+build_section "nlp" "basic" "Basics"
+build_section "nlp" "regularization" "Regularization"
+build_section "nlp" "applications" "Applications"
+pandoc nlp.md -t html -F pandoc-mermaid -s -o nlp.html --mathjax=https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
