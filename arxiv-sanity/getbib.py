@@ -37,7 +37,16 @@ def main(args):
             print(bib)
             bibjs = bibtexparser.loads(bib).entries[0]
             bibjs['FILE'] = "pdfs/%s.pdf" % identifier
-            citekey = '%s_%s' % (bibjs['year'], bibjs['author'].split()[1])
+            subprocess.call("papis add ../%s --author \'%s\' --title \'%s\'" % (bibjs['FILE'],
+                                                                                bibjs['author'],
+                                                                                bibjs['title']),
+                            shell=True)
+            author = bibjs['author'].split()
+            try:
+                author = author[:author.index('and')][-1]
+            except:
+                author = author[-1]
+            citekey = '%s_%s' % (bibjs['author'].split()[1], bibjs['year'])
             alph = 'abcefghi'
             i = 0
             _citekey = citekey
