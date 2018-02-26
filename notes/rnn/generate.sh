@@ -1,5 +1,5 @@
 #!/bin/bash
-source ../commands.sh
+source ../../commands.sh
 cp -rf rnn.md.head rnn.md
 UpdateTime=`date '+%d/%m/%Y_%H:%M:%S'`
 echo "<center> Update: $UpdateTime</center>"$'\n' >> rnn.md

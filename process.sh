@@ -1,14 +1,9 @@
 #!/usr/bin/env bash
-
-cd nlp
-./generate.sh
-cd ../vision
-./generate.sh
-cd ../rnn
-./generate.sh
-cd ../im2text
-./generate.sh
-cd ../rl
-./generate.sh
-cd ..
+homedir=$(pwd)
+for f in $(ls notes);
+do
+    cd notes/$f
+    ./generate.sh
+    cd $homedir
+done
 

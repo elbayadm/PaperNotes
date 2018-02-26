@@ -1,5 +1,5 @@
 #!/bin/bash
-source ../commands.sh
+source ../../commands.sh
 cp -rf im2text.md.head im2text.md
 UpdateTime=`date '+%d/%m/%Y_%H:%M:%S'`
 echo "<center> Update: $UpdateTime</center>"$'\n' >> im2text.md

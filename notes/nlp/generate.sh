@@ -1,5 +1,5 @@
 #!/bin/bash
-source ../commands.sh
+source ../../commands.sh
 cp -rf nlp.md.head nlp.md
 UpdateTime=`date '+%d/%m/%Y_%H:%M:%S'`
 echo "<center> Update: $UpdateTime</center>"$'\n' >> nlp.md

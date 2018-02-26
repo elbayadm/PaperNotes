@@ -5,7 +5,7 @@ category: Deep learning
 tags: [Deep learning]
 ---
 
-<center> Update: 25/02/2018_10:49:09</center>
+<center> Update: 26/02/2018_07:44:40</center>
 
   	
   	

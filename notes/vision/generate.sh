@@ -1,5 +1,5 @@
 #!/bin/bash
-source ../commands.sh
+source ../../commands.sh
 cp -rf vision.md.head vision.md
 UpdateTime=`date '+%d/%m/%Y_%H:%M:%S'`
 echo "<center> Update: $UpdateTime</center>"$'\n' >> vision.md
