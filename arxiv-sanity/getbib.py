@@ -1,11 +1,15 @@
 import os
 import sys
 import os.path as osp
+import json
 import subprocess
 import urllib.request
 import xml.etree.ElementTree as ET
 import argparse
 from shutil import copyfile
+import bibtexparser
+from bibtexparser.bibdatabase import BibDatabase
+from bibtexparser.bwriter import BibTexWriter
 
 
 def main(args):
@@ -13,7 +17,10 @@ def main(args):
     bibfile = "arxiv-refs.bib"
     if osp.exists(bibfile):
         copyfile(bibfile, bibfile+".backup")
-    out = open(bibfile, 'w')
+    # out = open(bibfile, 'w')
+    db = BibDatabase()
+    db.entries = []
+    citekeys = []
     base = "http://export.arxiv.org/api/query?id_list="
     identifiers = [l.strip() for l in open('arxivids.txt', 'r')]
     titles = [l.strip() for l in open('titles.txt', 'r')]
@@ -27,8 +34,23 @@ def main(args):
             bib = subprocess.check_output("gscholar " + title,  shell=True).decode("utf-8")
         else:
             bib = subprocess.check_output("arxivcheck " + identifier,  shell=True).decode("utf-8")
-        out.write(bib)
-    out.close()
+            print(bib)
+            bibjs = bibtexparser.loads(bib).entries[0]
+            bibjs['FILE'] = "pdfs/%s.pdf" % identifier
+            citekey = '%s_%s' % (bibjs['year'], bibjs['author'].split()[1])
+            alph = 'abcefghi'
+            i = 0
+            _citekey = citekey
+            while citekey in citekeys:
+                citekey = _citekey+alph[i]
+                i += 1
+            bibjs['ID'] = citekey
+            citekeys.append(citekey)
+            print(bibjs)
+            db.entries.append(bibjs)
+    writer = BibTexWriter()
+    with open(bibfile, 'w') as f:
+        f.write(writer.write(db))
 
 
 
