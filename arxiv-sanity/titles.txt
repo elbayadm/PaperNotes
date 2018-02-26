@@ -1,0 +1,200 @@
+Iterative Refinement of the Approximate Posterior for Directed Belief  Networks
+Deterministic Non-Autoregressive Neural Sequence Modeling by Iterative  Refinement
+Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial  Networks
+Objective-Reinforced Generative Adversarial Networks (ORGAN) for  Sequence Generation Models
+Toward Multimodal Image-to-Image Translation
+Fraternal Dropout
+Image Captioning at Will: A Versatile Scheme for Effectively Injecting  Sentiments into Image Descriptions
+Word Translation Without Parallel Data
+Towards Neural Phrase-based Machine Translation
+Predicting Visual Features from Text for Image and Video Caption  Retrieval
+Densely Connected Convolutional Networks
+Toward Controlled Generation of Text
+Variational Recurrent Neural Machine Translation
+Interpretable Explanations of Black Boxes by Meaningful Perturbation
+Certifiable Distributional Robustness with Principled Adversarial  Training
+Unsupervised Low-Dimensional Vector Representations for Words, Phrases  and Text that are Transparent, Scalable, and produce Similarity Metrics that  are Complementary to Neural Embeddings
+Character-level Recurrent Neural Networks in Practice: Comparing  Training and Sampling Schemes
+Gated-Attention Architectures for Task-Oriented Language Grounding
+Recent Advances in Recurrent Neural Networks
+Visualizing the Loss Landscape of Neural Nets
+Consensus-based Sequence Training for Video Captioning
+Modeling Past and Future for Neural Machine Translation
+Training RNNs as Fast as CNNs
+Slim Embedding Layers for Recurrent Neural Language Models
+Variational Attention for Sequence-to-Sequence Models
+Language Generation with Recurrent Generative Adversarial Networks  without Pre-training
+Exploring Models and Data for Remote Sensing Image Caption Generation
+Synthesizing Novel Pairs of Image and Text
+Visually Grounded Word Embeddings and Richer Visual Features for  Improving Multimodal Neural Machine Translation
+Sockeye: A Toolkit for Neural Machine Translation
+Monotonic Chunkwise Attention
+Attention networks for image-to-text
+Long Text Generation via Adversarial Training with Leaked Information
+Show-and-Fool: Crafting Adversarial Examples for Neural Image Captioning
+Attention Is All You Need
+Grounding Referring Expressions in Images by Variational Context
+Neural Machine Translation by Generating Multiple Linguistic Factors
+Minimum Word Error Rate Training for Attention-based  Sequence-to-Sequence Models
+Adversarial Ranking for Language Generation
+Learning to Segment Moving Objects
+Text Generation Based on Generative Adversarial Nets with Latent  Variable
+Auxiliary Guided Autoregressive Variational Autoencoders
+AttnGAN: Fine-Grained Text to Image Generation with Attentional  Generative Adversarial Networks
+Plan, Attend, Generate: Planning for Sequence-to-Sequence Models
+Actor-Critic Sequence Training for Image Captioning
+Neural Text Generation: A Practical Guide
+Convolutional Image Captioning
+Empower Sequence Labeling with Task-Aware Neural Language Model
+Conditional Image-Text Embedding Networks
+Understanding Deep Learning Generalization by Maximum Entropy
+On the State of the Art of Evaluation in Neural Language Models
+Diverse and Accurate Image Description Using a Variational Auto-Encoder  with an Additive Gaussian Encoding Space
+Adversarial Feature Matching for Text Generation
+Language-Based Image Editing with Recurrent Attentive Models
+Self-critical Sequence Training for Image Captioning
+Variational Bi-LSTMs
+Phrase-based Image Captioning with Hierarchical LSTM Model
+Representation Learning for Grounded Spatial Reasoning
+Seq2SQL: Generating Structured Queries from Natural Language using  Reinforcement Learning
+What does an LSTM look for in classifying heartbeats?
+Improving Neural Machine Translation with Conditional Sequence  Generative Adversarial Nets
+Speaking the Same Language: Matching Machine to Human Captions by  Adversarial Training
+Paying More Attention to Saliency: Image Captioning with Saliency and  Context Attention
+Learning Hard Alignments with Variational Inference
+Unsupervised Machine Translation Using Monolingual Corpora Only
+Generative Bridging Network in Neural Sequence Prediction
+VSE++: Improving Visual-Semantic Embeddings with Hard Negatives
+Learning Generative Models with Sinkhorn Divergences
+Findings of the Second Shared Task on Multimodal Machine Translation and  Multilingual Image Description
+Describing Natural Images Containing Novel Objects with Knowledge Guided  Assitance
+Sequence Tutor: Conservative Fine-Tuning of Sequence Generation Models  with KL-control
+Improving Lexical Choice in Neural Machine Translation
+Enhanced Neural Machine Translation by Learning from Draft
+On the regularization of Wasserstein GANs
+Piecewise Latent Variables for Neural Variational Text Processing
+Exploring Human-like Attention Supervision in Visual Question Answering
+A Deep Generative Framework for Paraphrase Generation
+Spatio-Temporal Backpropagation for Training High-performance Spiking  Neural Networks
+Stack-Captioning: Coarse-to-Fine Learning for Image Captioning
+Words or Characters? Fine-grained Gating for Reading Comprehension
+Language Modeling with Gated Convolutional Networks
+Self-Normalizing Neural Networks
+What is the Role of Recurrent Neural Networks (RNNs) in an Image Caption  Generator?
+Areas of Attention for Image Captioning
+Incremental Learning of Object Detectors without Catastrophic Forgetting
+Story Generation from Sequence of Independent Short Descriptions
+Natural Language Does Not Emerge 'Naturally' in Multi-Agent Dialog
+Gated XNOR Networks: Deep Neural Networks with Ternary Weights and  Activations under a Unified Discretization Framework
+Incorporating Copying Mechanism in Image Captioning for Learning Novel  Objects
+Show, Adapt and Tell: Adversarial Training of Cross-domain Image  Captioner
+Bottom-Up and Top-Down Attention for Image Captioning and Visual  Question Answering
+MAT: A Multimodal Attentive Translator for Image Captioning
+BlitzNet: A Real-Time Deep Network for Scene Understanding
+Dense Captioning with Joint Inference and Visual Context
+Regularizing and Optimizing LSTM Language Models
+StackGAN: Text to Photo-realistic Image Synthesis with Stacked  Generative Adversarial Networks
+Submodular Mini-Batch Training in Generative Moment Matching Networks
+Revisiting Activation Regularization for Language RNNs
+An Empirical Study of Language CNN for Image Captioning
+Visual Dialog
+Learned in Translation: Contextualized Word Vectors
+Convolutional Sequence to Sequence Learning
+A Convolutional Encoder Model for Neural Machine Translation
+A Joint Many-Task Model: Growing a Neural Network for Multiple NLP Tasks
+Mimicking Word Embeddings using Subword RNNs
+Supervised Learning of Universal Sentence Representations from Natural  Language Inference Data
+Captioning Images with Diverse Objects
+Learning Visually Grounded Sentence Representations
+Guided Open Vocabulary Image Captioning with Constrained Beam Search
+Improving Language Modeling using Densely Connected Recurrent Neural  Networks
+Supervising Neural Attention Models for Video Captioning by Human Gaze  Data
+Optimizing the Latent Space of Generative Networks
+Model-Agnostic Meta-Learning for Fast Adaptation of Deep Networks
+You said that?
+Visual Question Answering with Memory-Augmented Networks
+On Unifying Deep Generative Models
+CUNI System for the WMT17 Multimodal Translation Task
+LIUM-CVC Submissions for WMT17 Multimodal Translation Task
+Do Convolutional Networks need to be Deep for Text Classification ?
+SCAN: Learning Abstract Hierarchical Compositional Visual Concepts
+Learning Video Object Segmentation with Visual Memory
+Neural-based Natural Language Generation in Dialogue using RNN  Encoder-Decoder with Semantic Aggregation
+Imagination improves Multimodal Translation
+Do GANs actually learn the distribution? An empirical study
+Neural Sequence Model Training via $α$-divergence Minimization
+Online and Linear-Time Attention by Enforcing Monotonic Alignments
+Sequential Attention: A Context-Aware Alignment Function for Machine  Reading
+A Semi-supervised Framework for Image Captioning
+Adversarial Neural Machine Translation
+Using Artificial Tokens to Control Languages for Multilingual Image  Caption Generation
+Improved Variational Autoencoders for Text Modeling using Dilated  Convolutions
+One Model To Learn Them All
+Depthwise Separable Convolutions for Neural Machine Translation
+An overview of gradient descent optimization algorithms
+Label-Dependencies Aware Recurrent Neural Networks
+Knowing When to Look: Adaptive Attention via A Visual Sentinel for Image  Captioning
+Learning to Compute Word Embeddings On the Fly
+Teaching Machines to Describe Images via Natural Language Feedback
+I2T2I: Learning Text to Image Synthesis with Textual Data Augmentation
+Adversarial Generation of Natural Language
+Better Text Understanding Through Image-To-Text Transfer
+Deep image representations using caption generators
+Bidirectional Beam Search: Forward-Backward Inference in Neural Sequence  Models for Fill-in-the-Blank Image Captioning
+Survey of Visual Question Answering: Datasets and Techniques
+Inferring and Executing Programs for Visual Reasoning
+FOIL it! Find One mismatch between Image and Language caption
+Automatic Description Generation from Images: A Survey of Models,  Datasets, and Evaluation Measures
+Weakly-Supervised Semantic Segmentation using Motion Cues
+Annotating Object Instances with a Polygon-RNN
+Discriminative Bimodal Networks for Visual Localization and Detection  with Natural Language Queries
+Room for improvement in automatic image description: an error analysis
+Top-down Visual Saliency Guided by Captions
+Deep Reinforcement Learning-based Image Captioning with Embedding Reward
+SCA-CNN: Spatial and Channel-wise Attention in Convolutional Networks  for Image Captioning
+Creativity: Generating Diverse Questions using Variational Autoencoders
+Bayesian Recurrent Neural Networks
+A Hierarchical Approach for Generating Descriptive Image Paragraphs
+Learning Motion Patterns in Videos
+Generating Descriptions with Grounded and Co-Referenced People
+Adversarial Feature Learning
+Multiple Instance Detection Network with Online Instance Classifier  Refinement
+Semantic Compositional Networks for Visual Captioning
+Where to put the Image in an Image Caption Generator
+Recurrent Topic-Transition GAN for Visual Paragraph Generation
+Massive Exploration of Neural Machine Translation Architectures
+Learning Robust Visual-Semantic Embeddings
+Improved Image Captioning via Policy Gradient optimization of SPIDEr
+A Structured Self-attentive Sentence Embedding
+Data Noising as Smoothing in Neural Network Language Models
+Neural Machine Translation and Sequence-to-sequence Models: A Tutorial
+Capacity and Trainability in Recurrent Neural Networks
+An Actor-Critic Algorithm for Sequence Prediction
+A Comparative Study of Word Embeddings for Reading Comprehension
+The Statistical Recurrent Unit
+Maximum-Likelihood Augmented Discrete Generative Adversarial Networks
+On Loss Functions for Deep Neural Networks in Classification
+Grounding of Textual Phrases in Images by Reconstruction
+Dynamic Coattention Networks For Question Answering
+Language Models with Pre-Trained (GloVe) Word Embeddings
+Regularizing Neural Networks by Penalizing Confident Output  Distributions
+Comprehension-guided referring expressions
+Reward Augmented Maximum Likelihood for Neural Structured Prediction
+Pointer Networks
+SSD: Single Shot MultiBox Detector
+YOLO9000: Better, Faster, Stronger
+Understanding Image and Text Simultaneously: a Dual Vision-Language  Machine Comprehension Task
+A Way out of the Odyssey: Analyzing and Combining Recent Insights for  LSTMs
+Image Captioning and Visual Question Answering Based on Attributes and  External Knowledge
+Recurrent Image Captioner: Describing Images with Spatial-Invariant  Transformation and Attention Filtering
+Analysis and Optimization of Loss Functions for Multiclass, Top-k, and  Multilabel Classification
+Text-guided Attention Model for Image Captioning
+Multiple Instance Learning: A Survey of Problem Characteristics and  Applications
+Improving LSTM-based Video Description with Linguistic Knowledge Mined  from Text
+Watch What You Just Said: Image Captioning with Text-Conditional  Attention
+Attention Correctness in Neural Image Captioning
+Quasi-Recurrent Neural Networks
+On Multiplicative Integration with Recurrent Neural Networks
+Sequence-to-Sequence Learning as Beam-Search Optimization
+Boosting Image Captioning with Attributes
+Review Networks for Caption Generation
