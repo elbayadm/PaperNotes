@@ -2,11 +2,11 @@ Work in progress!
 
 # PaperNotes
 
-- [Image2Text](https://rawgit.com/elbayadm/PaperNotes/master/im2text/im2text.html)
-- [Recurrent Neural Networks](https://rawgit.com/elbayadm/PaperNotes/master/rnn/rnn.html)
-- [NLP and Seq2Seq](https://rawgit.com/elbayadm/PaperNotes/master/nlp/nlp.html)
-- [Vision](https://rawgit.com/elbayadm/PaperNotes/master/vision/vision.html)
-- [Reinforcement Learning](https://rawgit.com/elbayadm/PaperNotes/master/rl/rl.html)
+- [Image2Text](https://rawgit.com/elbayadm/PaperNotes/master/notes/im2text/im2text.html)
+- [Recurrent Neural Networks](https://rawgit.com/elbayadm/PaperNotes/master/notes/rnn/rnn.html)
+- [NLP and Seq2Seq](https://rawgit.com/elbayadm/PaperNotes/master/notes/nlp/nlp.html)
+- [Vision](https://rawgit.com/elbayadm/PaperNotes/master/notes/vision/vision.html)
+- [Reinforcement Learning](https://rawgit.com/elbayadm/PaperNotes/master/notes/rl/rl.html)
 
 # Awesome codes (mainly in PyTorch)
 - [Image2Text codes](https://rawgit.com/elbayadm/PaperNotes/master/codes/image-text.html)
