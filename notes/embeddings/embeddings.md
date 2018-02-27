@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Recurrent Neural Networks"
+title:  "Embeddings & Representation learning"
 category: Deep learning
 tags: [DL, NLP, CV, CL]
 ---

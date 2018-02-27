@@ -1,10 +1,9 @@
 ---
 layout: post
-title:  "Recurrent Neural Networks"
+title:  "Generative models"
 category: Deep learning
 tags: [DL, NLP, CV, CL]
 ---
-
 
 
 

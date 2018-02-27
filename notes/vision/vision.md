@@ -1,18 +1,14 @@
 ---
 layout: post
-title:  "Computer vision"
+title:  "Computer Vision"
 category: Deep learning
-tags: [DL, CV]
+tags: [DL, NLP, CV, CL]
 ---
 
-<center> Update: 26/02/2018_16:34:33</center>
+
+
+
+
+<center> Update: 27/02/2018_15:54:17</center>
 
   	
-  	
-  	
-# Basics  	
-  	
-# Regularization  	
-1. icml2015 | [batch-normlization](https://rawgit.com/elbayadm/PaperNotes/master/notes/vision/icml2015_batch-normlization.md.html)
-  	
-# Applications  	

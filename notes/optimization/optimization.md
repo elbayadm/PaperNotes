@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Recurrent Neural Networks"
+title:  "Optimization & Loss functions"
 category: Deep learning
 tags: [DL, NLP, CV, CL]
 ---

@@ -15,6 +15,8 @@ from bibtexparser.bwriter import BibTexWriter
 def main(args):
 
     bibfile = "arxiv-refs.bib"
+    if args.scholar:
+        bibfile = "gs-arxiv-refs.bib"
     if osp.exists(bibfile):
         copyfile(bibfile, bibfile+".backup")
     # out = open(bibfile, 'w')
@@ -31,32 +33,39 @@ def main(args):
         if args.download:
             subprocess.call("wget --user-agent=Lynx https://arxiv.org/pdf/" + identifier + ".pdf --directory-prefix %s" % args.dir, shell=True)
         if args.scholar:
-            bib = subprocess.check_output("gscholar " + title,  shell=True).decode("utf-8")
+            bib = subprocess.check_output("gscholar \"" + title + "\"", shell=True).decode("utf-8")
         else:
-            bib = subprocess.check_output("arxivcheck " + identifier,  shell=True).decode("utf-8")
-            print(bib)
-            bibjs = bibtexparser.loads(bib).entries[0]
-            bibjs['FILE'] = "pdfs/%s.pdf" % identifier
-            subprocess.call("papis add ../%s --author \'%s\' --title \'%s\'" % (bibjs['FILE'],
-                                                                                bibjs['author'],
-                                                                                bibjs['title']),
-                            shell=True)
-            author = bibjs['author'].split()
-            try:
-                author = author[:author.index('and')][-1]
-            except:
-                author = author[-1]
-            citekey = '%s_%s' % (bibjs['author'].split()[1], bibjs['year'])
-            alph = 'abcefghi'
-            i = 0
-            _citekey = citekey
-            while citekey in citekeys:
-                citekey = _citekey+alph[i]
-                i += 1
-            bibjs['ID'] = citekey
-            citekeys.append(citekey)
-            print(bibjs)
-            db.entries.append(bibjs)
+            bib = subprocess.check_output("arxivcheck " + identifier, shell=True).decode("utf-8")
+        bibjs = bibtexparser.loads(bib).entries[0]
+        print(bibjs)
+        bibjs['file'] = "pdfs/%s.pdf" % identifier
+        author = bibjs['author'].split()
+        try:
+            author = author[:author.index('and')][-1]
+        except:
+            author = author[-1]
+        citekey = '%s_%s' % (author, bibjs['year'])
+        alph = 'abcefghi'
+        i = 0
+        _citekey = citekey
+        while citekey in citekeys:
+            citekey = _citekey+alph[i]
+            i += 1
+        print('Citekey:', citekey)
+        bibjs['ID'] = citekey
+        citekeys.append(citekey)
+        db.entries.append(bibjs)
+        # Adding to Papis
+        # print('Adding ', bibjs['file'])
+        # p = subprocess.Popen("papis add --author \'%s\' --title \'%s\' ../%s" % (bibjs['author'],
+                                                                                 # bibjs['title'],
+                                                                                 # bibjs['file']),
+                             # shell=True)
+        # (output, err) = p.communicate()
+        # #This makes the wait possible
+        # p_status = p.wait()
+        # print('Status', p_status)
+        bibjs = {}
     writer = BibTexWriter()
     with open(bibfile, 'w') as f:
         f.write(writer.write(db))

@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Recurrent Neural Networks"
+title:  "Regularization techniques"
 category: Deep learning
 tags: [DL, NLP, CV, CL]
 ---
