@@ -13,10 +13,8 @@ build_section (){
         echo 'Source notes file' $f
         dir=$(dirname "${f}")
         shortdir=${dir##*[/|\\]}
-        echo "Short dir:" $shortdir
         html_filename="$PWD/$shortdir.html"
-        title=$(cat $dir/infos.yaml| grep title | cut -f2 -d:)
-        echo 'Title:' $title
+        title=$(cat $dir/info.yaml| grep title | cut -f2 -d:)
         #echo $data
         md_str="$var. [$title]($RAWGITPATH/$1/$shortdir.html) "$'\n'
         #echo $md_str

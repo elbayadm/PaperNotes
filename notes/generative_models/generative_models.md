@@ -8,6 +8,6 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 27/02/2018_16:02:41</center>
+<center> Update: 27/02/2018_16:41:00</center>
 
   	

@@ -1,0 +1,6 @@
+1. [](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2016-An-Actor-Critic-Algorithm-for-Sequence-Prediction.html)
+2. [](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2015-Sequence-Level-Training-with-Recurrent-Neural-Networks.html)
+1. [ An Actor-Critic Algorithm for Sequence Prediction](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2016-An-Actor-Critic-Algorithm-for-Sequence-Prediction.html)
+2. [ Sequence Level Training with Recurrent Neural Networks](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2015-Sequence-Level-Training-with-Recurrent-Neural-Networks.html)
+1. [ An Actor-Critic Algorithm for Sequence Prediction](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2016-An-Actor-Critic-Algorithm-for-Sequence-Prediction.html)
+2. [ Sequence Level Training with Recurrent Neural Networks](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2015-Sequence-Level-Training-with-Recurrent-Neural-Networks.html)

@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="problematic">Problematic:</h2>
+<p>Raise issues with training sequence prediction models with MLE in teacher-forcing mode.</p>
+<ul>
+<li><p>MLE is not what the model is evaluated on in test time.</p></li>
+<li><p>Integrating these metrics in the loss is not straighj-forward; mostly not differentiable and so do not allow for classic back-propagation.</p></li>
+<li><p>Exposure bias ie discrepancy between the distribution during training (teacher-foricng) and the distribtion at evaluation time where the total error can escalate quickly. ## Proposed solution: Use reinforcement learning. Specifically, the REINFORCE algorithm. &gt; A method for doing back-propagation on computational graphs that output a probability distribution on actions.</p></li>
+</ul>
+<p>In this case the loss is :</p>
+<p><span class="math inline">\(E_{p_\theta}[r(y | y^*)]\)</span></p>
+<p>This is easily applicable to RNNs, which output a soft-max probability distribution at each time step. Besides, to resolve the exposure bias, the outputed distribution will be generated in evalution mode (decoding), eventualy with beam-search to generate multiple candidates.</p>
+<h2 id="issues">Issues:</h2>
+<p>TRaining a model from scratch with this approach is infeasible, the other suggest warming-up with MLE then optimizing for a reward.</p>
+</body>
+</html>
