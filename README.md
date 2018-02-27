@@ -13,6 +13,8 @@ Work in progress!
 - [Vision](https://rawgit.com/elbayadm/PaperNotes/master/notes/vision/index.html)
 - [Reinforcement Learning](https://rawgit.com/elbayadm/PaperNotes/master/notes/rl/index.html)
 - [Task oriented](https://rawgit.com/elbayadm/PaperNotes/master/notes/task_oriented/index.html)
+- [Miscellaneous](https://rawgit.com/elbayadm/PaperNotes/master/notes/misc/index.html)
+
 
 
 # Awesome codes (mainly in PyTorch)
