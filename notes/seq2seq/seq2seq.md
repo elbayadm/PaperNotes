@@ -9,7 +9,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 27/02/2018_16:56:30</center>
+<center> Update: 27/02/2018_16:59:08</center>
 
   	
 1. [ An Actor-Critic Algorithm for Sequence Prediction](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2016-An-Actor-Critic-Algorithm-for-Sequence-Prediction.html)
