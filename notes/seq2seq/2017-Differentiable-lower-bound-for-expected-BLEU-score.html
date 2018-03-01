@@ -38,9 +38,9 @@ p_n = \frac{O_n}{c - n +1}
 \]</span></p>
 <h5 id="lower-bound">Lower bound:</h5>
 <p><span class="math display">\[
-E_{x\sim p_x}[O_n^i] \geq 
+E_{x\sim p_x}[O_n^i] \geq  \sum_{m_0}p_x^{i, m_0} .. \sum_{m_{n-1}} p_x^{i+n-1, m_n} \min(1, \frac{\sum_j \prod_{k=0}^{n-1} y_{j+k, m_k}}{1 + \sum_{l\neq i} \prod_{k=0}^{n-1} p_x^{l+k, m_k}})
 \]</span></p>
 <h4 id="issues-comments">Issues &amp; comments:</h4>
-<p>Too many errors in their math.</p>
+<p>Too many errors in their math. Untested yet.</p>
 </body>
 </html>
