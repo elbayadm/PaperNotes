@@ -9,7 +9,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 01/03/2018_18:31:52</center>
+<center> Update: 01/03/2018_18:58:47</center>
 
   	
 1. [ Discrete Autoencoders for Sequence Models](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2018-Discrete-Autoencoders-for-Sequence-Models.html)
@@ -21,5 +21,6 @@ tags: [DL, NLP, CV, CL]
 7. [ Synthetic and Natural Noise Both Break Neural Machine Translation](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2017-Synthetic-and-Natural-Noise-Both-Break-Neural-Machine-Translation.html)
 8. [ Sequence Modeling via Segmentations](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2017-Sequence-Modeling-via-Segmentations.html)
 9. [ Differentiable lower bound for expected BLEU score](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2017-Differentiable-lower-bound-for-expected-BLEU-score.html)
-10. [ Sequence Level Training with Recurrent Neural Networks](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2015-Sequence-Level-Training-with-Recurrent-Neural-Networks.html)
-11. [ Minimum Risk Training for Neural Machine Translation](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2015-Minimum-Risk-Training-for-Neural-Machine-Translation.html)
+10. [ An Actor-Critic Algorithm for Sequence Prediction](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2016-An-Actor-Critic-Algorithm-for-Sequence-Prediction.html)
+11. [ Sequence Level Training with Recurrent Neural Networks](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2015-Sequence-Level-Training-with-Recurrent-Neural-Networks.html)
+12. [ Minimum Risk Training for Neural Machine Translation](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2015-Minimum-Risk-Training-for-Neural-Machine-Translation.html)
