@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="differntiable-lower-bound-for-expected-bleu-score">Differntiable lower bound for Expected Bleu score</h2>
+<h4 id="links">links:</h4>
+<p><a href="http://arxiv.org/abs/1712.04708">arxiv</a> <a href="https://github.com/deepmipt/expected_bleu">code*</a> Appeared in : <em>Nips2017</em>' Workshop</p>
+<h4 id="problematic">Problematic:</h4>
+<p>Loss-evaluation mismatch: optimizing a surrogate loss different from the non-differentiable evaluation metric</p>
+<h4 id="contributions">Contributions:</h4>
+<p>A method for estimating a differentiable lower bound of expected BLEU score, without extensive sampling.</p>
+<p>Bleu n-gram precision are computed as follows:</p>
+<p>$$ p_n = ,</p>
+<p>$$</p>
+<p>then, <span class="math display">\[ BLEU = BP . \exp\left(  \sum_n w_n \log p_n\right), \]</span> where <span class="math inline">\(BP = \min(1, e^{1-\frac{r}{c}})\)</span>, r,c the lenghts of the references and the candidate respectively.</p>
+<h5 id="rewriting-bleu-in-matrix-form">Rewriting Bleu in matrix form:</h5>
+<p>Assuming a single reference for each candidate, and a vocabulary of size <span class="math inline">\(V\)</span>, define <span class="math inline">\(X\)</span> as the matrix of shape <span class="math inline">\(c\times V\)</span> containing one-hot encoded vectors for each word in the candidate, and <span class="math inline">\(Y\)</span> of shape <span class="math inline">\(r\times V\)</span> for the reference. Let <span class="math inline">\(S^n\)</span> and <span class="math inline">\(P^n\)</span> be the matrices defined as:</p>
+<p><span class="math display">\[
+S_{i,j}^n = \prod_k^{n-1} x_{i+k}x_{j+k}
+\]</span> <span class="math display">\[
+P_{i,j}^n = \prod_k^{n-1} y_{i+k}x_{j+k}
+\]</span> The counts are retrieved by summing a column values i.e.</p>
+<p><span class="math display">\[ v_i^{x,n} = \sum_{j=0}^{c-n+1} S^n_{j,i} \]</span></p>
+<p>The nominator in BLEU can be written as:</p>
+<p><span class="math display">\[
+O_n  = \sum_{i=1}^c \frac{min(v_i^{x,n}, v_i^{y,n})}{v_i^{x,n}},
+\]</span> and BLEU's n-gram precision:</p>
+<p><span class="math display">\[
+p_n = \frac{O_n}{c - n +1}
+\]</span></p>
+<h5 id="lower-bound">Lower bound:</h5>
+<p><span class="math display">\[
+E_{x\sim p_x}[O_n^i] \geq 
+\]</span></p>
+<h4 id="issues-comments">Issues &amp; comments:</h4>
+<p>Too many errors in their math.</p>
+</body>
+</html>
