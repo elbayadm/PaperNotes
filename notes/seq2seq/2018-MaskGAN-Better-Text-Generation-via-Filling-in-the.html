@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="maskgan-better-text-generation-via-filling-in-the-_____">MaskGAN : Better Text Generation via Filling in the _____</h2>
+<p>William Fedus; Ian Goodfellow and Andrew M. Dai</p>
+<p><strong>ICLR 2018</strong> | <a href="http://arxiv.org/abs/1801.07736">arxiv</a>| <a href="https://openreview.net/forum?id=ByOExmWAb&amp;noteId=HJbx71pBM">openreview</a> | <a href="https://github.com/kingsouljz/tensorflow/tree/ab2858382d397fd1208406e03926105d747d7d92/research/maskgan">code*</a> | <a href="https://duvenaud.github.io/learn-discrete/slides/maskgan.pdf">slides</a></p>
+<h4 id="problematic">Problematic:</h4>
+<p>Exposure bias &amp; teacher forcing training of autoregressive seq2seq models. GANs was originally designed to output differentiable values, so it's challenging to use them for discrete language generation.</p>
+<p>GAN also suffers from issues such as training instability and mode dropping. Mode dropping occurs when the generator rarely generates certain modalities. This is exacerbated in text generation with many complex modes bigrams, phrases, idioms...</p>
+<p>Besides, in the autoregressive setting, the discriminator loss is only observed after the full sequence has been sampled which makes the training unstable especially with longuer sequences.</p>
+<h4 id="contributions">Contributions:</h4>
+<p>An actor-critic conditional GAN that fills in missing text conditionned on the surrounding context.</p>
+<p>Fill-in-the-blank task. It improves the information error signal sent to the generator as it'll only focus on the outlier term i.e. the in-filling</p>
+<p>For each sequence <span class="math inline">\(x=(x_1, .., x_T)\)</span> a binary mask is generated <span class="math inline">\(m=(m_1, ...m_T)\)</span> to select which tokens remain. if dropped ie <span class="math inline">\(m_t=0\)</span> <span class="math inline">\(x_t\)</span> is replaced with a special token <span class="math inline">\(&lt;m&gt;\)</span>. The masked sequence is referred to as <span class="math inline">\(m(x)\)</span></p>
+<p>The decoder is now conditionned on what it has generated so far as well as the masked input i.e. <span class="math display">\[
+p(\hat x_1, ... \hat x_T| m(x)) = \prod_{t=1}^T G(x_t)\\
+G(x_t) \equiv p(\hat x_t| \hat x_{\leq t-1}, m(x))
+\]</span></p>
+<div class="figure">
+<img src="https://i.imgur.com/d5KlFle.png" />
+
+</div>
+<p>The discriminator <span class="math inline">\(D_\phi\)</span> has a similar architecture with binary output instead of a distribution over the vocabulary. <span class="math inline">\(D_\phi\)</span> is given the filled in sequence as well as the original input <span class="math inline">\(x\)</span> and computes the probability of each token <span class="math inline">\(\tilde x_t\)</span> being real: <span class="math display">\[
+D_\phi(\tilde x_t | \tilde x, m(x)) = p(\tilde x_t = x_t^* |\tilde x, m(x))
+\]</span></p>
+<p>The logarithm of this probability is regarded as the reward: <span class="math display">\[ r_t \equiv \log D_\phi(\tilde x_t | \tilde x, m(x)) \]</span></p>
+<p>The critic on top of the <span class="math inline">\(D_\phi\)</span> estimates the value function, which is the discounted total return of the filled-in sequence <span class="math inline">\(R_t = \sum_{s=t}^T \gamma^s r_s\)</span>, <span class="math inline">\(\gamma\)</span> being the discount factor (a token generated at t will influence the rewards of that time step and subsequent time steps).</p>
+<h5 id="training">Training:</h5>
+<p>The model is not differentiable due to the sampling performed by the generator. Therefore, the generator's gradient is estimated via policy gradient.</p>
+<p><span class="math inline">\(G\theta\)</span> seeks to maximize the cumulative reward <span class="math inline">\(R=\sum_t R_t\)</span>, thus we perform gradient ascent on <span class="math inline">\(\E_{G_\theta}[R]\)</span>.</p>
+<p>An unbiased estimator of the gradient for a single token would be:</p>
+<p><span class="math display">\[\nabla_\theta E_{G_\theta}[R_t] = R_t \nabla_\theta \log G_\theta(\hat x_t), \]</span></p>
+<p>the variance of which may be reduced by using the learnt value function as a baseline <span class="math inline">\(b_t=V^G(x_{1:t})\)</span> which is produced by the critic. Hence,</p>
+<p><span class="math display">\[\nabla_\theta E_{G_\theta}[R_t] = (R_t -b_t) \nabla_\theta \log G_\theta(\hat x_t), \]</span></p>
+<p>The discriminator will be updates using the gradient <span class="math display">\[
+\nabla_\phi \frac{1}{m} \sum_{i=1}^m \left[ \log D(x^i) + \log (1 - D(G(z^i)))\right]
+\]</span></p>
+<h5 id="tackling-long-sequences">Tackling long sequences:</h5>
+<p>Modify the core algorithm with a dynamic task consisting of training up to a maximum length <span class="math inline">\(T\)</span> then increment the length upon convergence.</p>
+<p><strong>Intuition:</strong> capture dependencies over short sequences before moving to the longuer ones. (cf. curriculum learning)</p>
+<h5 id="tackling-reinforces-variance-issue-with-large-vocabularies">Tackling REINFORCE's variance issue with large vocabularies:</h5>
+<p>Instead of computing of only the sampled token, use the full information outputed by the generator i.e. the probability distribution over the full vocabulary and evaluate the reward of each possibility. <strong>Computationally costly</strong> but might be beneficial.</p>
+<h5 id="training-1">Training:</h5>
+<p>A language model is trained using MLE, then this pretrained model initializes a seq2seq encoder and decoders. This seq2seq model is furthermore trained on the fill-in task with MLE (MaskMLE).</p>
+<p>The model with the lowest validation perplexity is selected via a hypermatarer sweep over 500 runs !!!</p>
+<h4 id="experiments">Experiments:</h4>
+<p>The Penn Treebank (PTB) and IMDB datasets.</p>
+<p>The model can be run in unconditional mode where all the context is masked.</p>
+<p>The maskGAN generates samples which are more likely under the MLE than MaskMLE which translates into a low perplexity under the pretrained LM.</p>
+<p>Qualitatively, the human evaluation favors the MaskGAN as well:</p>
+<div class="figure">
+<img src="https://i.imgur.com/NhTqOsF.png" />
+
+</div>
+<h4 id="issues-comments">Issues &amp; comments:</h4>
+<p>Mode collapse: <img src="https://i.imgur.com/OVKNXw4.png" /></p>
+<p><strong>Check</strong></p>
+<p>Designing error attribution per time step in prior NLP GANs (Yu et al. 2017 &amp; Li et al. 2017)</p>
+</body>
+</html>
