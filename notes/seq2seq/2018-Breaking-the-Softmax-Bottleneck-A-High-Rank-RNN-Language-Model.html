@@ -7,8 +7,67 @@
   <title></title>
   <style type="text/css">code{white-space: pre;}</style>
   <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 </head>
 <body>
-<p><a href="https://openreview.net/forum?id=HkwZSG-CZ">openreview</a></p>
+<h2 id="breaking-the-softmax-bottleneck-a-high-rank-rnn-language-model">Breaking the Softmax Bottleneck: A High-Rank RNN Language Model</h2>
+<p><strong>ICLR 2018</strong> | <a href="https://openreview.net/forum?id=HkwZSG-CZ">openreview</a> | <a href="https://github.com/zihangdai/mos">code* (pytorch)</a></p>
+<h4 id="problematic">Problematic:</h4>
+<p>The <em>expressiveness</em> of softmax based model is limited by a <em>softmax bottleneck</em>. It lacks the capacity to model natural language in its complexity.</p>
+<h4 id="contributions">Contributions:</h4>
+<p>Formulating language modeling as a matrix factorization problem.</p>
+<p>The RNN autoregressive approach consists of predicting the next token condtionned on a fixed size vector (context vector) encoding the previously generated tokens as well as the source code.</p>
+<p>The probability distribution over the vocabulary is given by a softmax of the logits obtained by a dot product between the word emebddings and the context vector.</p>
+<p>With the matrix factorization formulation of the problem, we study the effectiveness of the softmax-based RNN <strong>and</strong> introduce discrete latent variables into the RNN LM and and formulate the next token probability as <em>Mixture of Softmaxes</em> (MoS)</p>
+<h5 id="lm-as-matrix-factorization">LM as matrix factorization:</h5>
+<p>Consider a limited set of possible contexts and the pairs of (context, conditional next token distribution) i.e <span class="math inline">\(\{(c_i, P^*(X|c_i))\}_{1\leq i\leq N}\)</span>. We assume the data distribution <span class="math inline">\(P^* &gt; 0\)</span> everywhere.</p>
+<p>Given a ensemble of parametric distributions <span class="math inline">\(\{P_\theta\}\)</span> is there a <span class="math inline">\(\theta\)</span> such that <span class="math inline">\(P_\theta\)</span> matches the data distribuion <span class="math inline">\(P^*\)</span></p>
+<p>For the sotmax models we define the following matrices:</p>
+<div class="figure">
+<img src="https://i.imgur.com/BIH6r4D.png" />
+
+</div>
+<p>A set of matrices is furthermore formed by applying row-wise shift to A:</p>
+<p><span class="math display">\[
+F(A) = \{ A+ \Lambda J_{N, M} | \Lambda\; \text{is diagonal from} \;\mathbb R^{N\times N})\},
+\]</span> where <span class="math inline">\(J\)</span> is the all ones matrix. This simply add an arbitrary scalar <span class="math inline">\(\lambda_i\)</span> to each row.</p>
+<h5 id="properties-of-fa">Properties of <span class="math inline">\(F(A)\)</span>:</h5>
+<p>For <span class="math inline">\(A&#39;\)</span> a matrix of logits we derive the underlying distribution <span class="math inline">\(P_{A&#39;}\)</span> by applying a softmax. ie. <span class="math inline">\(P_{A&#39;}(x_j|c_i)=\frac{\exp(A&#39;_{i,j})}{\sum\exp A&#39;_{ik}}\)</span></p>
+<p>$$ (P1) ; A' F(A) Softmax(A')=P^* ; </p>
+<p>(P2); A_1A_2 F(A),; |rank(A_1) - rank(A_2)| 1. $$</p>
+<p>The <span class="math inline">\(expressiveness\)</span> issue becomes: <span class="math display">\[ 
+\exists? \theta s.t. \exists A&#39;\in F(A), s.t H_\theta W_\theta^T = A&#39;
+\]</span></p>
+<p>Some rank contraints arise: first, we need the rank <span class="math inline">\(HW^T\)</span> to be at least as large as the rank of <span class="math inline">\(A\)</span>. Second, given the dimensions of <span class="math inline">\(H\)</span> and <span class="math inline">\(W\)</span>, the rank of <span class="math inline">\(HW^T\)</span> is upper bounded by <span class="math inline">\(d\)</span>. So if <span class="math inline">\(d &lt; rank(A&#39;)\)</span> the model is simply not experssive enough.</p>
+<p>The softmax bottleneck is expressed as follows:</p>
+<p>if <span class="math inline">\(d &lt; rank(A) - 1\)</span>, for any function family <span class="math inline">\(\mathcal U\)</span> and any model parameter <span class="math inline">\(\theta\)</span>, there exists a context <span class="math inline">\(c\)</span> s.t. <span class="math inline">\(P_\theta(X|c)\neq P^*(X|c)\)</span></p>
+<p>It's hypothesized that the natural language true log probability matrix is of a high rank since the probelm is highly context dependent (fair enough)</p>
+<p>Naively increasing the experssiveness by increasing <span class="math inline">\(d\)</span> is not a fix; it explodes the parametric space and thus the model will be prone to overfitting.</p>
+<p>Introduce <em>Mixture of softmaxes</em>:</p>
+<p><span class="math display">\[
+P_\theta(x|c) = \sum_{k=1}^K \pi_{c,k} \frac{\exp(h_{c,k]^Tw_x})}{\sum_{x&#39;}\exp(h_{c,k]^Tw_{x&#39;}})},
+\]</span> where <span class="math inline">\(\pi_{c,k}\)</span> is the prior or mixture weight s.t. <span class="math inline">\(\sum_k\pi_{c,k} = 1\)</span>.</p>
+<p>The prior <span class="math inline">\(\pi_{c,k}\)</span> and the kth context vector <span class="math inline">\(h_{c,k}\)</span> are obtained by applying a stack of recurrent layers on top of <span class="math inline">\(X\)</span> to obtain hidden states <span class="math inline">\((g_1, ...g_T)\)</span> and then:</p>
+<p><span class="math display">\[
+\pi_{c_t,k} = softmax(w_{\pi, k}^Tg_t)\\
+h_{c_t, k} = tanh(W_{h,k}g_t),
+\]</span> where <span class="math inline">\(W_{h,k}\)</span> and <span class="math inline">\(w_{\pi, k}\)</span> are model parameters.</p>
+<p>In matrix form:</p>
+<p>$$ A_{MoS} = <em>{k=1}^K <em>k (H</em>{, k}W</em>^T)</p>
+<p>$$ Given the non-linearity (log sum exp) this matrix can be arbitrarly high-rank.</p>
+<p>An aletrnative to mixing the softmaxes is to simply mix the contex vector prior to applying softmax. However this suffers from the same lack of expressiveness as a simple softmax.</p>
+<h4 id="experiments">Experiments:</h4>
+<p>Language modeling on PTB , WikiText-2, 1B Word and the SwitchBoard dialog dataset.</p>
+<p>Results on SwitchBoard:</p>
+<div class="figure">
+<img src="https://i.imgur.com/RW3x1cQ.png" />
+
+</div>
+<h4 id="issues-and-comments">Issues and comments:</h4>
+<p>Beautifully written and argued with extensive experiments.</p>
+<p><strong>Check:</strong></p>
+<ul>
+<li>Benchmarks: Merity et al 2017, Melis et al. 2017 and Krause et al. 2017.</li>
+</ul>
 </body>
 </html>
