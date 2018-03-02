@@ -10,11 +10,9 @@
   <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 </head>
 <body>
-<h2 id="title">Title</h2>
-<h4 id="links">links:</h4>
-<p><a href="http://arxiv.org/abs/1412.2007">arxiv</a> <a href="https://github.com/">code*</a><br />
-<a href="https://github.com/">code</a></p>
-<p>Appeared in : <em>Conf</em></p>
+<h2 id="on-using-very-large-target-vocabulary-for-neural-machine-translation">On Using Very Large Target Vocabulary for Neural Machine Translation</h2>
+<p>Sébastien Jean, Kyunghyun Cho, Roland Memisevic, Yoshua Bengio</p>
+<p><strong>ACL 2015</strong> | <a href="http://arxiv.org/abs/1412.2007">arxiv</a> | <a href="https://github.com/">code*</a> | <a href="https://github.com/">code</a></p>
 <h4 id="problematic">Problematic:</h4>
 <p>Seq2seq models struggle with large vocabularies: training and decoding complexity increses proportionally. Besides, training with a shortlist of words (k most frequent) hurts the model's performance (especially with languages having a rich set of words (german, arabic))</p>
 <h5 id="related">Related:</h5>
@@ -49,12 +47,22 @@ Q_i(y_k) = 1/|V_i&#39;| if y_k \in V&#39;_i, 0 \text{otherwise}.
 \]</span></p>
 <p>This choice cancels out the <span class="math inline">\(Q\)</span> term in the importance weights.</p>
 <h4 id="decoding-time">Decoding time:</h4>
-<p>Either: - Limit to K most frequent term in the full vocab (no gain). - use an existing word alignement model (eg. attention weights of seq2seq-attn or fast_align) to align the source and target words in the training corpus. For each source setence build a target word set consisting og K-most frequence words and K' likely target words for each source word.</p>
+<p>Either:</p>
+<ul>
+<li><p>Limit to K most frequent term in the full vocab (no gain).</p></li>
+<li><p>use an existing word alignement model (eg. attention weights of seq2seq-attn or fast_align) to align the source and target words in the training corpus. For each source setence build a target word set consisting og K-most frequence words and K' likely target words for each source word.</p></li>
+</ul>
 <h4 id="experiments">Experiments:</h4>
 <p>WMT'14 English-French and English-German. The full vocab is of 500k words (99.5% coverage compared to 96% coverage of the usual 30k words EN-FR).</p>
 <p><span class="math inline">\(V&#39;\)</span> is either 15k or 30k</p>
-<p>Experimented with shuffling the training corpus every epoch, allowing the words to be contrasted with different sets every time. <img src="https://i.imgur.com/sKc73vs.png" alt="img" /> #### Issues &amp; comments: - Decoding dependancy on other alignement models (fast_align) is not convincing.</p>
+<p>Experimented with shuffling the training corpus every epoch, allowing the words to be contrasted with different sets every time.</p>
+<div class="figure">
+<img src="https://i.imgur.com/sKc73vs.png" alt="img" />
+<p class="caption">img</p>
+</div>
+<h4 id="issues-comments">Issues &amp; comments:</h4>
 <ul>
+<li><p>Decoding dependancy on other alignement models (fast_align) is not convincing.</p></li>
 <li><p>The choice of <span class="math inline">\(Q\)</span> as the uniform distribution is computationally efficient but doesn't make much sense semantically speaking.</p></li>
 <li><p>Isn't there a better way to partition the training corpus?</p></li>
 <li><p>A good trick: At the end of the trainign stage, freeze the word emebddings and cotinue training the model &gt; help increase BLEU</p></li>
