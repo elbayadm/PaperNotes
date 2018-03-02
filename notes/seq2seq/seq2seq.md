@@ -9,15 +9,15 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 02/03/2018_16:05:55</center>
+<center> Update: 02/03/2018_16:16:36</center>
 
   	
 1. [ Stable and Effective Trainable Greedy Decoding for Sequence to Sequence Learning](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2018-Stable-and-Effective-Trainable-Greedy-Decoding-for-Sequence-to-Sequence-Learning.html)
-2. [ 'MaskGAN](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2018-MaskGAN-Better-Text-Generation-via-Filling-in-the.html)
+2. [ MaskGAN](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2018-MaskGAN-Better-Text-Generation-via-Filling-in-the.html)
 3. [ Discrete Autoencoders for Sequence Models](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2018-Discrete-Autoencoders-for-Sequence-Models.html)
-4. [ 'Deterministic Non-Autoregressive Neural Sequence Modeling by Iterative](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2018-Deterministic-Non-Autoregressive-Neural-Sequence-Modeling-by-Iterative-Refinement.html)
-5. [ International Conference on Learning Representations 'Breaking the Softmax Bottleneck](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2018-Breaking-the-Softmax-Bottleneck-A-High-Rank-RNN-Language-Model.html)
-6. [ 'Using stochastic computation graphs formalism for optimization of](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2017-Using-stochastic-computation-graphs-formalism-for-optimization-of-sequence-to-sequence-model.html)
+4. [ Deterministic Non-Autoregressive Neural Sequence Modeling by Iterative](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2018-Deterministic-Non-Autoregressive-Neural-Sequence-Modeling-by-Iterative-Refinement.html)
+5. [ Breaking the Softmax Bottleneck](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2018-Breaking-the-Softmax-Bottleneck-A-High-Rank-RNN-Language-Model.html)
+6. [ Using stochastic computation graphs formalism for optimization of sequence-to-sequence model](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2017-Using-stochastic-computation-graphs-formalism-for-optimization-of-sequence-to-sequence-model.html)
 7. [ Translating Phrases in Neural Machine Translation](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2017-Translating-Phrases-in-Neural-Machine-Translation.html)
 8. [ Towards Neural Phrase-based Machine Translation](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2017-Towards-Neural-Phrase-based-Machine-Translation.html)
 9. [ Synthetic and Natural Noise Both Break Neural Machine Translation](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2017-Synthetic-and-Natural-Noise-Both-Break-Neural-Machine-Translation.html)
