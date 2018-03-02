@@ -36,7 +36,7 @@ D_\phi(\tilde x_t | \tilde x, m(x)) = p(\tilde x_t = x_t^* |\tilde x, m(x))
 <p>The critic on top of the <span class="math inline">\(D_\phi\)</span> estimates the value function, which is the discounted total return of the filled-in sequence <span class="math inline">\(R_t = \sum_{s=t}^T \gamma^s r_s\)</span>, <span class="math inline">\(\gamma\)</span> being the discount factor (a token generated at t will influence the rewards of that time step and subsequent time steps).</p>
 <h5 id="training">Training:</h5>
 <p>The model is not differentiable due to the sampling performed by the generator. Therefore, the generator's gradient is estimated via policy gradient.</p>
-<p><span class="math inline">\(G\theta\)</span> seeks to maximize the cumulative reward <span class="math inline">\(R=\sum_t R_t\)</span>, thus we perform gradient ascent on <span class="math inline">\(\E_{G_\theta}[R]\)</span>.</p>
+<p><span class="math inline">\(G_\theta\)</span> seeks to maximize the cumulative reward <span class="math inline">\(R=\sum_t R_t\)</span>, thus we perform gradient ascent on <span class="math inline">\(E_{G_\theta}[R]\)</span>.</p>
 <p>An unbiased estimator of the gradient for a single token would be:</p>
 <p><span class="math display">\[\nabla_\theta E_{G_\theta}[R_t] = R_t \nabla_\theta \log G_\theta(\hat x_t), \]</span></p>
 <p>the variance of which may be reduced by using the learnt value function as a baseline <span class="math inline">\(b_t=V^G(x_{1:t})\)</span> which is produced by the critic. Hence,</p>
@@ -62,7 +62,8 @@ D_\phi(\tilde x_t | \tilde x, m(x)) = p(\tilde x_t = x_t^* |\tilde x, m(x))
 
 </div>
 <h4 id="issues-comments">Issues &amp; comments:</h4>
-<p>Mode collapse: <img src="https://i.imgur.com/OVKNXw4.png" /></p>
+<p><strong>Mode collapse:</strong></p>
+<p>Mode Dropping is less extreme than SeqGAN but still noticeable: <img src="https://i.imgur.com/OVKNXw4.png" /></p>
 <p><strong>Check</strong></p>
 <p>Designing error attribution per time step in prior NLP GANs (Yu et al. 2017 &amp; Li et al. 2017)</p>
 </body>
