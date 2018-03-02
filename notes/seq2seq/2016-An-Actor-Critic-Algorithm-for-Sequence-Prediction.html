@@ -7,14 +7,22 @@
   <title></title>
   <style type="text/css">code{white-space: pre;}</style>
   <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 </head>
 <body>
 <h2 id="an-actor-critic-algorithm-for-sequence-prediction">An Actor-Critic Algorithm for Sequence Prediction</h2>
-<h4 id="links">links:</h4>
-<p><a href="http://arxiv.org/abs/">arxiv</a> <a href="https://github.com/">code*</a><br />
-<a href="https://github.com/">code</a> <a href="https://openreview.net/forum?id=SJDaqqveg">openreview</a> Appeared in : <em>ICLR2018</em></p>
+<p>Dzmitry Bahdanau, Philemon Brakel, Kelvin Xu, Anirudh Goyal, Ryan Lowe, Joelle Pineau, Aaron Courville, Yoshua Bengio</p>
+<p><strong>ICLR 2018</strong> | <a href="https://openreview.net/forum?id=SJDaqqveg">openreview</a></p>
 <h4 id="problematic">Problematic:</h4>
+<p>Exposure bias of training RNN with ML in teacher forcing mode.</p>
 <h4 id="contributions">Contributions:</h4>
+<p>Use Actor-Critic methods from RL. It introduces a <em>critic</em> network that is trained to predict the value of an output token, given the policy of an <em>actor</em> network. This allows for directly optimizing a task-specific score.</p>
+<p>In the supervised paradigm, the critic is conditionned on the ground truth output.</p>
+<p>A trained predictor <span class="math inline">\(h\)</span> is evaluated by computing the average task specific score <span class="math inline">\(R(\hat Y=h(X), Y)\)</span>. The conditionned RNN is viewed as a <em>stochastic policy</em> that generates <em>actions</em> and receives the task score as the <em>return</em>. Generally, the <em>return</em> <span class="math inline">\(R\)</span> is received at the end of the sequence, but we can consider the case where it's partially received at intermediate steps in the form of rewards <span class="math inline">\(r_t\)</span> where <span class="math inline">\(R=\sum_t r_t\)</span> which eases the learning of the critic.</p>
+<p>The value function for an unfinished prediction <span class="math inline">\(\hat Y_{\leq t}\)</span> is defined as:</p>
+<p><span class="math display">\[
+V(\hat Y_{\leq t}; X, Y) = \mathbb E_{\hat Y_{&gt;t}\simp(.|\hat Y_{\leq t}, X)}\sum_{\tau=t+1}^T r_\tau(\hat y_t; \hat Y_{&lt;\tau}, Y)
+\]</span></p>
 <h4 id="issues-comments">Issues &amp; comments:</h4>
 </body>
 </html>
