@@ -9,7 +9,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 02/03/2018_11:42:58</center>
+<center> Update: 02/03/2018_11:46:27</center>
 
   	
 1. [ Discrete Autoencoders for Sequence Models](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2018-Discrete-Autoencoders-for-Sequence-Models.html)
@@ -25,3 +25,4 @@ tags: [DL, NLP, CV, CL]
 11. [ An Actor-Critic Algorithm for Sequence Prediction](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2016-An-Actor-Critic-Algorithm-for-Sequence-Prediction.html)
 12. [ Sequence Level Training with Recurrent Neural Networks](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2015-Sequence-Level-Training-with-Recurrent-Neural-Networks.html)
 13. [ Minimum Risk Training for Neural Machine Translation](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2015-Minimum-Risk-Training-for-Neural-Machine-Translation.html)
+14. [ On Using Very Large Target Vocabulary for Neural Machine Translation](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2014-On-Using-Very-Large-Target-Vocabulary-for-Neural-Machine-Translation.html)

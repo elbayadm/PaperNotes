@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="title">Title</h2>
+<h4 id="links">links:</h4>
+<p><a href="http://arxiv.org/abs/1412.2007">arxiv</a> <a href="https://github.com/">code*</a><br />
+<a href="https://github.com/">code</a></p>
+<p>Appeared in : <em>Conf</em></p>
+<h4 id="problematic">Problematic:</h4>
+<p>Seq2seq models struggle with large vocabularies: training and decoding complexity increses proportionally. Besides, training with a shortlist of words (k most frequent) hurts the model's performance (especially with languages having a rich set of words (german, arabic))</p>
+<h5 id="related">Related:</h5>
+<ul>
+<li><p>Stochastic approximation via noise contrastive estimation</p></li>
+<li><p>Words clustered into hierarchical classes and the proba is factorized as <span class="math inline">\(p(y|h) = p(c|h). p(y|c, h)\)</span> (class x intraclass proba)</p></li>
+</ul>
+<p>Both reduces the computational complexity of training but not that of decoding.</p>
+<h4 id="contributions">Contributions:</h4>
+<p>Propose an approximate training based on (biased) importance sampling.</p>
+<p>The computational complexity due to the vocabulary size stems from the dot product <span class="math inline">\(w^Th_t\)</span> at each time step needed to retrieve the probability distribution over the vocabulary.</p>
+<p>The proposed approach renders training complexity constant wrt. the size of the vocabulary.</p>
+<p>At each update, use only a small subset of the vocabulary <span class="math inline">\(V&#39;\)</span></p>
+<p><span class="math display">\[
+p(y_t| h_t) = \frac{1}{Z} exp\left( w_t^Th_t + b_t\right) \\
+Z  = \sum_{k:y_k\in V} exp\left( w_k^Th_t + b_k\right)
+\]</span> Let <span class="math inline">\(\mathcal E\)</span> be the energy defined as: <span class="math display">\[ \mathcal E(y_j) =  w_j^Th_t + b_j \]</span> Thus: <span class="math display">\[ 
+\begin{align}
+\nabla \log p(y_t| h_t)  &amp; = \nabla\mathcal E(y_t) - \sum_{k:y_k\in V} p(y_k|h_t)\nabla\mathcal E(y_k) \\
+&amp; = \nabla \mathcal E(y_t) - E_P\left[\nabla \mathcal E(y)  \right]
+\end{align}
+\]</span></p>
+<p>The main idea is to approximate the expectation term above via importance sampling:</p>
+<p>Given a proposal distrib <span class="math inline">\(Q\)</span> and a subest <span class="math inline">\(V&#39;\)</span>:</p>
+<p><span class="math display">\[
+E_P\left[\nabla \mathcal E(y)  \right] = \sum_{y_k\in V&#39;} \frac{\omega_k}{\sum \omega_k} \nabla \mathcal E(y_k),
+\]</span> where <span class="math inline">\(\omega_k = \exp(\mathcal E(y_k) -\log Q(y_k))\)</span></p>
+<h5 id="choice-of-v">Choice of <span class="math inline">\(V&#39;\)</span>:</h5>
+<p>We partition the training corpus and define a subset <span class="math inline">\(V&#39;\)</span> for each partition prior to training. <span class="math inline">\(V&#39;\)</span> is simply the vocab that you would define if the partition is the full traiing corpus.</p>
+<p>For each <span class="math inline">\(V&#39;_i\)</span> assigned the ith partition: <span class="math display">\[
+Q_i(y_k) = 1/|V_i&#39;| if y_k \in V&#39;_i, 0 \text{otherwise}.
+\]</span></p>
+<p>This choice cancels out the <span class="math inline">\(Q\)</span> term in the importance weights.</p>
+<h4 id="decoding-time">Decoding time:</h4>
+<p>Either: - Limit to K most frequent term in the full vocab (no gain). - use an existing word alignement model (eg. attention weights of seq2seq-attn or fast_align) to align the source and target words in the training corpus. For each source setence build a target word set consisting og K-most frequence words and K' likely target words for each source word.</p>
+<h4 id="experiments">Experiments:</h4>
+<p>WMT'14 English-French and English-German. The full vocab is of 500k words (99.5% coverage compared to 96% coverage of the usual 30k words EN-FR).</p>
+<p><span class="math inline">\(V&#39;\)</span> is either 15k or 30k</p>
+<p>Experimented with shuffling the training corpus every epoch, allowing the words to be contrasted with different sets every time. <img src="https://i.imgur.com/sKc73vs.png" alt="img" /> #### Issues &amp; comments: - Decoding dependancy on other alignement models (fast_align) is not convincing.</p>
+<ul>
+<li><p>The choice of <span class="math inline">\(Q\)</span> as the uniform distribution is computationally efficient but doesn't make much sense semantically speaking.</p></li>
+<li><p>Isn't there a better way to partition the training corpus?</p></li>
+<li><p>A good trick: At the end of the trainign stage, freeze the word emebddings and cotinue training the model &gt; help increase BLEU</p></li>
+<li><p>Beam search of nmt: normalize proba by the length of the candidate (didn't work well for captioning) <strong>Check:</strong></p></li>
+<li><p>stochastic approximation of the vocab distributio Mnih et al. 2013 and Mikolov et al. 2013 based on noise contrastive estimation.</p></li>
+<li><p>A translation-specific method to handle OOV (Luong et al. 2015)</p></li>
+<li><p>The parent paper Bengio and Sénécal 2008.</p></li>
+</ul>
+</body>
+</html>
