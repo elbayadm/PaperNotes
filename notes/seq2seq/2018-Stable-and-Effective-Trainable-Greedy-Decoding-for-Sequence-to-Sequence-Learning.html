@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="stable-and-effective-trainable-greedy-decoding-for-sequence-to-sequence-learning">Stable and Effective Trainable Greedy Decoding for Sequence to Sequence Learning</h2>
+<p>Yun Chen , Kyunghyun Cho , Samuel R. Bowman, Victor O.K. Li</p>
+<p><a href="http://arxiv.org/abs/">arxiv</a> | <a href="https://openreview.net/forum?id=rJZlKFkvM">openreviw</a></p>
+<p>Appeared in (*): <strong>ICLR 2018 Workshop</strong></p>
+<h4 id="problematic">Problematic:</h4>
+<p>Since the output space of seqences is expenontially large, heuristic search methods such as greedy decoding or beam search must be used to find high probability sequences. Greedy decoding is very fast but beam search leads to substantial improvment.</p>
+<h4 id="contributions">Contributions:</h4>
+<p>Propose a small neural network <em>actor</em> that observes and manipulates the hidden states of a previously trained decoder. Use beam search (B=35) to decode sentences with the plain decoder, rank them by BLEU and train the <em>actor</em> to encourage the decoder to generate the highest BLEU output in a single greedy decoding operation (i.e. without beam-search)</p>
+<div class="figure">
+<img src="https://i.imgur.com/zvPUu6O.png" />
+
+</div>
+<p>The <em>actor</em> takes for input the current decoder state <span class="math inline">\(h\)</span> and the source context vector <span class="math inline">\(c\)</span>, and define the action <span class="math inline">\(a\)</span> as:</p>
+<p><span class="math display">\[
+a = z \circ Wh + (1-z) \circ Uc,
+\]</span> where <span class="math inline">\(z\)</span> is a gate similar to other LSTM gates: <span class="math display">\[ z = \sigma(W_zh + U_z c)\]</span></p>
+<p>The <em>actor</em> decides whether to rely more on the source <span class="math inline">\(c\)</span> or the decoder state <span class="math inline">\(h\)</span> to generate the action.</p>
+<p>The action is then added to the hidden state:</p>
+<p><span class="math display">\[ \tilde h = f(h, c) + a \]</span></p>
+<h5 id="training-the-actor">Training the actor:</h5>
+<p>The corpus of the 35 sequences from beam-search trades off two goals:</p>
+<ul>
+<li><p>Having a high model likelihood so we can coerce the model to generate it without too much additional training.</p></li>
+<li><p>Having a good translation quality.</p></li>
+</ul>
+<p>Given a pair <span class="math inline">\(&lt;x,y&gt;\)</span> the original model generates <span class="math inline">\(Z=\{z^1, ..z^B\}\)</span> with beam-search decoding. We then choose the candidate with the highest score as our new target sequence. By doing so, we obtain a pseudo corpus <span class="math inline">\(D_{x,z}\)</span>.</p>
+<p>We keep the underlying model fixed and train the actor by maximizing the likelihoof of the pseudo pairs:</p>
+<p>$$</p>
+<p><em>{actor} = </em>{<em>actor} </em>{<x,z>D_{x,z}} P(z|x, <em>{nmt} </em>{actor}) $$</p>
+<h4 id="related">Related:</h4>
+<ul>
+<li>Gu et al 2017: trains a similar actor with critic-aware actor learning algorithm. &gt; noisy gradient estimation of the critic. Requires carefull design.</li>
+</ul>
+<h4 id="experiments">Experiments:</h4>
+<p>Evaluated on IWSLT16 English-German on both directions. Experiments show that the use of the <em>actor</em> is practical to replace beam-search with greedy decoding in most cases.</p>
+<p><img src="https://i.imgur.com/OgFiiwg.png" /> #### Issues &amp; comments:</p>
+<p><strong>Check:</strong></p>
+</body>
+</html>
