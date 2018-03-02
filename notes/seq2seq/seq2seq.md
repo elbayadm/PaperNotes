@@ -9,7 +9,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 02/03/2018_10:05:18</center>
+<center> Update: 02/03/2018_10:14:53</center>
 
   	
 1. [ Discrete Autoencoders for Sequence Models](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2018-Discrete-Autoencoders-for-Sequence-Models.html)
