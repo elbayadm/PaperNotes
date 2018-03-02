@@ -9,7 +9,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 02/03/2018_18:03:35</center>
+<center> Update: 02/03/2018_18:04:58</center>
 
   	
 1. [ Stable and Effective Trainable Greedy Decoding for Sequence to Sequence Learning](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/2018-Stable-and-Effective-Trainable-Greedy-Decoding-for-Sequence-to-Sequence-Learning.html)
