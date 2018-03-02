@@ -34,10 +34,12 @@ F(A) = \{ A+ \Lambda J_{N, M} | \Lambda\; \text{is diagonal from} \;\mathbb R^{N
 \]</span> where <span class="math inline">\(J\)</span> is the all ones matrix. This simply add an arbitrary scalar <span class="math inline">\(\lambda_i\)</span> to each row.</p>
 <h5 id="properties-of-fa">Properties of <span class="math inline">\(F(A)\)</span>:</h5>
 <p>For <span class="math inline">\(A&#39;\)</span> a matrix of logits we derive the underlying distribution <span class="math inline">\(P_{A&#39;}\)</span> by applying a softmax. ie. <span class="math inline">\(P_{A&#39;}(x_j|c_i)=\frac{\exp(A&#39;_{i,j})}{\sum\exp A&#39;_{ik}}\)</span></p>
-<p>$$ (P1) ; A' F(A) Softmax(A')=P^* ; </p>
-<p>(P2); A_1A_2 F(A),; |rank(A_1) - rank(A_2)| 1. $$</p>
+<p><span class="math display">\[\begin{align}
+(P1) \; A&#39; \in F(A) \iff Softmax(A&#39;)=P^* \; \text{ the added constant to every row gets simply canceled out by the softmax. }\\
+(P2)\; \forall A_1\neq A_2 \in F(A),\; |rank(A_1) - rank(A_2)| \leq 1.
+\end{align}\]</span></p>
 <p>The <span class="math inline">\(expressiveness\)</span> issue becomes: <span class="math display">\[ 
-\exists? \theta s.t. \exists A&#39;\in F(A), s.t H_\theta W_\theta^T = A&#39;
+\exists? \theta \,s.t.\, \exists A&#39;\in F(A), s.t\, H_\theta W_\theta^T = A&#39;
 \]</span></p>
 <p>Some rank contraints arise: first, we need the rank <span class="math inline">\(HW^T\)</span> to be at least as large as the rank of <span class="math inline">\(A\)</span>. Second, given the dimensions of <span class="math inline">\(H\)</span> and <span class="math inline">\(W\)</span>, the rank of <span class="math inline">\(HW^T\)</span> is upper bounded by <span class="math inline">\(d\)</span>. So if <span class="math inline">\(d &lt; rank(A&#39;)\)</span> the model is simply not experssive enough.</p>
 <p>The softmax bottleneck is expressed as follows:</p>
@@ -54,8 +56,10 @@ P_\theta(x|c) = \sum_{k=1}^K \pi_{c,k} \frac{\exp(h_{c,k]^Tw_x})}{\sum_{x&#39;}\
 h_{c_t, k} = tanh(W_{h,k}g_t),
 \]</span> where <span class="math inline">\(W_{h,k}\)</span> and <span class="math inline">\(w_{\pi, k}\)</span> are model parameters.</p>
 <p>In matrix form:</p>
-<p>$$ A_{MoS} = <em>{k=1}^K <em>k (H</em>{, k}W</em>^T)</p>
-<p>$$ Given the non-linearity (log sum exp) this matrix can be arbitrarly high-rank.</p>
+<p><span class="math display">\[
+\hat A_{MoS} = \log \sum_{k=1}^K \Pi_k \exp(H_{\theta, k}W_\theta^T)
+\]</span></p>
+<p>Given the non-linearity (log sum exp) this matrix can be arbitrarly high-rank.</p>
 <p>An aletrnative to mixing the softmaxes is to simply mix the contex vector prior to applying softmax. However this suffers from the same lack of expressiveness as a simple softmax.</p>
 <h4 id="experiments">Experiments:</h4>
 <p>Language modeling on PTB , WikiText-2, 1B Word and the SwitchBoard dialog dataset.</p>
