@@ -39,7 +39,7 @@ F(A) = \{ A+ \Lambda J_{N, M} | \Lambda\; \text{is diagonal from} \;\mathbb R^{N
 &amp;(P2)\; \forall A_1\neq A_2 \in F(A),\; |rank(A_1) - rank(A_2)| \leq 1.
 \end{align}\]</span> For (P1) the added constant to every row gets simply canceled out by the softmax.</p>
 <p>The <span class="math inline">\(expressiveness\)</span> issue becomes: <span class="math display">\[ 
-\exists? \theta \,s.t.\, \exists A&#39;\in F(A), s.t\, H_\theta W_\theta^T = A&#39;
+\exists? \theta\; \exists A&#39;\in F(A), s.t\, H_\theta W_\theta^T = A&#39;
 \]</span></p>
 <p>Some rank contraints arise: first, we need the rank <span class="math inline">\(HW^T\)</span> to be at least as large as the rank of <span class="math inline">\(A\)</span>. Second, given the dimensions of <span class="math inline">\(H\)</span> and <span class="math inline">\(W\)</span>, the rank of <span class="math inline">\(HW^T\)</span> is upper bounded by <span class="math inline">\(d\)</span>. So if <span class="math inline">\(d &lt; rank(A&#39;)\)</span> the model is simply not experssive enough.</p>
 <p>The softmax bottleneck is expressed as follows:</p>
