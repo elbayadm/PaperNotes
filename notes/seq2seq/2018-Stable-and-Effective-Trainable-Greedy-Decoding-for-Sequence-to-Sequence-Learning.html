@@ -37,15 +37,20 @@ a = z \circ Wh + (1-z) \circ Uc,
 </ul>
 <p>Given a pair <span class="math inline">\(&lt;x,y&gt;\)</span> the original model generates <span class="math inline">\(Z=\{z^1, ..z^B\}\)</span> with beam-search decoding. We then choose the candidate with the highest score as our new target sequence. By doing so, we obtain a pseudo corpus <span class="math inline">\(D_{x,z}\)</span>.</p>
 <p>We keep the underlying model fixed and train the actor by maximizing the likelihoof of the pseudo pairs:</p>
-<p>$$</p>
-<p><em>{actor} = </em>{<em>actor} </em>{<x,z>D_{x,z}} P(z|x, <em>{nmt} </em>{actor}) $$</p>
+<p><span class="math display">\[
+\hat\theta_{actor} = \arg\max_{\theta_actor} \sum_{&lt;x,z&gt;\in D_{x,z}} \log P(z|x, \hat\theta_{nmt} \theta_{actor})
+\]</span></p>
 <h4 id="related">Related:</h4>
 <ul>
 <li>Gu et al 2017: trains a similar actor with critic-aware actor learning algorithm. &gt; noisy gradient estimation of the critic. Requires carefull design.</li>
 </ul>
 <h4 id="experiments">Experiments:</h4>
 <p>Evaluated on IWSLT16 English-German on both directions. Experiments show that the use of the <em>actor</em> is practical to replace beam-search with greedy decoding in most cases.</p>
-<p><img src="https://i.imgur.com/OgFiiwg.png" /> #### Issues &amp; comments:</p>
-<p><strong>Check:</strong></p>
+<div class="figure">
+<img src="https://i.imgur.com/OgFiiwg.png" />
+
+</div>
+<h4 id="issues-comments">Issues &amp; comments:</h4>
+<p>Not so much improvment with RNN-based NMT models, at times the performance deteriorates. The speedup is significant if comparing greedy actor to base with beam search.</p>
 </body>
 </html>
