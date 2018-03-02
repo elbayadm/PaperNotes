@@ -9,6 +9,6 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 02/03/2018_10:14:53</center>
+<center> Update: 02/03/2018_11:42:58</center>
 
   	
