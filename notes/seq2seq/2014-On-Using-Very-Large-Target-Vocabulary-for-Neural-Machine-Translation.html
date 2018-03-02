@@ -43,7 +43,7 @@ E_P\left[\nabla \mathcal E(y)  \right] = \sum_{y_k\in V&#39;} \frac{\omega_k}{\s
 <h5 id="choice-of-v">Choice of <span class="math inline">\(V&#39;\)</span>:</h5>
 <p>We partition the training corpus and define a subset <span class="math inline">\(V&#39;\)</span> for each partition prior to training. <span class="math inline">\(V&#39;\)</span> is simply the vocab that you would define if the partition is the full traiing corpus.</p>
 <p>For each <span class="math inline">\(V&#39;_i\)</span> assigned the ith partition: <span class="math display">\[
-Q_i(y_k) = 1/|V_i&#39;| if y_k \in V&#39;_i, 0 \text{otherwise}.
+Q_i(y_k) = \begin{cases} 1/|V_i&#39;| \;\text{if} \;y_k \in V&#39;_i\\ 0\; \text{otherwise}.  \end{cases}
 \]</span></p>
 <p>This choice cancels out the <span class="math inline">\(Q\)</span> term in the importance weights.</p>
 <h4 id="decoding-time">Decoding time:</h4>
@@ -57,8 +57,8 @@ Q_i(y_k) = 1/|V_i&#39;| if y_k \in V&#39;_i, 0 \text{otherwise}.
 <p><span class="math inline">\(V&#39;\)</span> is either 15k or 30k</p>
 <p>Experimented with shuffling the training corpus every epoch, allowing the words to be contrasted with different sets every time.</p>
 <div class="figure">
-<img src="https://i.imgur.com/sKc73vs.png" alt="img" />
-<p class="caption">img</p>
+<img src="https://i.imgur.com/sKc73vs.png" />
+
 </div>
 <h4 id="issues-comments">Issues &amp; comments:</h4>
 <ul>
@@ -66,7 +66,11 @@ Q_i(y_k) = 1/|V_i&#39;| if y_k \in V&#39;_i, 0 \text{otherwise}.
 <li><p>The choice of <span class="math inline">\(Q\)</span> as the uniform distribution is computationally efficient but doesn't make much sense semantically speaking.</p></li>
 <li><p>Isn't there a better way to partition the training corpus?</p></li>
 <li><p>A good trick: At the end of the trainign stage, freeze the word emebddings and cotinue training the model &gt; help increase BLEU</p></li>
-<li><p>Beam search of nmt: normalize proba by the length of the candidate (didn't work well for captioning) <strong>Check:</strong></p></li>
+<li><p>Beam search of nmt: normalize proba by the length of the candidate (didn't work well for captioning)</p></li>
+<li><p>I face the same issues of dot products in the size of the vocabulary with my word-level smoothing.</p></li>
+</ul>
+<p><strong>Check:</strong></p>
+<ul>
 <li><p>stochastic approximation of the vocab distributio Mnih et al. 2013 and Mikolov et al. 2013 based on noise contrastive estimation.</p></li>
 <li><p>A translation-specific method to handle OOV (Luong et al. 2015)</p></li>
 <li><p>The parent paper Bengio and Sénécal 2008.</p></li>
