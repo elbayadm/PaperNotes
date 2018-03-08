@@ -10,7 +10,9 @@
   <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 </head>
 <body>
-<p><a href="https://github.com/nyu-dl/dl4mt-nonauto">code</a>, <a href="https://openreview.net/forum?id=B1l8BtlCb">openreview</a></p>
+<h2 id="non-autoregressive-neural-machine-translation">Non-Autoregressive Neural Machine Translation</h2>
+<p>Jiatao Gu, James Bradbury, Caiming Xiong, Victor O.K. Li, Richard Socher</p>
+<p><strong>ICLR 2018</strong> | <a href="https://github.com/nyu-dl/dl4mt-nonauto">code</a> | <a href="https://openreview.net/forum?id=B1l8BtlCb">openreview</a></p>
 <p>propose a non-autoregressive neural sequence model based on iterative refinement weakness of auto-regressive models : often non-Markovian (i.e., future state is dependent on present states AND other external factors) and nonlinear must resort to suboptimal approximate decoding (beam-search), which is incurs large latency Non-Autoregressive decoder predicts ALL target tokens given source tokens only.</p>
 <p><span class="math display">\[ P(y|x) = \prod_t p(y_t|x) \]</span></p>
 </body>

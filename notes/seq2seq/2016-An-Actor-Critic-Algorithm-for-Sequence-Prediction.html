@@ -21,7 +21,7 @@
 <p>A trained predictor <span class="math inline">\(h\)</span> is evaluated by computing the average task specific score <span class="math inline">\(R(\hat Y=h(X), Y)\)</span>. The conditionned RNN is viewed as a <em>stochastic policy</em> that generates <em>actions</em> and receives the task score as the <em>return</em>. Generally, the <em>return</em> <span class="math inline">\(R\)</span> is received at the end of the sequence, but we can consider the case where it's partially received at intermediate steps in the form of rewards <span class="math inline">\(r_t\)</span> where <span class="math inline">\(R=\sum_t r_t\)</span> which eases the learning of the critic.</p>
 <p>The value function for an unfinished prediction <span class="math inline">\(\hat Y_{\leq t}\)</span> is defined as:</p>
 <p><span class="math display">\[
-V(\hat Y_{\leq t}; X, Y) = \mathbb E_{\hat Y_{&gt;t}\simp(.|\hat Y_{\leq t}, X)}\sum_{\tau=t+1}^T r_\tau(\hat y_t; \hat Y_{&lt;\tau}, Y)
+V(\hat Y_{\leq t}; X, Y) = \mathbb E_{\hat Y_{&gt;t}\sim_p(.|\hat Y_{\leq t}, X)}\sum_{\tau=t+1}^T r_\tau(\hat y_t; \hat Y_{&lt;\tau}, Y)
 \]</span></p>
 <h4 id="issues-comments">Issues &amp; comments:</h4>
 </body>
