@@ -9,7 +9,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 08/03/2018_18:35:55</center>
+<center> Update: 08/03/2018_18:37:00</center>
 
   	
 1. [ On the Convergence of Adam and Beyond](https://rawgit.com/elbayadm/PaperNotes/master/notes/optimization/2018-On-the-Convergence-of-Adam-and-Beyond.html)
