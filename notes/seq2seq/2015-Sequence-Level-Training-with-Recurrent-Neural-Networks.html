@@ -25,34 +25,15 @@
 <p>In this case the loss is :</p>
 <p><span class="math inline">\(E_{p_\theta}[r(y | y^*)]\)</span></p>
 <p>This is easily applicable to RNNs, which output a soft-max probability distribution at each time step. Besides, to resolve the exposure bias, the outputed distribution will be generated in evalution mode (decoding), eventualy with beam-search to generate multiple candidates.</p>
+<p>Training a model from scratch with this approach is infeasible, the other suggest warming-up with MLE then optimizing for a reward. These steps makes what the authors refer to as MIXER (Mixed Incremental Cross-Entropy Reinforce) which goes as follows:</p>
+<ol style="list-style-type: decimal">
+<li>Train model to optimize the likelihood of the target sequence, i.e. minimize the per time-step cross-entropy loss.</li>
+<li>Then, for a target sequence of size T, optimize the cross-entropy for the T-Δ first time steps of the sequence and use Reinforce to get a gradient on the expected loss (e.g. negative BLEU) for the recursive generation of the rest of the Δ time steps.</li>
+<li>Increase Δ and go back to 2., until Δ is equal to T.</li>
+</ol>
+<h2 id="experiments">Experiments:</h2>
+<p>Results on 3 benchmarks, summarization, machine translation and image captioning, show that this approach generates better outputs even without the beam-search.</p>
 <h2 id="issues">Issues:</h2>
-<p>TRaining a model from scratch with this approach is infeasible, the other suggest warming-up with MLE then optimizing for a reward.</p>
-<p><span class="citation">@Hugo_Larochelle</span>:</p>
-<pre><code>Summary
-
-This paper is concerned with the problem of predicting a sequence at the output, e.g. using an RNN. It aims at addressing the issue it refers to as exposure bias, which here refers to the fact that while at training time the RNN producing the output sequence is being fed the ground truth previous tokens (words) when producing the next token (something sometimes referred to as teacher forcing, which really is just maximum likelihood), at test time this RNN makes predictions using recursive generation, i.e. it is instead recursively fed by its own predictions (which might be erroneous). 
-
-Moreover, it also proposes a training procedure that can take into account a rich performance measure that can&#39;t easily be optimized directly, such as the BLEU score for text outputs. 
-
-The key observation is that the REINFORCE algorithm could be used to optimize the expectation of such arbitrarily complicated performance measures, for outputs produced by (stochastic) recursive generation. However, REINFORCE is a notoriously unstable training algorithm, which can often work terribly (in fact, the authors mention that they have tried using REINFORCE only, without success). Thus, they instead propose to gradually go from training according to maximum likelihood / teacher forcing to training using the REINFORCE algorithm on the expected performance measure.
-
-The proposed procedure, dubbed MIXER (Mixed Incremental Cross-Entropy Reinforce), goes as follows:
-1. Train model to optimize the likelihood of the target sequence, i.e. minimize the per time-step cross-entropy loss.
-2. Then, for a target sequence of size T, optimize the cross-entropy for the T-Δ first time steps of the sequence and use Reinforce to get a gradient on the expected loss (e.g. negative BLEU) for the recursive generation of the rest of the Δ time steps.
-3. Increase Δ and go back to 2., until Δ is equal to T.
-
-Experiments on 3 text benchmarks (summarization, machine translation and image captioning) show that this approach yields models that produces much better outputs when not using beam search (i.e. using greedy recursive generation) to generate an output sequence, compared to other alternatives such as regular maximum likelihood and Data as Demonstrator (DaD). DaD is similar to the scheduled sampling method of Bengio et al. (see my note: https://www.evernote.com/shard/s189/sh/c9ac2e3f-a150-4d0c-9a44-16657e5d42cd/5eb49d50695c903ca1b4a04934e63363), in that at training time, some of the previous tokens fed to the model are predicted tokens instead of ground truths. When using beam search, MIXER is only outperformed by DaD on the machine translation task.
-
-My two cents
-
-While it&#39;s a combination of known ideas, they are combined in a very well motivated way. It&#39;s quite impressive to see that, on certain problems, even using a beam search of size 1 allows MIXER to beat other baselines, even when these are using a larger beam.
-
-I note that while at test time, each prediction step looks at the top-k tokens with largest probability according to the model, REINFORCE instead samples at each steps, according to the output distribution. Thus, there is still a gap between how the model is used at training time and test time. It would be interesting to investigate ways of more directly optimizing the output of beam search.
-
-Actually, the authors did describe and try another approach, coined E2E in the paper, where they used the top-k tokens with largest probability as input to the next step. I&#39;m not 100% sure but this is effectively done by averaging the token embeddings of these top-k tokens, weighted by the relative probability of each token. This isn&#39;t exactly beam search, but it&#39;s an interesting approach for sure. Unfortunately it wasn&#39;t successful. I would note that, while the authors describe it as &quot;end-to-end&quot;, it is in a sense slightly different from what I usually have in mind (though there isn&#39;t really a formal definition for it). Indeed, the top-k operation they consider isn&#39;t a continuous function (unlike, say, max-pooling), so optimizing it directly by gradient descent doesn&#39;t provide the same kind of guaranties as we&#39;re used to. That said, I&#39;m really glad they reported the results of this variant.
-
-Overall, I think MIXER is well worth implementing in any model that is trying to do sequence prediction.
-
-The Fine Print: I write these notes sometimes hastily, and thus they might not always perfectly reflect what&#39;s in the paper. They are mostly meant to provide a first impression of the paper&#39;s topic, contribution and achievements. If your appetite is whet, I&#39;d recommend you dive in the paper and check for yourself. Oh, and do let me know if you think I got things wrong :-) </code></pre>
+<p>Does not outperform scheduled sampling (DaD data as demonstrator)</p>
 </body>
 </html>
