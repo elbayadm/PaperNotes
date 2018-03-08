@@ -21,9 +21,12 @@
 <li><p>Exposure bias ie discrepancy between the distribution during training (teacher-foricng) and the distribtion at evaluation time where the total error can escalate quickly.</p></li>
 </ul>
 <h2 id="proposed-solution">Proposed solution:</h2>
-<p>Use reinforcement learning. Specifically, the REINFORCE algorithm. &gt; A method for doing back-propagation on computational graphs that output a probability distribution on actions.</p>
+<p>Use reinforcement learning. Specifically, the REINFORCE algorithm.</p>
+<blockquote>
+<p>A method for doing back-propagation on computational graphs that output a probability distribution on actions.</p>
+</blockquote>
 <p>In this case the loss is :</p>
-<p><span class="math inline">\(E_{p_\theta}[r(y | y^*)]\)</span></p>
+<p><span class="math display">\[E_{p_\theta}[r(y | y^*)]\]</span></p>
 <p>This is easily applicable to RNNs, which output a soft-max probability distribution at each time step. Besides, to resolve the exposure bias, the outputed distribution will be generated in evalution mode (decoding), eventualy with beam-search to generate multiple candidates.</p>
 <p>Training a model from scratch with this approach is infeasible, the other suggest warming-up with MLE then optimizing for a reward. These steps makes what the authors refer to as MIXER (Mixed Incremental Cross-Entropy Reinforce) which goes as follows:</p>
 <ol style="list-style-type: decimal">
