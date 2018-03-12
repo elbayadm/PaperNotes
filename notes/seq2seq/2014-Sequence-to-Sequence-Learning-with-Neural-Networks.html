@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="sequence-to-sequence-learning-with-neural-networks">Sequence to Sequence Learning with Neural Networks</h2>
+<p>Ilya Sutskever, Oriol Vinyals, Quoc V. Le</p>
+<p><strong>NIPS 2014</strong> | <a href="http://arxiv.org/abs/1409.3215">arxiv</a> |</p>
+<h2 id="encoder">Encoder:</h2>
+<p>Given a sequence of vectors (hot-one encoding or any other embedding of vocabulary words) <span class="math inline">\(x=(x\_1, x\_2, ..,x\_{T\_x})\)</span></p>
+The encoder embed it into a vector <span class="math inline">\(c\)</span>. With an RNN, <span class="math inline">\(c\)</span> is generated as follows:
+<p>
+<span class="math display">\[\forall t ,\: h_t = f(x_t, h_{t-1})\]</span> <span class="math display">\[c = q(\{h_1,...,h_{T_x}\})\]</span>
+</p>
+<p>Where <span class="math inline">\(h_t\)</span> is the RNN hidden state at time t.</p>
+<p><span class="math inline">\(f\)</span> and <span class="math inline">\(q\)</span> are some nonlinear functions e.g. <span class="math inline">\(f\)</span> an LSTM and <span class="math inline">\(q\)</span> outputs the last hidden state.</p>
+<h2 id="decoder">Decoder:</h2>
+The decoder predicts the next word in the output sequence <span class="math inline">\(y\_t\)</span> given the context vector <span class="math inline">\(c\)</span> along with the previously generated words <span class="math inline">\(y\_1\)</span> until <span class="math inline">\(y\_{t-1}\)</span> The decoder defines a probability over the <span class="math inline">\(\mathbf y = (y\_1,...,y\_T)\)</span> by the chain rule:
+<p>
+<span class="math display">\[p(y) = \prod_{t=1}^T p(y_t\vert\{y_1,..,y_{t-1}\}, c)\]</span>
+</p>
+With the RNN each conditional probability is modeled as:
+<p>
+<span class="math display">\[p(y_t\vert\{y_1,..,y_{t-1}\}, c) = g(y_{t-1}, s_t, c) \]</span>
+</p>
+<p>Where <span class="math inline">\(g\)</span> is a nonlinear function and <span class="math inline">\(s_t\)</span> the hidden state of the RNN.</p>
+</body>
+</html>

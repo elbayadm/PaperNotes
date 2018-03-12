@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="improving-variational-inference-with-inverse-autoregressive-flow">Improving Variational Inference with Inverse Autoregressive Flow</h2>
+<p>Diederik P. Kingma, Tim Salimans, Rafal Jozefowicz, Xi Chen, Ilya Sutskever, Max Welling</p>
+<p><strong>conf</strong> | <a href="http://arxiv.org/abs//1606.04934">arxiv</a> | <a href="https://github.com/openai/iaf">code*</a> |</p>
+<h3 id="objective">Objective:</h3>
+<p>VAE : using neural networks for the generative model and the inference network <span class="math inline">\(q\_\phi(z|x)\)</span>.</p>
+<p>In order to improve the flexibility of the inference network, the authors use <em>autoregressive functions</em> that take an input with some specified ordering (multidim Tensor or a sequence) and outputs a mean and std for each element of the input conditionned on the previous ones. e.g. RNNs, pixelCNN, Wavenet (Van der oord et al.) or MADE (Germain et. al). Such functions can be turned into invertible nonlinear transformations of the input with a simple ==Jacobian determinant==.</p>
+<p>In the scenario of multidim input variable we will consider a cotext variable <span class="math inline">\(c\)</span> and our appromixate posterior will thus be noted <span class="math inline">\(q(z|x,c)\)</span>.</p>
+<p>The inference model <span class="math inline">\(q(z|x)\)</span> is required to be ==computationally cheap== to compute and differentiate as well as sample from (operations needed t each point of the minibatch). Further felexibility can be ensured if those operations are parallelizable across dimensions of <span class="math inline">\(z\)</span>. These requirements limit the choice of families for the approximate posterior (generally diagonal gaussians). Yet we need <span class="math inline">\(q\)</span> to be flexible enough to match the true posterior!</p>
+<h3 id="normalizing-flow">Normalizing flow</h3>
+==CHECKME: Rezende and mohamed 2015==. Start off with an initial r.v. with a simple distrib. and then apply a series of invertible parameterized transformations <span class="math inline">\(f^t\)</span> such that the last latent variable has a more flexible distrib.:
+<p>
+<span class="math display">\[
+z^0 \sim q(z^0|x,c),\:\: z^t = f^t(z^{t-1},x,c),\:\forall t=1,..T
+\]</span>
+</p>
+As long as the jacobian of each of these transformations can be computed:
+<p>
+<span class="math display">\[
+\log q(z^T|x,c) = \log q(z^0|x,c) - \sum_t^T\log det\left|\frac{df^t(z^{t-1},x,c)}{dz^{t-1}}\right|
+\]</span>
+</p>
+<p>Rezende et al. exerimented only with: $ f<sup>t(z</sup>{t-1}) = z^{t-1} +uh(w<sup>Tz</sup>{t-1}+b)$ where <span class="math inline">\(h\)</span> is a non-linearity.</p>
+<p>==CHECKME: Hamiltonian flow (Salimans et al. 2014)==</p>
+<p><strong>Objective:</strong> find a more powerful normalizing flow! (still computationally cheap): == Autoregressive gaussian model== Let <span class="math inline">\(y\)</span> be a random vector (or tensor) with ordering on its elements. On <span class="math inline">\(y = \\{y\_i\\}\_{1\leq i\leq D}\)</span> we define an autoregressive gaussian generative model as:</p>
+<p>
+<span class="math display">\[
+\begin{align}
+&amp; y_0 = \mu_0 + \sigma_0 z_0\\
+&amp; y_i = \mu_i(y_{1:i-1}) + \sigma_i(y_{1:i-1}) z_i\\
+&amp; z_i \sim \mathcal N(0,1)\:\:\forall i
+\end{align}\]</span>
+</p>
+<p>Where <span class="math inline">\(\mu_i, \sigma_i\)</span> are neural networks with parameters <span class="math inline">\(\theta\)</span>. Such models include LSTM units (take the previous elements of y and map them to predict mean,std of the next element) and Gaussian MADE models.</p>
+<p>==CAVEAT: == the <span class="math inline">\(y\_i\)</span> have to be generated sequentially!</p>
+The autoregressive model thus transofrms <span class="math inline">\(z \sim\mathcal N(0,I)\)</span> into a vector <span class="math inline">\(y\)</span> with a more complicated distrib. Provided <span class="math inline">\(\sigma\_i &gt; 0\)</span> the transofrmation is invertible.
+<p>
+<span class="math display">\[
+z_i = \frac{y_i - \mu_i(y_{1:i-1})}{\sigma_i(y_{1:i-1})}
+\]</span>
+</p>
+This inverse transformation whiten the data into an iid standard normal distrib. What's more is that <span class="math inline">\(z\_i\)</span> can be computed in parallel! And vectorized:
+<p>
+<span class="math display">\[
+z = \frac{y - \mu(y)}{\sigma(y)} \phantom{abcde}\text{(Elementwise operations)}
+\]</span>
+</p>
+This inverse autoregressive transofrmation has a lower triangular jacobian matrix whose diagonal elements are those of <span class="math inline">\(\sigma(y)\)</span>:
+<p>
+<span class="math display">\[
+\log det\left|\frac{dz}{dy}\right| = - \sum_1^D \log \sigma_i(y)
+\]</span>
+</p>
+<h3 id="iaf-inverse-autoregressive-flow">IAF (Inverse autoregressive flow)</h3>
+<p><img src="http://ghost-redgns.s3.amazonaws.com/iaf.png" alt="image" /> Now we use the inverse whitening transformation above as a normalizing flow for variational inference.</p>
+<p>When using IAF in the posterior approximation, we use factorized gaussian for <span class="math inline">\(z^0 \sim q(z^0|x,c)\)</span>, and then perform <span class="math inline">\(T\)</span> steps of IAF (as can be seen in the figure above)</p>
+<p>
+<span class="math display">\[
+(\forall t=1,..,T)\;\:z^t = f^t(z^{t-1},x,c)=\frac{z^{t-1} - \mu^t(z^{t-1},x,c)}{\sigma^t(z^{t-1},x,c)}
+\]</span>
+</p>
+<h3 id="iaf-through-masked-autoencoders-made">IAF through masked autoencoders (MADE)</h3>
+<p>To introduce non-linear dependencies between the elements of <span class="math inline">\(z\)</span> we use MADE for the autoregressive NN: masks are applied to the weight matrices in such a way that <span class="math inline">\(\mu(y), \sigma(y)\)</span> are == autoregressive i.e.<span class="math inline">\(\partial\mu\_i(y)/\partial y\_j = 0,\:j\geq i\)</span> ==.</p>
+<h3 id="iaf-through-rnns">IAF through RNNs:</h3>
+<p>We can use LSTMs as the autoregresive NN. They are more powerful than MADE ==but the computation of <span class="math inline">\(\mu, \sigma\)</span> cannot be parallelized==.</p>
+<p><strong>Check</strong> http://bjlkeng.github.io/posts/variational-autoencoders-with-inverse-autoregressive-flows/</p>
+</body>
+</html>

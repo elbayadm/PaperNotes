@@ -1,0 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="generating-images-from-captions-with-attention">Generating Images from Captions with Attention</h2>
+<p>Elman Mansimov, Emilio Parisotto, Jimmy Lei Ba, Ruslan Salakhutdinov</p>
+<p><strong>ICLR 2016</strong> | <a href="http://arxiv.org/abs/1511.02793">arxiv</a> | <a href="https://github.com/emansim/text2image">code*</a></p>
+<p>It builds on DRAW (Deep Recurrent Attentive Writer) by DeepMind; Attentions mechanism with a sequential VAE. The model is part of the sequence-to-sequence framework where captions are a sequence of words, the image is a sequence of patches awn on a canvas.</p>
+<p>The input caption <span class="math inline">\(y=(y\_1,..,y\_N)\)</span> is transformed with a bidirectional RNN into <span class="math inline">\(m\)</span> dimensional vector representations <span class="math inline">\((h\_1,..,h\_N)\)</span></p>
+<p>This model extend DRAW by including the caption <span class="math inline">\(h\)</span> at each step: <img src="http://ghost-redgns.s3.amazonaws.com/vae_imtext.png" alt="img" /></p>
+</body>
+</html>

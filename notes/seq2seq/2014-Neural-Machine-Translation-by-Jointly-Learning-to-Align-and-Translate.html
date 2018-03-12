@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="neural-machine-translation-by-jointly-learning-to-align-and-translate">Neural Machine Translation by Jointly Learning to Align and Translate</h2>
+<p>Dzmitry Bahdanau, Kyunghyun Cho, Yoshua Bengio</p>
+<p><strong>ICLR 2105</strong> | <a href="http://arxiv.org/abs/1409.0473">arxiv</a> |</p>
+<h3 id="method-key-ideas">Method &amp; key ideas:</h3>
+<p>Standard encoder-decoder models encode a source sentence into a fixed length vector that will be decoded next. The paper consider the use of a fixed length vector as a bottleneck: - difficulty to cope with long sentences</p>
+<p>The alternative method proposed 'aligns and translates jointly' as follows:</p>
+<ul>
+<li><p>The model generates a word in a translation</p></li>
+<li><p>it searches for a set of positions in the source sentence where the most relevant information is concentrated =&gt; context vector</p></li>
+<li><p>the model predicts a target word based on the context vector and the previously generated words.</p></li>
+</ul>
+<p>The context vector:</p>
+<ul>
+<li>The input sentence is encoded into a sequence of vectors and the context corresponds to a subset adaptively selected while decoding.</li>
+</ul>
+Instead of the usual
+<p>
+<span class="math display">\[p(y_t|\{y_1,..,y_{t-1}\}, x) = g(y_{t-1}, s_t, c)\]</span>
+</p>
+The context varies at each prediction step:
+<p>
+<span class="math display">\[p(y_t\vert\{y_1,..,y_{t-1}\}, x) = g(y_{t-1}, s_t, c_t)\]</span>
+</p>
+With <span class="math inline">\(s_t\)</span> an RNN hidden state as usual, this time dependent on the context vector:
+<p>
+<span class="math display">\[s_t = f(s_{t-1}, y_{t-1}, c_t)\]</span>
+</p>
+<h4 id="the-context-vector">The context vector:</h4>
+This vector depends on a sequence of annotations
+<p>
+<span class="math display">\[\mathbf h = (h_1,...h_{T_x})\]</span>
+</p>
+to which an encoder maps the input sequence x. Each <span class="math inline">\(c_t\)</span> is a weighted sum of these annotations:
+<p>
+<span class="math display">\[c_t = \mathbf \alpha_t ^T \mathbf h\]</span>
+</p>
+<p>. The weight vector is computed as:</p>
+<p>
+<span class="math display">\[\alpha_{ti} = \frac{\exp(e_{ti})}{\sum_{j=1}^{T_x} \exp(e_{tj})}\]</span>
+</p>
+where:
+<p>
+<span class="math display">\[e_{ti} = a(s_{t-1}, h_i)\]</span>
+</p>
+<p>is an alignment model which score how well the inputs around position <span class="math inline">\(i\)</span> and the output at position <span class="math inline">\(t\)</span> match. This model is parameterized as a feedforward neural network</p>
+<div class="figure">
+<img src="http://ghost-redgns.s3.amazonaws.com/bahdanau1.png" alt="img" />
+<p class="caption">img</p>
+</div>
+<h3 id="datasets">Datasets:</h3>
+<h3 id="results">Results:</h3>
+<ul>
+<li><p>Better translation performance ever the basic encoder-decoder approach.</p></li>
+<li><p>Linguistically plausible alignment between the source and target sentences (qualitative)</p></li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="reward-augmented-maximum-likelihood-for-neural-structured-prediction">Reward augmented maximum likelihood for neural structured prediction</h2>
+<p>Mohammad Norouzi, Samy Bengio, Zhifeng Chen, Navdeep Jaitly, Mike Schuster, Yonghui Wu, Dale Schuurmans</p>
+<p><strong>NIPS 2016</strong> | <a href="http://arxiv.org/abs/1609.00150">arxiv</a> |</p>
+<h3 id="reward-augmented-maximum-likelihood">Reward augmented maximum likelihood:</h3>
+<p>Given a dataset of inout-output pairs: <span class="math inline">\(\mathcal D = \{ (x^{(i)}, y^{\star(i)})\}\_{i=1}^N\)</span> We learn a conditional distribution <span class="math inline">\(p\_\theta(y|x)\)</span> consistent with <span class="math inline">\(\mathcal D\)</span>.</p>
+<p>
+<span class="math display">\[ p_\theta(y | x) =\prod_t^T p_\theta(y_t | x, y_{1:t-1}) \]</span>
+</p>
+Beam search finds:
+<p>
+<span class="math display">\[ \hat y(x) \approx \arg\max_y p_\theta(y | x)  \]</span>
+</p>
+<p>The reward signal, BLEU score or negative edit distance measures the quality of the predictions <span class="math inline">\(\sum\_{(x, y^\star)} r(\hat y(x), y^\star)\)</span></p>
+<h5 id="maximum-likelihood">Maximum Likelihood</h5>
+<p>
+<span class="math display">\[
+\begin{align}
+\mathcal L_{ML}(\theta) &amp; = - \sum_{(x, y^\star)} \log p_\theta(y^\star | x)\\
+&amp; = \sum_{(x, y^\star)} D_{KL}\left(1_{[y=y^\star]} || p_\theta(y | x)\right) \\
+\end{align}
+\]</span>
+</p>
+<h5 id="rl">RL</h5>
+The entropy regularized expected reward:
+<p>
+<span class="math display">\[
+\begin{align}
+\mathcal L_{RL}(\theta; \tau) &amp; = - \sum_{(x, y^\star)} \left[
+\tau \mathbb H(p_\theta(y|x)) + \sum_{y\in\mathcal Y}  p_\theta(y | x) r(y,y^\star)
+\right]\\
+&amp; = \sum_{(x, y^\star)} \tau D_{KL}\left(p_\theta(y | x) || q_\tau(y|y^\star) \right) + cst
+\end{align}
+\]</span>
+</p>
+<p>Where: <span class="math inline">\(q\_\tau(y|y^\star) = \dfrac{1}{Z} \exp\left(\dfrac{r(y^\star, y)}{ \tau}\right)\)</span> optimized with REINFORCE</p>
+<h5 id="raml">RAML</h5>
+<p>
+<span class="math display">\[
+\begin{align}
+\mathcal L_{RAML}(\theta; \tau) &amp; = - \sum_{(x, y^\star)} \sum_{y\in\mathcal Y} q_\tau(y|y^\star)\log p_\theta(y | x)\\
+&amp; = \sum_{(x, y^\star)} D_{KL}\left(q_\tau(y|y^\star) || p_\theta(y | x)\right) + cst \\
+\end{align}
+\]</span>
+</p>
+<p>Similar to ML in the direction of KL and similar to RL in the optimal conditional distribution.</p>
+<p>The temperature <span class="math inline">\(\tau\)</span> controls the concentration of <span class="math inline">\(q\_\tau\)</span> : <span class="math inline">\(q\_\tau(y|y^\star) \xrightarrow[\tau \to 0]{} 1_{[y=y^\star]}\)</span></p>
+<h5 id="raml-optimization">RAML Optimization:</h5>
+<p>
+<span class="math display">\[
+\nabla_\theta \mathcal L_{RL}(\theta; \tau) = - \sum_{(x, y^\star)} \mathbb E_{\tilde y \sim p_\theta(y | x) }\left[ \nabla_\theta \log p_\theta(\tilde y | x) . r(\tilde y, y^\star)\right]
+\]</span>
+</p>
+== Sampling from the evolving model is much slower than sampling from the stationary distribution <span class="math inline">\(q\)</span>. ==
+<p>
+<span class="math display">\[
+\nabla_\theta \mathcal L_{RAML}(\theta; \tau) = - \sum_{(x, y^\star)} \mathbb E_{\tilde y \sim q(y | y^\star; \tau) }\left[ \nabla_\theta \log p_\theta(\tilde y | x)\right]
+\]</span>
+</p>
+<p>Usually sample one augmentation <span class="math inline">\(\tilde y\)</span> per input x.</p>
+<p>To compute the gradient of the model using the RAML approach, one needs to sample auxiliary outputs from the exponentiated payoff distribution, <span class="math inline">\(q(y|y^\star; \tau)\)</span> When using Hamming/Edit distance, use stratified sampling:</p>
+<p>if <span class="math inline">\(r(y,y^\star) = -D\_H(y, y^\star)\)</span> one can draw exact samples from <span class="math inline">\(q\)</span>. If <span class="math inline">\(\mathcal Y = \\{1,...,v\\}^m\)</span> then <span class="math inline">\(0 \leq r \leq m\)</span> and <span class="math inline">\(card\left(\\{y\in \mathcal Y| r(y,y^\star)=k\\}\right) = {m \choose k} (v-1)^k\)</span>.</p>
+<p>To compute <span class="math inline">\(Z\)</span> we simply sum over <span class="math inline">\(k\)</span>.</p>
+<p><img src="https://s3.eu-west-2.amazonaws.com/ghost-redgns/edit_raml.png" alt="img" /> ###### RAML machine translation</p>
+<p>== For each input sentence, we sample a single output at each step wrt to the hamming distance (Edit distance without insertions and deletions). One can sample according to exponentiated sentence BLEU scores, but we leave that to future work.==</p>
+<p>Best perf with <span class="math inline">\(\tau=0.85, 0.9\)</span></p>
+</body>
+</html>

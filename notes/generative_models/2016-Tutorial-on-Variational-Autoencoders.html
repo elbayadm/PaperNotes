@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="tutorial-on-variational-autoencoders">Tutorial on Variational Autoencoders</h2>
+<p>Carl Doersch</p>
+<p><a href="http://arxiv.org/abs/1606.05908">arxiv</a> |</p>
+<p>The VAE has little to do with the classic autoencoders; they are called so because the final training setup has an encoder-decoder architecture.</p>
+<p><strong>Generative modeling</strong> learning a model distribution <span class="math inline">\(P(X)\)</span> over <span class="math inline">\(\mathcal X\)</span> e.g. natural images.</p>
+<p>Objective: Produce more examples that are like those already in a database (but not exactly the same). This is formalized as getting X drawn from <span class="math inline">\(P_{gt}\)</span>. Existing methods have one of these 3 drawbacks:</p>
+<ul>
+<li>Make strong assumptions about the data structure.</li>
+<li>Make severe approximations</li>
+<li>Rely on computationally expensive procedures (MCMC)</li>
+</ul>
+<p>The VAE makes weak assumptions, it's training is fast via back-propagation and the approximations made do arguably induce smaller error.</p>
+<h3 id="preliminaries">Preliminaries:</h3>
+<p>The generative model will be conditioned on a latent variable z that somehow direct the model toward a specific category/class of the data points <span class="math inline">\(\mathcal X\)</span>. A model is representative of the data if for every X, there is at least one setting of the latent variable z that causes the model to generate X. The latent variable is easily sampled with a pdf P(z) over the latent space <span class="math inline">\(\mathcal Z\)</span>. From there we can define a family of (deterministic) functions <span class="math inline">\(f(z;\theta)\)</span> that are r.v in <span class="math inline">\(\mathcal X\)</span>. The parameterized problem would be to find <span class="math inline">\(\theta\)</span> so that we can sample <span class="math inline">\(z\)</span> from <span class="math inline">\(P(z)\)</span> and find <span class="math inline">\(f(z,\theta)\)</span> that matches the X's in our data. ### The objective function: Mathematically speaking: <span class="math inline">\(f(z,\theta)\)</span> will be replaced by the conditional probability <span class="math inline">\(P(X|z;\theta)\)</span>. Now, we aim at maximizing <span class="math inline">\(P(X), \forall X\)</span> with</p>
+<p><span class="math display">\[P(X) = \int P(X|z;\theta)P(z)dz\phantom{abcdefg}(a)\]</span> In VAE, the choice of the output distribution is often Gaussian: <span class="math display">\[P(X|z;\theta) = \mathcal N(X|f(z;\theta), \sigma²I)\phantom{abcdefg}(b)\]</span></p>
+In (a) two problems arise, the definition of <span class="math inline">\(z\)</span> and the integral. <span class="math inline">\(z\)</span> intuitively summarize all the parameters required to generate a sample. How<ever, encoding those parameters is intricate given their dependencies and what not. Thus in VAE, $z$ is drawn simply from $\mathcal N(0,I)$.
+
+Now we need to find a form for $P(X)$ that is differentiable. We can sample a large number $N$ of $z$ and compute:
+<p> <span class="math display">\[P(X) = \frac{1}{N}\sum_i P(X|z_i;\theta)\]</span>
+</p>
+But the sampled values z are likely to yield negligeable probabilities <span class="math inline">\(P(X|z)\)</span>, thus we need to sample the likeliest <span class="math inline">\(z\)</span> to produce <span class="math inline">\(X\)</span> i.e. a new estimator <span class="math inline">\(Q(z|X)\)</span> and a link between the new <span class="math inline">\(E_{z\sim Q}P(X|z)\)</span> and <span class="math inline">\(P(X)\)</span>. For an arbitrary <span class="math inline">\(Q\)</span>, the KL divergence from <span class="math inline">\(P(z|X)\)</span> is:
+<p>
+<span class="math display">\[D[Q(z)||P(z|X)] = E_{z\sim Q}[\log Q(z) - \log P(z|X)]\]</span>
+</p>
+With bayes rule we find:
+<p>
+<span class="math display">\[\log P(X) - D[Q(z)||P(z|X)] = E_{z\sim Q}[\log P(X|z)] - D[Q(z) ||P(z)]\]</span>
+</p>
+It makes sense to choose <span class="math inline">\(Q\)</span> that depends on <span class="math inline">\(X\)</span> i.e <span class="math inline">\(Q(z|X)\)</span> i.e:
+<p>
+<span class="math display">\[\log P(X) - D[Q(z|X)||P(z|X)] = E_{z\sim Q}[\log P(X|z)] - D[Q(z|X) ||P(z)]\phantom{abcdefg}(c)\]</span>
+</p>
+<p>The LHS is our objective function + an error depending on how well we can find the right <span class="math inline">\(z\)</span> to produce <span class="math inline">\(X\)</span>, while the RHS is something we can optimize via SGD, besides it mimics the encoder-decoder paradigm with <span class="math inline">\(Q\)</span> encoding <span class="math inline">\(X\)</span> into <span class="math inline">\(z\)</span> and <span class="math inline">\(P\)</span> decoding it.</p>
+<p>In this equation we choose a high capacity model for <span class="math inline">\(Q(z|X)\)</span> usually:</p>
+<p><span class="math display">\[Q(z|X) = \mathcal N(z|\mu(X;\theta), \Sigma(X;\theta))\]</span> Where <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\Sigma\)</span>(diagonal) are deterministic functions (e.g.implemented via neural networks). The KL divergence of the RHS is now between two multivariate gaussians and can be computed in closed form. In our case: <span class="math display">\[
+D[\mathcal N(\mu(X), \Sigma(X)) || \mathcal N(0,I)]= \frac{1}{2}\left(tr(\Sigma(X)) + \mu(X)^T\mu(X) -dim(z)-\log det(\Sigma(X))\right)
+\]</span> This term can be viewed as a regularization term, besides he <span class="math inline">\(\sigma\)</span> parameter can be treated as a weighting factor between the terms of the RHS.</p>
+<p>As for the first term <span class="math inline">\(E_{z\sim Q}[\log P(X|z)]\)</span> we can evaluate it for a single <span class="math inline">\(z\)</span> instead of sampling. Yet taking simply for a given <span class="math inline">\(z\)</span> <span class="math inline">\(P(X|z)\)</span> as computed from (b) doesn't show any dependence to <span class="math inline">\(Q\)</span> and this way the VAE would not learn an decoder <span class="math inline">\(P\)</span> adapted to the encoder <span class="math inline">\(Q\)</span>. In other terms we need to propagate the error back to the sampler <span class="math inline">\(Q(z|X)\)</span> <strong>SGD can handle stochastic inputs but not stochastic units within the network.</strong> That's why we introduce a <strong>reparameterization trick</strong> which is to move the sampling to an input layer: to sample from <span class="math inline">\(Q(z|X)\)</span> we can first sample <span class="math inline">\(\epsilon \sim \mathcal N(0,I)\)</span> then compute <span class="math inline">\(z = \mu(X) + \Sigma^{1/2}(X)\)</span>.</p>
+<img src="http://ghost-redgns.s3.amazonaws.com/vae.png" alt="img" /> Now given a fixed <span class="math inline">\(X\)</span> and <span class="math inline">\(\epsilon\)</span> our objective function is deterministic and continuous in the parameters of <span class="math inline">\(P\)</span> and <span class="math inline">\(Q\)</span>:
+<p>
+On our training set <span class="math inline">\(\mathcal D\)</span>, the objective function is: <span class="math display">\[
+E_{X\sim \mathcal D}[E_{\epsilon \sim \mathcal N(0,I)}[\log P(X|z=\mu(X) + \Sigma(X)^{1/2}\epsilon)] - D[Q(z|X)||P(z)]]
+\]</span>
+</p>
+<p>At test time we can use the RHS as lower bound of <span class="math inline">\(P(X)\)</span> to estimate the probability of a testing sample under the model.</p>
+<h3 id="miscellaneous">Miscellaneous:</h3>
+<h4 id="the-error">The error</h4>
+<p><strong>How much error is introduced by <span class="math inline">\(D[Q(z|X)||P(z|X)]\)</span>?</strong></p>
+<p>The tractability of the VAE relies on the assumption that <span class="math inline">\(Q(z|X)\)</span> is a Gaussian. For KL divergence to converge to 0, <span class="math inline">\(P(z|X)\)</span> should be a Gaussian too which is not necessarily the case for an arbitraty <span class="math inline">\(f\)</span> defining the distribution <span class="math inline">\(P\)</span>. Thus we need to choose <span class="math inline">\(f\)</span> so that we can at the same time maximize <span class="math inline">\(\log P(X)\)</span> and ensure that <span class="math inline">\(P(z|X)\)</span> is a Gaussian for all <span class="math inline">\(X\)</span>. This is possible provided <span class="math inline">\(\sigma\)</span> is smalle enough w.r.t the ground truth distribution's CDF #### Information theory perspective: Check minimum description length Check bits back (keeping the neural networks simple by minimizing the description length of the weights, Hinton 1993 and AE, minimum description length and Helmlotz free energy, Hinton 1994). #### Conditional variational AE: This time the generative process of the VAE will be conditioned on an input. CVAE tackles the problems where the input-to-output mapping is one to many.</p>
+<p>Give input-output pair <span class="math inline">\((X,Y)\)</span> we want to learn a model <span class="math inline">\(P(Y|X)\)</span> defined via a latent variable <span class="math inline">\(z\)</span>: <span class="math display">\[ P(Y|X) = \mathcal N(f(z,x), \sigma^2I)\]</span></p>
+</body>
+</html>

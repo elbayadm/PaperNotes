@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+</head>
+<body>
+<h2 id="an-empirical-evaluation-of-generic-convolutional-and-recurrent-networks-for-sequence-modeling">An Empirical Evaluation of Generic Convolutional and Recurrent Networks for Sequence Modeling</h2>
+<p>Shaojie Bai, J. Zico Kolter and Vladlen Koltun</p>
+<p><a href="http://arxiv.org/abs/1803.01271v1">arxiv</a> | <a href="https://github.com/locuslab/TCN">code*</a> |</p>
+<h4 id="problematic">Problematic:</h4>
+<p>How to choose between CNN and RNN based sequence models</p>
+<h4 id="contributions">Contributions:</h4>
+<p>Benchmarking convolutional and recurrent neural networks on a range of standard tasks.</p>
+<h4 id="experiments">Experiments:</h4>
+<p>Describe a generic temporal convolutional network (TCN) including practices such as dilations and residual connections and compare it to a baseline RNN architecture in three variants (LSTM, GRU, Vanilla).</p>
+<div class="figure">
+<img src="https://i.imgur.com/NB07ceQ.png" />
+
+</div>
+<h4 id="issues-comments">Issues &amp; comments:</h4>
+<p>No attention used with the RNN, although the TCN is boosted with the recent updates</p>
+<p>Focusing mainly sequence modelling tasks.</p>
+<p>Check <a href="https://arxiv.org/pdf/1702.01923.pdf">this</a> for another comparative study.</p>
+</body>
+</html>

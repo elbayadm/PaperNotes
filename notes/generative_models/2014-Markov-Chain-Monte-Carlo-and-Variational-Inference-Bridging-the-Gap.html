@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="markov-chain-monte-carlo-and-variational-inference-bridging-the-gap">Markov Chain Monte Carlo and Variational Inference: Bridging the Gap</h2>
+<p>Tim Salimans, Diederik P. Kingma, Max Welling</p>
+<p><strong>ICML 2015</strong> | <a href="http://arxiv.org/abs/1410.6460">arxiv</a> |</p>
+<p><strong>Objectives:</strong> Benefit from: 1) the fast posterior approximation (variational inference: maximizing an explicit (approximate) objective) 2) the option of trading off additional computation for additional accuracy (MCMC: nonparametric/ flexible &amp; asymptotically exact)</p>
+<h3 id="variatioanl-inference">Variatioanl inference:</h3>
+Fit to the posterior a parameterized <span class="math inline">\(q\_\phi(z|x)\)</span> by maximizing the lower bound on the marginal likelihood:
+<p>
+<span class="math display">\[
+\log p(x) = D_{KL}(q_\phi(z|x) || p(z|x)) + E_{q_\phi(z|x)}[\log p(x,z) - \log q_\phi(z|x)]
+\]</span>
+</p>
+<p>Maximizing the second RHS of the previous equation (<span class="math inline">\(\mathcal L\)</span>) w.r.t to <span class="math inline">\(\phi\)</span> will leave the ML unchanged (independent from <span class="math inline">\(\phi\)</span>) and thus bring down the non-negative DL to 0.</p>
+<h3 id="mcmc">MCMC:</h3>
+Rather than otimizing the distribution by which we pick our latent variable <span class="math inline">\(z\)</span> we apply a <em>stochastic transition operator</em> to a random draw <span class="math inline">\(z\_0\)</span> i.e.
+<p>
+<span class="math display">\[
+\forall t=1..T,\;\; z_t \sim q(z_t | z_{t-1}, x)
+\]</span>
+</p>
+<p>If the transition operator chosen judiciously, the last <span class="math inline">\(z\_T\)</span> will converge in distribution to the exact posterior <span class="math inline">\(p(z|x)\)</span> ==CAVEAT== How large <span class="math inline">\(T\)</span> should be to get a good approximate?</p>
+<h3 id="bridging-the-gap">Bridging the gap:</h3>
+Interpret the stochastic Markov chain as a variational approximation:
+<p>
+<span class="math display">\[
+MC:\;\; q(z|x) = q(z_T|x) = q(z_0|x) \prod_t^T q(z_t| z_{t-1})|x)
+\]</span>
+</p>
+<p>in an expanded space where <span class="math inline">\(y = z\_0,..,z\_{t-1}\)</span> is a set of auxiliary r.v.</p>
+We then integrate those auxiliary variables into the lower bound:
+<p>
+<span class="math display">\[
+\begin{align}
+\mathcal L_{aux} &amp; = E_{q(y,z_T|x)}\left[\log \left[p(x,z_T)r(y|x,z_T)\right] - \log q(y,z_T|x)\right]\\
+&amp; = \mathcal L - E_{q(z_T|x)}[D_{KL}(q(y|z_T,x) || r(y|z_T,x))]\\
+&amp; \leq \mathcal L \leq \log p(x)
+\end{align} 
+\]</span>
+</p>
+Where <span class="math inline">\(r(y|x,z_T)\)</span> is an aux. inference distrib. which we are free to choose. <span class="math inline">\(q(z_T|x)\)</span> in this case is given by <span class="math inline">\(\int q(y,z_T|x) dy\)</span> i.e. a mixture of distributions of the form <span class="math inline">\(q(z_T|x,y)\)</span> In the paper <span class="math inline">\(r(y|x,z_T)\)</span> has a Markov structure as well:
+<p>
+<span class="math display">\[
+r(y|x,z_T) = r(z_0,...z_{t-1}|x,z_T) = \prod_t^T r_t(z_{t-1}|x,z_t)
+\]</span>
+</p>
+The variational lower bound can be written as:
+<p>
+<span class="math display">\[
+\mathcal L_{aux} = E_q\left[\log\left[p(x,z_T)/q(z_0|x)\right]\right] + \sum_t^T\log[r_t(z_{t-1} |x, z_t)/q_t(z_t|x,z_{t-1})]
+\]</span>
+</p>
+<p>At each step of the markov chain we can choose different transition operators <span class="math inline">\(r\_t\)</span> and inverse models <span class="math inline">\(r\_t\)</span></p>
+</body>
+</html>

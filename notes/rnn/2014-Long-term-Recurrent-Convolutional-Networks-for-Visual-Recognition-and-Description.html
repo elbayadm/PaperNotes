@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="long-term-recurrent-convolutional-networks-for-visual-recognition-and-description">Long-term Recurrent Convolutional Networks for Visual Recognition and Description</h2>
+<p>Jeff Donahue, Lisa Anne Hendricks, Marcus Rohrbach, Subhashini Venugopalan, Sergio Guadarrama, Kate Saenko, Trevor Darrell</p>
+<p><strong>CVPR 2015</strong> | <a href="http://arxiv.org/abs/1411.4389">arxiv</a> | <a href="http://jeffdonahue.com/lrcn/">code*</a> |</p>
+<p>Donahue 2015 (Saenko &amp; Berkeley team)</p>
+<p>An end-to-end trainable recurrent convolutional architecture. <img src="http://ghost-redgns.s3.amazonaws.com/lrcn.png" alt="image" /></p>
+<p>The optimized loss is the usual log likelihood of the sequence (written as product of conditional probabilities). The LRCN model passes a visual input <span class="math inline">\(v_t\)</span> through a CNN to produce a fixed-length vector <span class="math inline">\(\phi\_V(v\_t) = \phi\_t\)</span> parameterized by V.</p>
+<p>== fc6 from AlexNet performs better than fc7 as visual feature==</p>
+<p>The LSTM unit compared to the conventional RNN unit is as follows: <img src="http://ghost-redgns.s3.amazonaws.com/lstm.png" alt="image" /></p>
+<p>For image description the visual input is constant (<span class="math inline">\(\phi\)</span>). The LSTM input at timestep <span class="math inline">\(t\)</span>, <span class="math inline">\(x\_t=concat(\phi, w\_{t-1})\)</span> where <span class="math inline">\(w_{1:T}\)</span> denote the words embedding of the caption.</p>
+<p><strong>DRAWBACK</strong>: Feeding the image to the LSTM unit at each time step pushes the model to overfit the visual inputs of the training data.</p>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="scheduled-sampling-for-sequence-prediction-with-recurrent-neural-networks">Scheduled Sampling for Sequence Prediction with Recurrent Neural Networks</h2>
+<p>Samy Bengio, Oriol Vinyals, Navdeep Jaitly, Noam Shazeer</p>
+<p><strong>NIPS 2015</strong> | <a href="http://arxiv.org/abs/">arxiv</a> |</p>
+<h4 id="problematic">Problematic:</h4>
+<p>The paper raise the issue of exposure bias where there is gap between how the model are trained (teacher-forcing) and how they are used in test time (free running)</p>
+<h4 id="contributions">Contributions:</h4>
+<p>The authors propose to flip a coin at training time to either keep the <em>conditioning</em> token as is (i.e the ground truth) or replace it by the model's previous prediction (as if in test time). It's suggested to start with a high probability of keeping the ground-truth (default mode of training RNNs) and anneal that probability as the training advances following a <em>schedule</em>. The most efficient schedule in their experiments was the <em>inverse sigmoid decay</em>: <span class="math display">\[ \epsilon_i = \frac{k}{k + \exp{(i/k)}}, \]</span> where <span class="math inline">\(k\geq 1\)</span> affects the speed of convergence and <span class="math inline">\(i\)</span> is the current iteration.</p>
+<h4 id="experiments">Experiments:</h4>
+<p>Results on the tasks of image captioning, constituency parsing and speech recognition show that this approach improves over MLE with teacher-forced training.</p>
+<h4 id="issues-comments">Issues &amp; comments:</h4>
+</body>
+</html>
