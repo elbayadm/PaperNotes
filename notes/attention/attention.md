@@ -9,7 +9,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 15/03/2018_08:46:50</center>
+<center> Update: 15/03/2018_08:51:07</center>
 
   	
 1. [ Monotonic Chunkwise Attention](https://rawgit.com/elbayadm/PaperNotes/master/notes/attention/2017-Monotonic-Chunkwise-Attention.html)
