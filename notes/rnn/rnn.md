@@ -9,7 +9,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 15/03/2018_11:01:27</center>
+<center> Update: 15/03/2018_13:02:25</center>
 
   	
 1. [ Inferring Algorithmic Patterns with Stack-Augmented Recurrent Nets](https://rawgit.com/elbayadm/PaperNotes/master/notes/rnn/2015-Inferring-Algorithmic-Patterns-with-Stack-Augmented-Recurrent-Nets.html)

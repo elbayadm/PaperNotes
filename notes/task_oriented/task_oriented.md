@@ -9,7 +9,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 15/03/2018_11:01:29</center>
+<center> Update: 15/03/2018_13:02:27</center>
 
   	
 1. [ Unsupervised Machine Translation Using Monolingual Corpora Only](https://rawgit.com/elbayadm/PaperNotes/master/notes/task_oriented/2018-Unsupervised-Machine-Translation-Using-Monolingual-Corpora-Only.html)

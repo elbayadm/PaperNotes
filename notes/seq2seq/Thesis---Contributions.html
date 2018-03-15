@@ -11,11 +11,29 @@
 <body>
 <h2 id="alexs-nmt-contributions">Alex's NMT Contributions</h2>
 <h4 id="experiments">Experiments:</h4>
-<h4 id="iwslt-14">IWSLT 14:</h4>
-<div class="figure">
-<img src="https://i.imgur.com/V4ab6ZO.png" />
-
-</div>
-<h4 id="issues-comments">Issues &amp; comments:</h4>
+<h4 id="wmt14-en-fr">WMT14 en-fr:</h4>
+<ul>
+<li>cell size = 1000, embedding size = 620</li>
+<li>Vocab = 30k source and target</li>
+<li>Max length = 50 source and target</li>
+<li>CGRU: Coditional GRU (Sennrich et al 2017) <img src="https://i.imgur.com/gZUhAhj.png" /></li>
+</ul>
+<h4 id="iwslt14-de-en">IWSLT14 de-en:</h4>
+<ul>
+<li>Vocab = 30k source and target</li>
+<li>Max length = 45 source(de) and 47 target(en) <img src="https://i.imgur.com/PiLPc38.png" /> <img src="https://i.imgur.com/V4ab6ZO.png" /></li>
+</ul>
+<h4 id="references">References:</h4>
+<ol style="list-style-type: lower-alpha">
+<li><p>Ranzato's settings: <img src="https://i.imgur.com/wSx0Pet.png" /> Encoder = Convolutional attentive encoder (Rush et al.)</p></li>
+<li><p>Actor-Critic (Bahdanau et al 2017) Data: <img src="https://i.imgur.com/KhJ57D9.png" /></p></li>
+</ol>
+<ul>
+<li>LL = log-likelihood training</li>
+<li>AC = Actor-Critic</li>
+<li>RF-C = Reinforce-Critic</li>
+</ul>
+<p>With a cnn encoder (similar to Ranzato) <img src="https://i.imgur.com/QYoN9jJ.png" /></p>
+<p>With a bi-GRU encoder (dim=256) (Wiseman &amp; rush 2016) <img src="https://i.imgur.com/FdDJVG2.png" /></p>
 </body>
 </html>

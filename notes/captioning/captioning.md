@@ -9,7 +9,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 15/03/2018_11:01:24</center>
+<center> Update: 15/03/2018_13:02:22</center>
 
   	
 1. [ FlipDial](https://rawgit.com/elbayadm/PaperNotes/master/notes/captioning/2018-FlipDial-A-Generative-Model-for-Two-Way-Visual-Dialogue.html)

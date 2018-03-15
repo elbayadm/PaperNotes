@@ -9,7 +9,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 15/03/2018_11:01:26</center>
+<center> Update: 15/03/2018_13:02:24</center>
 
   	
 1. [ Meta-Reinforcement Learning of Structured Exploration Strategies](https://rawgit.com/elbayadm/PaperNotes/master/notes/rl/2018-Meta-Reinforcement-Learning-of-Structured-Exploration-Strategies.html)
