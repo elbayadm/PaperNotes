@@ -9,7 +9,8 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 12/03/2018_17:28:10</center>
+<center> Update: 15/03/2018_08:45:28</center>
 
   	
-1. [ An efficient framework for learning sentence representations](https://rawgit.com/elbayadm/PaperNotes/master/notes/embeddings/2018-An-efficient-framework-for-learning-sentence-representations.html)
+1. [ Evaluating Compositionality in Sentence Embeddings](https://rawgit.com/elbayadm/PaperNotes/master/notes/embeddings/2018-Evaluating-Compositionality-in-Sentence-Embeddings.html)
+2. [ An efficient framework for learning sentence representations](https://rawgit.com/elbayadm/PaperNotes/master/notes/embeddings/2018-An-efficient-framework-for-learning-sentence-representations.html)

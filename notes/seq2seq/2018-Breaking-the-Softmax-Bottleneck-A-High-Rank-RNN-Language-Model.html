@@ -48,7 +48,7 @@ F(A) = \{ A+ \Lambda J_{N, M} | \Lambda\; \text{is diagonal from} \;\mathbb R^{N
 <p>Naively increasing the experssiveness by increasing <span class="math inline">\(d\)</span> is not a fix; it explodes the parametric space and thus the model will be prone to overfitting.</p>
 <p>Introduce <em>Mixture of softmaxes</em>:</p>
 <p><span class="math display">\[
-P_\theta(x|c) = \sum_{k=1}^K \pi_{c,k} \frac{\exp(h_{c,k]^Tw_x})}{\sum_{x&#39;}\exp(h_{c,k]^Tw_{x&#39;}})},
+P_\theta(x|c) = \sum_{k=1}^K \pi_{c,k} \frac{\exp(h_{c,k}^Tw_x})}{\sum_{x&#39;}\exp(h_{c,k}^Tw_{x&#39;}})},
 \]</span> where <span class="math inline">\(\pi_{c,k}\)</span> is the prior or mixture weight s.t. <span class="math inline">\(\sum_k\pi_{c,k} = 1\)</span>.</p>
 <p>The prior <span class="math inline">\(\pi_{c,k}\)</span> and the kth context vector <span class="math inline">\(h_{c,k}\)</span> are obtained by applying a stack of recurrent layers on top of <span class="math inline">\(X\)</span> to obtain hidden states <span class="math inline">\((g_1, ...g_T)\)</span> and then:</p>
 <p><span class="math display">\[
