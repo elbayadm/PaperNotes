@@ -18,9 +18,9 @@
 <h4 id="contributions">Contributions:</h4>
 <p>A method for estimating a differentiable lower bound of expected BLEU score, without extensive sampling.</p>
 <p>Bleu n-gram precision are computed as follows:</p>
-<p>$$</p>
-<p>p_n = ,</p>
-<p>$$</p>
+<p><span class="math display">\[
+p_n = \frac{\sum_{ng}\in C min(count_C(ng), count_R(ng))}{\sum C\in Candidates \sum_ng\in C count(ng)},
+\]</span></p>
 <p>then, <span class="math display">\[ BLEU = BP . \exp\left(  \sum_n w_n \log p_n\right), \]</span> where <span class="math inline">\(BP = \min(1, e^{1-\frac{r}{c}})\)</span>, r,c the lenghts of the references and the candidate respectively.</p>
 <h5 id="rewriting-bleu-in-matrix-form">Rewriting Bleu in matrix form:</h5>
 <p>Assuming a single reference for each candidate, and a vocabulary of size <span class="math inline">\(V\)</span>, define <span class="math inline">\(X\)</span> as the matrix of shape <span class="math inline">\(c\times V\)</span> containing one-hot encoded vectors for each word in the candidate, and <span class="math inline">\(Y\)</span> of shape <span class="math inline">\(r\times V\)</span> for the reference. Let <span class="math inline">\(S^n\)</span> and <span class="math inline">\(P^n\)</span> be the matrices defined as:</p>
