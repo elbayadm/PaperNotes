@@ -16,6 +16,10 @@
 <h4 id="problematic">Problematic:</h4>
 <p>Exposure bias of training RNN with ML in teacher forcing mode.</p>
 <h4 id="contributions">Contributions:</h4>
+<div class="figure">
+<img src="https://i.imgur.com/Pntb3ip.png" />
+
+</div>
 <p>Use Actor-Critic methods from RL. It introduces a <em>critic</em> network that is trained to predict the value of an output token, given the policy of an <em>actor</em> network. This allows for directly optimizing a task-specific score.</p>
 <p>In the supervised paradigm, the critic is conditionned on the ground truth output.</p>
 <p>A trained predictor <span class="math inline">\(h\)</span> is evaluated by computing the average task specific score <span class="math inline">\(R(\hat Y=h(X), Y)\)</span>. The conditionned RNN is viewed as a <em>stochastic policy</em> that generates <em>actions</em> and receives the task score as the <em>return</em>. Generally, the <em>return</em> <span class="math inline">\(R\)</span> is received at the end of the sequence, but we can consider the case where it's partially received at intermediate steps in the form of rewards <span class="math inline">\(r_t\)</span> where <span class="math inline">\(R=\sum_t r_t\)</span> which eases the learning of the critic.</p>
@@ -23,10 +27,11 @@
 <p><span class="math display">\[
 V(\hat Y_{\leq t}; X, Y) = \mathbb E_{\hat Y_{&gt;t}\sim_p(.|\hat Y_{\leq t}, X)}\sum_{\tau=t+1}^T r_\tau(\hat y_t; \hat Y_{&lt;\tau}, Y)
 \]</span></p>
+<p>And the value of a candidate ext token <span class="math inline">\(a\)</span> for an unfinished prediction <span class="math inline">\(\hat Y_{1:t-1}\)</span> is definded as the expected future return after generating <span class="math inline">\(a\)</span>:</p>
+<p><span class="math display">\[
+Q(a; \hat Y_{1:t-1}, X,Y) = \mathbb E_{\hat Y_{&gt;t}\sim_p(.|\hat Y_{\leq t-1}, a, X)}\sum_{\tau=t+1}^T (r_t(a; \hat Y_{\leq t-1}, Y) + \sum_{\tau=t+1}^T r_\tau(\hat y_t; \hat Y_{\leq t-1}a\hat Y_{t+1:\tau}, Y))
+\]</span></p>
 <h4 id="training">Training:</h4>
-<div class="figure">
-<img src="https://i.imgur.com/aZpsSlR.png" />
-
-</div>
+<p><img src="https://i.imgur.com/1Eq4ebK.png" /> <img src="https://i.imgur.com/aZpsSlR.png" /></p>
 </body>
 </html>
