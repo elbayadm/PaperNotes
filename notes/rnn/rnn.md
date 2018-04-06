@@ -9,8 +9,9 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 06/04/2018_12:53:29</center>
+<center> Update: 06/04/2018_12:55:35</center>
 
   	
-1. [ Inferring Algorithmic Patterns with Stack-Augmented Recurrent Nets](https://rawgit.com/elbayadm/PaperNotes/master/notes/rnn/2015-Inferring-Algorithmic-Patterns-with-Stack-Augmented-Recurrent-Nets.html)
-2. [ Long-term Recurrent Convolutional Networks for Visual Recognition and](https://rawgit.com/elbayadm/PaperNotes/master/notes/rnn/2014-Long-term-Recurrent-Convolutional-Networks-for-Visual-Recognition-and-Description.html)
+1. [ Gated Word-Character Recurrent Language Model](https://rawgit.com/elbayadm/PaperNotes/master/notes/rnn/2016-Gated-Word-Character-Recurrent-Language-Model.html)
+2. [ Inferring Algorithmic Patterns with Stack-Augmented Recurrent Nets](https://rawgit.com/elbayadm/PaperNotes/master/notes/rnn/2015-Inferring-Algorithmic-Patterns-with-Stack-Augmented-Recurrent-Nets.html)
+3. [ Long-term Recurrent Convolutional Networks for Visual Recognition and](https://rawgit.com/elbayadm/PaperNotes/master/notes/rnn/2014-Long-term-Recurrent-Convolutional-Networks-for-Visual-Recognition-and-Description.html)
