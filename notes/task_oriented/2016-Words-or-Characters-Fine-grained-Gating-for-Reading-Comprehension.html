@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="words-or-characters-fine-grained-gating-for-reading-comprehension">Words or Characters? Fine-grained Gating for reading comprehension</h2>
+<p>Zhilin Yang, Bhuwan Dhingra, Ye Yuan, Junjie Hu, William W. Cohen, Ruslan Salakhutdinov</p>
+<p><strong>ICLR2017</strong> | <a href="http://arxiv.org/abs/1611.01724v2">arxiv</a> | <a href="https://openreview.net/forum?id=B1hdzd5lg">openreview</a> <a href="https://github.com/kimiyoung/fg-gating">code (theano)</a> |</p>
+<h4 id="problematic">Problematic:</h4>
+<p>Word level capture the semantics while token-level are suitable for sub-word morphologies ad handling out-of-vocabulary tokens. Combining the both has been approached in early work as a simple concatenation or scalar weighting.</p>
+<h4 id="contributions">Contributions:</h4>
+<p>Propose a fine-grained gating mechanism to dynamically combine the two.</p>
+<div class="figure">
+<img src="https://i.imgur.com/ue9FJkl.png" />
+
+</div>
+<p>Let <span class="math inline">\(v\)</span> denote a feature vector that encodes the token <em>properties</em>: - Part-of-Speech(POS) tagging identifies the grammatical group a word belongs to (NOUN, ADJECTIVE, VERB, ADVERBS etc.) based on the context. - Named Entity Recognition (NER) tries to find out whether or not a word is a named entity (persons, locations, organizations, time expressions etc) - Binned document frequencies - Word-level representations The gate vector is evaluated as: <span class="math display">\[
+g = \sigma(W_gv+b_g)
+\]</span></p>
+<p>The final embedding is a combination: <span class="math display">\[
+h = g\odot w_c + (1-g)\odot w_w
+\]</span> #### Experiments: Evaluated on a social media tag prediction task (Twitter) <img src="https://i.imgur.com/wtdM072.png" /></p>
+<h4 id="issues-comments">Issues &amp; comments:</h4>
+<p>Related work: check <a href="https://arxiv.org/abs/1606.01700">Gated Word-Character Recurrent Language Model</a> scalar gate:</p>
+<div class="figure">
+<img src="https://i.imgur.com/CUD4RkM.png" />
+
+</div>
+<p>Check <a href="https://aclweb.org/anthology/C/C16/C16-1030.pdf">Attending to Characters in Neural Sequence Labeling Models</a></p>
+</body>
+</html>

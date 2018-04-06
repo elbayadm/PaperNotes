@@ -9,7 +9,8 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 19/03/2018_09:03:31</center>
+<center> Update: 06/04/2018_12:53:26</center>
 
   	
 1. [ Monotonic Chunkwise Attention](https://rawgit.com/elbayadm/PaperNotes/master/notes/attention/2017-Monotonic-Chunkwise-Attention.html)
+2. [ Attention Is All You Need](https://rawgit.com/elbayadm/PaperNotes/master/notes/attention/2017-Attention-Is-All-You-Need.html)
