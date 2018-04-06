@@ -8,7 +8,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 06/04/2018_14:15:19</center>
+<center> Update: 06/04/2018_14:18:18</center>
 
   	
 1. [ Distribution Matching in Variational Inference](https://rawgit.com/elbayadm/PaperNotes/master/notes/generative_models/2018-Distribution-Matching-in-Variational-Inference.html)

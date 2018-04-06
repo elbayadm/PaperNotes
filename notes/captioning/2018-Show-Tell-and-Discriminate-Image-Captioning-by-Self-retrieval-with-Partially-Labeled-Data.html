@@ -31,7 +31,7 @@
 <li>Encode the image $ v_i = E_i(I_i), i$ and the caption <span class="math inline">\(c_i=E_c(C_i), \forall i\)</span>.</li>
 <li>Compute the similarity between each image <span class="math inline">\(i\)</span> and caption <span class="math inline">\(j\)</span>: <span class="math inline">\(s(c_i, v_j)\)</span>.</li>
 <li>Evaluate the retrieval loss: <span class="math display">\[
-L_{ret}(C_i,\{I_1,...I_n})= \max_{j\neq i} (0, m-s(c_i, v_i) + s(c_i, v_j))
+L_{ret}(C_i,\{I_1,...I_n\})= \max_{j\neq i} (0, m-s(c_i, v_i) + s(c_i, v_j))
 \]</span></li>
 </ol>
 <p>The retrieval reward is simply the negative retrieval loss: <span class="math inline">\(r_{ret} = - L_{ret}\)</span>. ### Training the captioning module with RL: <span class="math display">\[
@@ -46,7 +46,7 @@ r(C_i^s) = r_{cider}(C_i^s) + \alpha . r_{ret}(C_i^s, \{I_1, ..., I_n\})
 <p>Since the ground truth captions of the images are not required to compute the retrieval reward, we can easily add unlabeled images to the mix.</p>
 <p>Unlabeled images are added to the minibatch, for which the CIDEr reward term is dropped.</p>
 <p><span class="math display">\[
-r(C_i^u) = r_{ret}(C_i^u, \{I_1, ... I_n}\cup\\{I^u_1, ...I_m^u\})
+r(C_i^u) = r_{ret}(C_i^u, \{I_1, ... I_n\}\cup\\{I^u_1, ...I_m^u\})
 \]</span></p>
 <h3 id="mining-hard-negative-pairs">Mining hard negative pairs:</h3>
 <div class="figure">

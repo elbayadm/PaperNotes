@@ -9,7 +9,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 06/04/2018_14:15:18</center>
+<center> Update: 06/04/2018_14:18:18</center>
 
   	
 1. [ Evaluating Compositionality in Sentence Embeddings](https://rawgit.com/elbayadm/PaperNotes/master/notes/embeddings/2018-Evaluating-Compositionality-in-Sentence-Embeddings.html)

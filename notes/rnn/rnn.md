@@ -9,7 +9,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 06/04/2018_14:15:21</center>
+<center> Update: 06/04/2018_14:18:20</center>
 
   	
 1. [ Gated Word-Character Recurrent Language Model](https://rawgit.com/elbayadm/PaperNotes/master/notes/rnn/2016-Gated-Word-Character-Recurrent-Language-Model.html)

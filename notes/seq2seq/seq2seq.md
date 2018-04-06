@@ -9,7 +9,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 06/04/2018_14:15:21</center>
+<center> Update: 06/04/2018_14:18:21</center>
 
   	
 1. [ Thesis - Contributions](https://rawgit.com/elbayadm/PaperNotes/master/notes/seq2seq/Thesis---Contributions.html)
