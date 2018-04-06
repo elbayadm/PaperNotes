@@ -34,7 +34,9 @@
 L_{ret}(C_i,\{I_1,...I_n\})= \max_{j\neq i} (0, m-s(c_i, v_i) + s(c_i, v_j))
 \]</span></li>
 </ol>
-<p>The retrieval reward is simply the negative retrieval loss: <span class="math inline">\(r_{ret} = - L_{ret}\)</span>. ### Training the captioning module with RL: <span class="math display">\[
+<p>The retrieval reward is simply the negative retrieval loss: <span class="math inline">\(r_{ret} = - L_{ret}\)</span>.</p>
+<h3 id="training-the-captioning-module-with-rl">Training the captioning module with RL:</h3>
+<p><span class="math display">\[
 L_{RL}(\theta) = - \mathbb E_{C^s \sim p_\theta}[r(C^s)]
 \]</span> With REINFORCE, the gradient is estimated via a single monte carlo sample from <span class="math inline">\(p_\theta\)</span>: <span class="math display">\[
 \nabla_\theta L_{RL}(\theta) \approx (r(C^s) -b)  \nabla_\theta \log p_\theta(C^s)
@@ -56,7 +58,7 @@ r(C_i^u) = r_{ret}(C_i^u, \{I_1, ... I_n\}\cup\\{I^u_1, ...I_m^u\})
 <p>A simple ranking of the unlabeled images given a caption is not optimal since image-caption pairs do not follow a one-to-one mapping (not discriminative!!), the top negative images may perfectly match the query.</p>
 <p>Solution: Use <strong>moderately hard</strong> negatives. Instead of selecting the top ranking images, sample from a range <span class="math inline">\([h_{min}, h_{max}]\)</span></p>
 <h2 id="training-strategy">Training strategy:</h2>
-<p>The captioning and self-retrieval modules share the same CNN 0) Image encoder pre-trained on ImageNet. 1a) Train the retrieval module on labeled data: - First the GRU and projection layers are trained (30 epochs). - Train the whole module (cnn included) (15 epochs). 1b) Pre-train the captioning module with MLE (self-retrieval is fixed 'not even used') and scheduled sampling. 2) Train the captioning module with the retrieval module fixed (including the CNN).</p>
+<p>The captioning and self-retrieval modules share the same CNN - 0) Image encoder pre-trained on ImageNet. - 1a) Train the retrieval module on labeled data: - First the GRU and projection layers are trained (30 epochs). - Train the whole module (cnn included) (15 epochs). - 1b) Pre-train the captioning module with MLE (self-retrieval is fixed 'not even used') and scheduled sampling. - 2) Train the captioning module with the retrieval module fixed (including the CNN).</p>
 <h4 id="experiments">Experiments:</h4>
 <ul>
 <li>CNN encoder : Resnet-101 <span class="math inline">\(dim(v) = 2048\)</span></li>

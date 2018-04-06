@@ -13,7 +13,9 @@
 <h2 id="non-autoregressive-neural-machine-translation">Non-Autoregressive Neural Machine Translation</h2>
 <p>Jiatao Gu, James Bradbury, Caiming Xiong, Victor O.K. Li, Richard Socher</p>
 <p><strong>ICLR 2018</strong> | <a href="https://github.com/nyu-dl/dl4mt-nonauto">code</a> | <a href="https://openreview.net/forum?id=B1l8BtlCb">openreview</a></p>
-<p>Propose a non-autoregressive neural sequence model based on iterative refinement ## Problematic: Auto-regressive models (e.g. RNNs) are often non-Markovian and nonlinear and must resort to suboptimal approximate decoding (beam-search) to find the sequence with the highest probability. The paper dubs this issue &quot;The decoding gap&quot; which is induced by the &quot;modeling gap&quot; i.e. the model's expressiveness or ability to model the data. The total performance gap would be the sum of the two.</p>
+<p>Propose a non-autoregressive neural sequence model based on iterative refinement</p>
+<h2 id="problematic">Problematic:</h2>
+<p>Auto-regressive models (e.g. RNNs) are often non-Markovian and nonlinear and must resort to suboptimal approximate decoding (beam-search) to find the sequence with the highest probability. The paper dubs this issue &quot;The decoding gap&quot; which is induced by the &quot;modeling gap&quot; i.e. the model's expressiveness or ability to model the data. The total performance gap would be the sum of the two.</p>
 <h2 id="contributions">Contributions:</h2>
 <p>The authors suggest an non-autoregressive model with a larger &quot;modeling gap&quot; but with which the decoding gap is non-existent thus minimizing the overall gap.</p>
 <div class="figure">
@@ -31,6 +33,11 @@ P(Y|x) = \sum_{Y^0, ...Y^L} \prod_l P(Y^l| Y^{l-1}, x)
 \log P(Y|x) \geq \sum_l \log( P(\hat Y^l | \hat Y^{l-1}, x) )
 \]</span> where each sequence is selected as: <span class="math display">\[
 \hat Y = \arg\max P(.|\hat Y^{l-1}, x)
-\]</span> ## Experiments: <img src="https://i.imgur.com/MuZA22q.png" /></p>
+\]</span></p>
+<h2 id="experiments">Experiments:</h2>
+<div class="figure">
+<img src="https://i.imgur.com/MuZA22q.png" />
+
+</div>
 </body>
 </html>
