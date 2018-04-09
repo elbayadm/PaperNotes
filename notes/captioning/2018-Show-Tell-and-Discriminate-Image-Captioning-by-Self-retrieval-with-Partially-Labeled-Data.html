@@ -48,7 +48,7 @@ r(C_i^s) = r_{cider}(C_i^s) + \alpha . r_{ret}(C_i^s, \{I_1, ..., I_n\})
 <p>Since the ground truth captions of the images are not required to compute the retrieval reward, we can easily add unlabeled images to the mix.</p>
 <p>Unlabeled images are added to the minibatch, for which the CIDEr reward term is dropped.</p>
 <p><span class="math display">\[
-r(C_i^u) = r_{ret}(C_i^u, \{I_1, ... I_n\}\cup\\{I^u_1, ...I_m^u\})
+r(C_i^u) = r_{ret}(C_i^u, \{I_1, ... I_n\}\cup\{I^u_1, ...I_m^u\})
 \]</span></p>
 <h3 id="mining-hard-negative-pairs">Mining hard negative pairs:</h3>
 <div class="figure">
