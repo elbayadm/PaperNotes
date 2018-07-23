@@ -7,10 +7,21 @@
   <title></title>
   <style type="text/css">code{white-space: pre;}</style>
   <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 </head>
 <body>
 <h2 id="sequence-modeling-via-segmentation-swan">Sequence modeling via segmentation (SWAN)</h2>
 <p>Chong Wang, Yining Wang, Po-Sen Huang, Abdelrahman Mohamed, Dengyong Zhou, Li Deng</p>
-<p><strong>ICML 2017</strong> | <a href="https://arxiv.org/abs/1702.07463">arXiv</a> | <a href="https://vimeo.com/240608131">video</a></p>
+<p><strong>ICML 2017</strong> | <a href="https://arxiv.org/abs/1702.07463">arXiv</a> | <a href="https://vimeo.com/240608131">video</a> | <a href="https://qdata.github.io/deep2Read//talks/20170921-Ceyer.pdd">slides</a></p>
+<h3 id="problematic">Problematic:</h3>
+<p>Phrases make much more sense than words when generating sequences. How to segment and generate on the fly.</p>
+<h3 id="contributions">Contributions:</h3>
+<p>Propose a dynamic agorithm to segment and estimate the sequence probability by summing over all valid segmentations.</p>
+<h4 id="non-sequential-input">Non-sequential input:</h4>
+<p>For a segmentation <span class="math inline">\(a_{1:\tau_a}\)</span> of <span class="math inline">\(y_{1:T}\)</span> i.e <span class="math inline">\(\tau_a\)</span> segments such that their concatenation (operator <span class="math inline">\(\pi\)</span>) form the sequence <span class="math inline">\(y\)</span>: (<span class="math inline">\(\pi(a_{1:\tau_a})=y_{1:T}\)</span>).</p>
+<p>Empty segments are not permitted in this version.</p>
+<p>Each segment is conditionned on the input as well as the previous segments.</p>
+<p>The full sequence probability is evaluated by summing over all possible segmentations in <span class="math inline">\(S_y\)</span> (exponentially large). <img src="https://i.imgur.com/Nb0uQGD.png" /></p>
+<h4 id="sequential-input">Sequential input:</h4>
 </body>
 </html>

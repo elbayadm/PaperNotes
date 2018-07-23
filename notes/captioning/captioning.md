@@ -9,7 +9,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 09/04/2018_08:27:23</center>
+<center> Update: 23/07/2018_15:10:30</center>
 
   	
 1. [ Show, Tell and Discriminate](https://rawgit.com/elbayadm/PaperNotes/master/notes/captioning/2018-Show-Tell-and-Discriminate-Image-Captioning-by-Self-retrieval-with-Partially-Labeled-Data.html)

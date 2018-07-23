@@ -9,7 +9,7 @@ tags: [DL, NLP, CV, CL]
 
 
 
-<center> Update: 09/04/2018_08:27:26</center>
+<center> Update: 23/07/2018_15:10:33</center>
 
   	
 1. [ Words or Characters? Fine-grained Gating for Reading Comprehension](https://rawgit.com/elbayadm/PaperNotes/master/notes/rnn/2016-Words-or-Characters-Fine-grained-Gating-for-Reading-Comprehension.html)
