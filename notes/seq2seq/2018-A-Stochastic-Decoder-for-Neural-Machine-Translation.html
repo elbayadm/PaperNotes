@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+</head>
+<body>
+<h2 id="a-stochastic-decoder-for-neural-machine-translation">A Stochastic Decoder for Neural Machine Translation</h2>
+<p>Philip Schulz, Wilker Aziz, Trevor Cohn</p>
+<p><strong>ACL2018</strong> | <a href="http://arxiv.org/abs/1805.10844">arxiv</a> | <a href="https://github.com/philschulz/stochastic-decoder">code, Sockeye</a> |</p>
+<p>Account for variation in sequnce prediction model with a Variational/stochastic decoder for neural machine translation.</p>
+<h4 id="contributions">Contributions:</h4>
+<p>A decoder capable of capturing word-level variation in translation data.</p>
+<p>A sequence (one per target position) of latent variables instead of the setence-level (single) gausian used in Zhang et al. 2016.</p>
+<div class="figure">
+<img src="https://i.imgur.com/9gJzk8Z.png" alt="img" />
+<p class="caption">img</p>
+</div>
+<div class="figure">
+<img src="https://i.imgur.com/sIXZlQr.png" alt="img" />
+<p class="caption">img</p>
+</div>
+<div class="figure">
+<img src="https://i.imgur.com/UssnsDz.png" alt="img" />
+<p class="caption">img</p>
+</div>
+<div class="figure">
+<img src="https://i.imgur.com/YHbPZfE.png" alt="img" />
+<p class="caption">img</p>
+</div>
+<div class="figure">
+<img src="https://i.imgur.com/hlgV4qZ.png" alt="img" />
+<p class="caption">img</p>
+</div>
+<div class="figure">
+<img src="https://i.imgur.com/NYOClaG.png" alt="img" />
+<p class="caption">img</p>
+</div>
+<h4 id="experiments">Experiments:</h4>
+<p>From English to: <img src="https://i.imgur.com/4tSZ8GK.png" alt="img" /></p>
+<p><img src="https://i.imgur.com/DEhEsRO.png" alt="img" /> #### Issues &amp; comments:</p>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h2 id="latent-alignment-and-variational-attention">Latent Alignment and Variational Attention</h2>
+<p>Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, Alexander M. Rush (Harvard NLP)</p>
+<p><strong>In progress</strong> | <a href="http://arxiv.org/abs/1807.03756">arxiv</a> | <a href="https://github.com/harvardnlp/var-attn">code, Pytorch</a> |</p>
+<p><strong>Current sota on IWSLT De-En</strong></p>
+<p>The current approach of learning soft alignment (attention) does not marginalize over latent alignments in a probabilistic sense. Unlike with hard attention, it's difficult to compare the soft attention to other alignment models, yet it's easier to train. Altratively to both soft and hard attention, this paper introduce a 'variational attention' model based on Amortized Variational Inference (AVI).</p>
+<div class="figure">
+<img src="https://i.imgur.com/pwe3hVg.png" alt="img" />
+<p class="caption">img</p>
+</div>
+<div class="figure">
+<img src="https://i.imgur.com/w6QiIqj.png" alt="img" />
+<p class="caption">img</p>
+</div>
+<div class="figure">
+<img src="https://i.imgur.com/w7aPTyI.png" alt="img" />
+<p class="caption">img</p>
+</div>
+<p>The distibution <span class="math inline">\(\mathcal D\)</span> can be a categorical over <span class="math inline">\(\{1, ...T\}\)</span> or a Dirichlet (relaxed alignment)</p>
+<p>The prediction function <span class="math inline">\(f\)</span> is a softmax conditioned on <span class="math inline">\(X,z\)</span>: [ f(x, z) = softmax (W Xz) ]</p>
+<div class="figure">
+<img src="https://i.imgur.com/BXwUTHV.png" alt="img" />
+<p class="caption">img</p>
+</div>
+<div class="figure">
+<img src="https://i.imgur.com/A5F1fA5.png" alt="img" />
+<p class="caption">img</p>
+</div>
+<h4 id="experiments">Experiments:</h4>
+<p>NMT: IWSLT'14 De-En (Edunov's setup. |bpe types|=14k)</p>
+<div class="figure">
+<img src="https://i.imgur.com/tsegDq0.png" alt="img" />
+<p class="caption">img</p>
+</div>
+<h4 id="issues-comments">Issues &amp; comments:</h4>
+</body>
+</html>
